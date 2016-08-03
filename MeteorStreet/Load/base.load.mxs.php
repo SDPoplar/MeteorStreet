@@ -3,6 +3,7 @@
     $ext = '.base.mxs.php';
     $path = MXS_PATH.'Base'.DIRECTORY_SEPARATOR;
     require_once( $path.'Utils'.$ext );
+    require_once( $path.'Error'.$ext );
     require_once( $path.'Configer'.$ext );
     require_once( $path.'Router'.$ext );
     require_once( $path.'Io'.$ext );

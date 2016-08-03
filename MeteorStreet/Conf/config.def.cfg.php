@@ -1,6 +1,6 @@
 <?php
 return [
-    'LOAD_CONFIG' = [
+    'LOAD_CONFIG' => [
         'router.def', 'logger.def'
     ],
 ];

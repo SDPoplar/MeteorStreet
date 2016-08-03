@@ -18,5 +18,5 @@ while( ( $fileName = $mxs_base->read() ) != false ) {
 }
  */
 require_once( MXS_PATH.'Load'.DIRECTORY_SEPARATOR.'loader.load.mxs.php' );
-( new MXS() )->run();
+MXS::getInstance()->run();
 
