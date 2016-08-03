@@ -1,8 +1,10 @@
 <?php
-define( 'BASE_PATH', dirname( $_SERVER[ 'SCRIPT_FILENAME' ] ).'/' );
+version_compare( PHP_VERSION, '5.4', '>=' ) || die( 'Higher version PHP is needed' );
+
+define( '_MXS_BASE_PATH', dirname( $_SERVER[ 'SCRIPT_FILENAME' ] ).'/' );
 defined( 'SRC_PATH' ) || define( 'SRC_PATH', 'src/' );
-define( '_SRC_PATH', BASE_PATH.SRC_PATH );
-is_dir( _SRC_PATH ) || mkdir( _SRC_PATH ) || die( 'Invalid src path: '._SRC_PATH );
+define( '_MXS_SRC_PATH', _MXS_BASE_PATH.SRC_PATH );
+is_dir( _MXS_SRC_PATH ) || mkdir( _MXS_SRC_PATH ) || die( 'Invalid src path: '._MXS_SRC_PATH );
 defined( 'DEBUG_MODE' ) || define( 'DEBUG_MODE', false );
 
 define( 'MXS_PATH', dirname( __FILE__ ).DIRECTORY_SEPARATOR );
