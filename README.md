@@ -8,3 +8,6 @@ A php frame for api only
 ## What is 'mxs'
 mxs is short for Meteor X Street  
 The idea of MeteorStreet's name is from 'Hunter X Hunter', so I put an 'x' between 'ms' to make it different from Microsoft
+
+## PHP version
+5.4 or higher
