@@ -11,12 +11,13 @@ class MxsConfiger {
         //  App config path
         $this->_appCfgPath = _MXS_SRC_PATH.'config/';
         DEBUG_MODE && $this->_makeDefaultFiles();
-        $appCfgFileName = $this->_makeAppConfigName( 'config', $this->_appCfgPath );
+        $this->_baseConfig = self::loadConfigFile( self::_makeConfigFileName( 'config.def', MXS_PATH.'Conf/' ) );
+        $appCfgFileName = self::_makeConfigFileName( 'config', $this->_appCfgPath );
         $appConf = self::loadConfigFile( $appCfgFileName );
         $this->_baseConfig = array_merge( $this->_baseConfig, $appConf );
     }
 
-    static protected function _makeAppConfigName( $fileName, $filePath = null ) {
+    static protected function _makeConfigFileName( $fileName, $filePath = null ) {
         $finalPath = $filePath ?: "";
         return $finalPath.$fileName.self::CFG_FILE_EXT;
     }
@@ -24,7 +25,7 @@ class MxsConfiger {
     private function _makeDefaultFiles() {
         is_dir( $this->_appCfgPath ) || mkdir( $this->_appCfgPath )
             || die( 'cannot make path: '.$this->_appCfgPath );
-        $appDefCfgFile = self::_makeAppConfigName( 'config', $this->_appCfgPath );
+        $appDefCfgFile = self::_makeConfigFileName( 'config', $this->_appCfgPath );
         file_exists( $appDefCfgFile ) || file_put_contents( $appDefCfgFile, self::DEF_CFG_CONTENT ) 
             || die( 'cannot create default config file: '.$appDefCfgFile );
     }
@@ -42,7 +43,7 @@ class MxsConfiger {
         $appConf = include( $cfgFileName ) ?: [];
         if( array_key_exists( 'LOAD_CONFIG', $appConf ) ) {
             foreach( MxsUtils::to_array( $appConf[ 'LOAD_CONFIG' ] ) as $cfgItem ) {
-                $itemName = self::_makeAppConfigName( trim( $cfgItem ), $finalPath );
+                $itemName = self::_makeConfigFileName( trim( $cfgItem ), $finalPath );
                 $item = self::loadConfigFile( $itemName );
                 $appConf = array_merge( $appConf, $item );
             }
