@@ -17,10 +17,14 @@ class MxsConfiger {
         if( array_key_exists( 'LOAD_CONFIG', $appConf ) ) {
             foreach( MxsUtils::to_array( $appConf[ 'LOAD_CONFIG' ] ) as $cfgItem ) {
                 $itemName = $this->_makeAppConfigName( trim( $cfgItem ) );
-                if( file_exists( $itemName ) ) {
-                    $item = include( $itemName ) ?: [];
-                    $appConf = array_merge( $appConf, $item );
+                if( ! file_exists( $itemName ) ) {
+                    continue;
                 }
+                $item = include( $itemName );
+                if( ! is_array( $item ) ) {
+                    $item = [];
+                }
+                $appConf = array_merge( $appConf, $item );
             }
         }
         $this->_baseConfig = array_merge( $this->_baseConfig, $appConf );
@@ -34,7 +38,8 @@ class MxsConfiger {
         is_dir( $this->_appCfgPath ) || mkdir( $this->_appCfgPath )
             || die( 'cannot make path: '.$this->_appCfgPath );
         $appDefCfgFile = $this->_makeAppConfigName();
-        file_exists( $appDefCfgFile ) || file_put_contents( $appDefCfgFile, self::DEF_CFG_CONTENT ) || die( 'cannot create default config file: '.$appDefCfgFile );
+        file_exists( $appDefCfgFile ) || file_put_contents( $appDefCfgFile, self::DEF_CFG_CONTENT ) 
+            || die( 'cannot create default config file: '.$appDefCfgFile );
     }
 
     public function getItem( $name, $defval = null ) {
