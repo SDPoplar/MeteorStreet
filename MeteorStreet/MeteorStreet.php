@@ -18,12 +18,15 @@ while( ( $fileName = $mxs_base->read() ) != false ) {
         && include_once( MXS_PATH.'Base'.DIRECTORY_SEPARATOR.$fileName );
 }
  */
+//  require_once( MXS_PATH.'Load'.DIRECTORY_SEPARATOR.'loader.load.mxs.php' );
 
-require_once( MXS_PATH.'Load'.DIRECTORY_SEPARATOR.'loader.load.mxs.php' );
-$_mxs_engine = MXS::getInstance();
+require_once( MXS_PATH.'Base'.DIRECTORY_SEPARATOR.'Engine.base.mxs.php' );
+MXS::getInstance()->run();
+/*
 error_reporting( E_ALL | E_STRICT );
 //  error_reporting( 0 );
 set_error_handler( [ &$_mxs_engine, "Error" ], E_ALL | E_STRICT );
 register_shutdown_function( [ &$_mxs_engine, "Crash" ] );
 $_mxs_engine->run();
+ */
 
