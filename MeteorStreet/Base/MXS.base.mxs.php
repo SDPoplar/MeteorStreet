@@ -1,4 +1,5 @@
 <?php
+namespace Mxs\Base;
 use MxsClass\Base\MxsException;
 
 class MXS {
@@ -16,7 +17,7 @@ class MXS {
             new MXS();
         }
 
-        return !MXS::$_me;
+        return MXS::$_me;
     }
 
     public function Crash() {
@@ -39,8 +40,7 @@ class MXS {
 
     public function run() {
         try {
-            include( _MXS_SRC_PATH."Controller/Demo.controller.mxs.php" );
-            ( new \SRC\Controller\DemoController() )->test();
+            ( new \Controller\DemoController() )->test();
 
         } catch( MxsException $e ) {
         }
@@ -48,16 +48,11 @@ class MXS {
 
     protected function __construct() {
         MXS::$_me = $this;
-        spl_autoload_register(function( $className ) {
-            $parts = explode( '\\', $className );
-            $finalName = MXS_PATH.'Base'.DIRECTORY_SEPARATOR.$parts[ count( $parts )-1 ].'.base.mxs.php';
-            include_once( $finalName );
-        });
 
-        ( $this->_configer = new \MxsClass\Base\MxsConfiger() )
+        ( $this->_configer = new \Mxs\Base\Configer() )
             || die( 'Load config failed' );
 
-        ( $this->_logger = \MxsClass\Base\MxsLogger::findLogger( $this->_configer ) )
+        ( $this->_logger = \Mxs\Base\Logger::findLogger( $this->_configer ) )
             || die( 'Load logger failed' );
 
         /*
@@ -68,7 +63,7 @@ class MXS {
         ( $this->_ioer = \MxsClass\Base\MxsIoer::getInstance( $this->_configer, $this->_logger ) )
             || die( 'Load ioer failed' );
          */
-        ( $this->_router = \MxsClass\Base\MxsRouter::getInstance( $this->_configer, $this->_logger ) )
+        ( $this->_router = new \Mxs\Base\Router( $this->_configer, $this->_logger ) )
             || die( 'Load router failed' );
     }
 

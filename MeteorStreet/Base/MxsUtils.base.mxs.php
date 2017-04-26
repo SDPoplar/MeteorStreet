@@ -1,5 +1,5 @@
 <?php
-namespace MxsClass\Base;
+namespace Mxs\Base;
 
 class MxsUtils {
     static public function to_array( $obj, $sep = ',' ) {

@@ -1,7 +1,7 @@
 <?php
-namespace MxsClass\Base;
+namespace Mxs\Base;
 
-class MxsConfiger {
+class Configer {
     protected $_baseConfig = [];
     protected $_appCfgPath;
     const CFG_FILE_EXT = ".cfg.php";
