@@ -1,5 +1,5 @@
 <?php
-version_compare( PHP_VERSION, '5.4', '>=' ) || die( 'Higher version PHP is needed' );
+version_compare( PHP_VERSION, '7.0', '>=' ) || die( 'PHP v7.0 or higher is needed' );
 
 header( 'Content-type:text/html;charset=utf-8' );
 define( '_MXS_BASE_PATH', dirname( $_SERVER[ 'SCRIPT_FILENAME' ] ).'/' );
