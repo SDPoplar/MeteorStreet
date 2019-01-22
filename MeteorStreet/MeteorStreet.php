@@ -2,30 +2,25 @@
 version_compare( PHP_VERSION, '7.0', '>=' ) || die( 'PHP v7.0 or higher is needed' );
 
 header( 'Content-type:text/html;charset=utf-8' );
-define( '_MXS_BASE_PATH', dirname( $_SERVER[ 'SCRIPT_FILENAME' ] ).'/' );
-defined( 'SRC_PATH' ) || define( 'SRC_PATH', 'src/' );
-define( '_MXS_SRC_PATH', _MXS_BASE_PATH.SRC_PATH );
-is_dir( _MXS_SRC_PATH ) || mkdir( _MXS_SRC_PATH, 644, true )
-    || die( 'Invalid src path: '._MXS_SRC_PATH );
+define( 'APP_ROOT', dirname( $_SERVER[ 'DOCUMENT_ROOT' ] ).DIRECTORY_SEPARATOR );
+defined( 'SRC_PATH' ) || define( 'SRC_PATH', APP_ROOT.'src'.DIRECTORY_SEPARATOR );
+is_dir( SRC_PATH ) || mkdir( SRC_PATH, 644, true )
+    || die( 'Invalid src path: '.SRC_PATH );
 defined( 'DEBUG_MODE' ) || define( 'DEBUG_MODE', false );
 
 define( 'MXS_PATH', dirname( __FILE__ ).DIRECTORY_SEPARATOR );
 
-// include engine classes
+// autoload
 spl_autoload_register(function( $className ) {
     if( preg_match( "/^Mxs\\\\(\w+)\\\\(\w+)$/", $className, $matches ) ) {
         $namespaceName = $matches[ 1 ];
         $className = $matches[ 2 ];
-        require_once( MXS_PATH.$namespaceName.DIRECTORY_SEPARATOR
-            .$className.'.'.strtolower( $namespaceName ).'.mxs.php'
-        );
+        require_once( MXS_PATH.$namespaceName.DIRECTORY_SEPARATOR.$className.'.mxs.php' );
+    } else {
+        require_once( SRC_PATH.$className.'.class.php' );
     }
 });
 
-//  include app classes
-spl_autoload_register(function( $className ) {
-    require_once( _MXS_SRC_PATH.$className.'.class.php' );
-});
 \Mxs\Base\MXS::getInstance()->run();
 /*
 error_reporting( E_ALL | E_STRICT );
