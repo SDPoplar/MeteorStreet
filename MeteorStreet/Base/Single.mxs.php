@@ -4,7 +4,7 @@ namespace Mxs\Base;
 class Single {
     protected static $_lib = [];
 
-    protected function __construct() {
+    protected final function __construct() {
         Single::$_lib[ static::class ] = $this;
     }
 
