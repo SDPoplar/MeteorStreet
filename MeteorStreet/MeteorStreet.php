@@ -21,7 +21,11 @@ spl_autoload_register(function( $className ) {
     }
 });
 
-\Mxs\Base\MXS::getInstance()->run();
+function GetMxs() : \Mxs\Base\MXS {
+    return \Mxs\Base\MXS::GetInstance();
+}
+
+\Mxs\Base\MXS::GetInstance()->run();
 /*
 error_reporting( E_ALL | E_STRICT );
 //  error_reporting( 0 );

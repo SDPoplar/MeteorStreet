@@ -1,8 +1,9 @@
 <?php
 namespace Mxs\Route;
 
-class File {
-    public function route( \Mxs\Base\Request &$request ) : \Mxs\Base\Response {
+class File extends \Mxs\Abstracts\Route {
+    protected function findRule( \Mxs\Base\Request $request ) : \Mxs\Route\RouteRule {
+        return \Mxs\Route\RouteRule::UnknownRule();
     }
 }
 

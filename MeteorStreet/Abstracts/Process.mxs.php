@@ -33,7 +33,22 @@ abstract class Process {
         if( !$this->_validCursor() ) {
             return;
         }
+        $stepInstance = $this->_steps[ $this->_cursor ][ 'instance' ];
+        $mxsInstance = \Mxs\Base\MXS::GetInstance();
         switch( $this->_steps[ $this->_cursor ][ 'identifier' ] ) {
+            case self::IDENTIFIER_INPUT:
+                $stepInstance->input( $mxsInstance->getRequest() );
+                break;
+            case self::IDENTIFIER_ENCRYPT:
+                break;
+            case self::IDENTIFIER_DECRYPT:
+                break;
+            case self::IDENTIFIER_ROUTE:
+                $mxsInstance->setResonse( $stepInstance->distribute( $mxsInstance->getRequest() ) );
+                break;
+            case self::IDENTIFIER_OUTPUT:
+                $stepInstance->output( $mxsInstance->getResponse() );
+                break;
         }
     }
 
