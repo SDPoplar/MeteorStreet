@@ -11,9 +11,13 @@ class Single {
     public static function GetInstance() {
         $key = static::class;
         if( !( self::$_lib[ $key ] ?? null ) ) {
-            new $key();
+            $instance = new $key();
+            $instance->init();
         }
         return self::$_lib[ $key ];
+    }
+
+    protected function init() {
     }
 }
 
