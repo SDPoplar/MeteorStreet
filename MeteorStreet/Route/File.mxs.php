@@ -5,20 +5,29 @@ class File extends \Mxs\Abstracts\Route {
     protected function findRule( \Mxs\Base\Request $request ) : \Mxs\Route\RouteRule {
         $methodPath = $request->getMethodPath();
         $routeFilePath = SRC_PATH.'route'.DIRECTORY_SEPARATOR;
-        preg_match( '/^\/([\w\-]+)((\/.*)+)/', $methodPath, $mathes );
-        /*
-        TODO: find rule value from different file
-        if( $this->getItemFromFile( $routeFilePath.( $mathes[ 1 ] ?? 'default' ).'.php', $met;
-        if( file_exists( $fileName ) ) {
-            $routeFile = $fileName
+        $defRouteFile = $routeFilePath.'default.php';
+        do {
+            if( !preg_match( '/^\/([\w\-]+)((\/.*)+)/', $methodPath, $mathes ) ) {
+                continue;
+            }
+            $routeFile = $routeFilePath.$mathes[ 1 ].'.php';
+            if( !is_readable( $routeFile )  ) {
+                continue;
+            }
+            $rules = include( $routeFile );
+            $matched = $this->getItemFromRules( $rules, $matches[ 3 ] );
+        } while( false );
+        if( ( ( $matched ?? '' ) == '' ) && is_readable( $defRouteFile ) ) {
+            $rules = include( $defRouteFile );
+            $matched = $this->getItemFromRules( $rules, $methodPath );
         }
-        $methodPath = $mathes[ 3 ] ?? $methodPath;
-        */
-        return \Mxs\Route\RouteRule::UnknownRule();
+        if( ( $matched ?? '' ) == '' ) {
+            return \Mxs\Route\RouteRule::UnknownRule();
+        }
     }
 
-    protected function getItemFromFile( string $fileName, string $item, string &$value ) : bool {
-        return false;
+    protected function getItemFromRules( array $rules, string $item ) : string {
+        return '';
     }
 }
 
