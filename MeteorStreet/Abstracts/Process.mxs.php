@@ -1,13 +1,8 @@
 <?php
 namespace Mxs\Abstracts;
+use Mxs\Enum\ProcessIdentifier as EPI;
 
 abstract class Process {
-    const IDENTIFIER_INPUT = 'input';
-    const IDENTIFIER_OUTPUT = 'output';
-    const IDENTIFIER_ROUTE = 'route';
-    const IDENTIFIER_ENCRYPT = 'encrypt';
-    const IDENTIFIER_DECRYPT = 'decrypt';
-
     private $_steps = [];
     private $_identifiers = [];
     private $_cursor = 0;
@@ -16,13 +11,13 @@ abstract class Process {
     abstract public function init();
 
     final public function __construct() {
-        $reflect = new \ReflectionClass( get_class( $this ) );
+        $reflect = new \ReflectionClass( EPI::class );
         $this->_identifiers = $reflect->getConstants();
     }
 
     public function valid() : bool {
-        return ( $this->_steps[ 0 ][ 'identifier' ] == self::IDENTIFIER_INPUT )
-            && ( $this->_steps[ count( $this->_steps ) - 1 ][ 'identifier' ] == self::IDENTIFIER_OUTPUT );
+        return ( $this->_steps[ 0 ][ 'identifier' ] == EPI::INPUT )
+            && ( $this->_steps[ count( $this->_steps ) - 1 ][ 'identifier' ] == EPI::OUTPUT );
     }
 
     private function _validCursor() : bool {
@@ -34,20 +29,21 @@ abstract class Process {
             return;
         }
         $stepInstance = $this->_steps[ $this->_cursor ][ 'instance' ];
-        $mxsInstance = \Mxs\Base\MXS::GetInstance();
         switch( $this->_steps[ $this->_cursor ][ 'identifier' ] ) {
-            case self::IDENTIFIER_INPUT:
-                $stepInstance->input( $mxsInstance->getRequest() );
+            case EPI::INPUT:
+                $stepInstance->input( GetMxs()->getRequest() );
                 break;
-            case self::IDENTIFIER_ENCRYPT:
+            case EPI::AUTH:
                 break;
-            case self::IDENTIFIER_DECRYPT:
+            case EPI::ENCRYPT:
                 break;
-            case self::IDENTIFIER_ROUTE:
-                $mxsInstance->setResonse( $stepInstance->distribute( $mxsInstance->getRequest() ) );
+            case EPI::DECRYPT:
                 break;
-            case self::IDENTIFIER_OUTPUT:
-                $stepInstance->output( $mxsInstance->getResponse() );
+            case EPI::ROUTE:
+                GetMxs()->setResonse( $stepInstance->distribute( GetMxs()->getRequest() ) );
+                break;
+            case EPI::OUTPUT:
+                $stepInstance->output( GetMxs()->getResponse() );
                 break;
         }
     }
@@ -62,7 +58,7 @@ abstract class Process {
 
     final protected function registStep( string $identifier, string $className ) : Process {
         if( !in_array( $identifier, $this->_identifiers ) ) {
-            //  throw new Exception();
+            //  throw new Exception( 'Unknown step' );
         }
 
         if( array_key_exists( $className, $this->_instanceMap ) ) {
@@ -77,23 +73,27 @@ abstract class Process {
     }
 
     final protected function input( string $className ) : Process {
-        return $this->registStep( self::IDENTIFIER_INPUT, $className );
+        return $this->registStep( EPI::INPUT, $className );
     }
 
     final protected function output( string $className ) : Process {
-        return $this->registStep( self::IDENTIFIER_OUTPUT, $className );
+        return $this->registStep( EPI::OUTPUT, $className );
     }
 
     final protected function encrypt( string $className ) : Process {
-        return $this->registStep( self::IDENTIFIER_ENCRYPT, $className );
+        return $this->registStep( EPI::ENCRYPT, $className );
     }
 
     final protected function decrypt( string $className ) : Process {
-        return $this->registStep( self::IDENTIFIER_DECRYPT, $className );
+        return $this->registStep( EPI::DECRYPT, $className );
     }
 
     final protected function route( string $className ) : Process {
-        return $this->registStep( self::IDENTIFIER_ROUTE, $className );
+        return $this->registStep( EPI::ROUTE, $className );
+    }
+
+    final protected function auth( string $className ) : Process {
+        return $this->registStep( EPI::AUTH, $className );
     }
 }
 
