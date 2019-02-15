@@ -1,7 +1,7 @@
 <?php
 namespace Mxs\Base;
 
-class MXS extends Single {
+class MXS extends \Mxs\Abstracts\Single {
     protected $_request = null;
     protected $_response = null;
 
