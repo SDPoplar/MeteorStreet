@@ -2,7 +2,7 @@
 namespace Mxs\Route;
 
 class File extends \Mxs\Abstracts\Route {
-    protected function findRule( \Mxs\Base\Request $request ) : \Mxs\Route\RouteRule {
+    protected function findRule( \Mxs\Base\Request $request ) : \Mxs\Base\RouteRule {
         $methodPath = $request->getMethodPath();
         $routeFilePath = SRC_PATH.'route'.DIRECTORY_SEPARATOR;
         $defRouteFile = $routeFilePath.'default.php';
@@ -17,17 +17,14 @@ class File extends \Mxs\Abstracts\Route {
             $rules = include( $routeFile );
             $matched = $this->getItemFromRules( $rules, $matches[ 3 ] );
         } while( false );
-        if( ( ( $matched ?? '' ) == '' ) && is_readable( $defRouteFile ) ) {
-            $rules = include( $defRouteFile );
-            $matched = $this->getItemFromRules( $rules, $methodPath );
+        if( isset( $matched ) && $matched->valid() ) {
+            return $matched;
         }
-        if( ( $matched ?? '' ) == '' ) {
-            return \Mxs\Route\RouteRule::UnknownRule();
+        if( !is_readable( $defRouteFile ) ) {
+            return \Mxs\Base\RouteRule::UnknownRule();
         }
-    }
-
-    protected function getItemFromRules( array $rules, string $item ) : string {
-        return '';
+        $rules = include( $defRouteFile );
+        return $this->getItemFromRules( $rules, $methodPath );
     }
 }
 
