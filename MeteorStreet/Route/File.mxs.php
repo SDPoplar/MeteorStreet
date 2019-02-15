@@ -21,10 +21,12 @@ class File extends \Mxs\Abstracts\Route {
             return $matched;
         }
         if( !is_readable( $defRouteFile ) ) {
+            echo $defRouteFile;
             return \Mxs\Base\RouteRule::UnknownRule();
         }
         $rules = include( $defRouteFile );
-        return $this->getItemFromRules( $rules, $methodPath );
+        print_r( $rules );
+        return $this->getItemFromRules( $rules ?: [], $methodPath );
     }
 }
 

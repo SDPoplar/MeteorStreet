@@ -33,6 +33,26 @@ abstract class Route {
     }
 
     protected function getItemFromRules( array $rules, string $item ) : RouteRule {
+        echo $item;
+        foreach( $rules as $key => $content ) {
+            if( $key == $item ) {
+                $ruleContent = $content;
+                break;
+            }
+        }
+        if( ( $ruleContent ?? '' ) == '' ) {
+            return RouteRule::UnknownRule();
+        }
+        echo $ruleContent;
+        if( preg_match( '/^status:(\d+)$/', $ruleContent, $matches ) ) {
+            return RouteRule::StatusRule( $matches[ 1 ] );
+        }
+        if( preg_match( '/^content:(.+)$/', $ruleContent, $matches ) ) {
+            return RouteRule::ContentRule( $matches[ 1 ] );
+        }
+        if( preg_match( '/^method:([\w\\]+)@(\w+)$/', $ruleContent, $matches ) ) {
+            return RouteRule::MethodRule( $matches[ 1 ], $matches[ 2 ] );
+        }
         return RouteRule::UnknownRule();
     }
 }
