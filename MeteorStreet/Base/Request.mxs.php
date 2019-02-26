@@ -26,6 +26,10 @@ class Request {
         return ( $this->_requestType == \Mxs\Enum\RequestType::GCI );
     }
 
+    public function getRequestMethod() : int {
+        return $this->_requestMethod;
+    }
+
     public function getMethodPath() {
         return $this->_methodPath;
     }
@@ -50,7 +54,7 @@ class Request {
         }
 
         $this->_requestType = \Mxs\Enum\RequestType::HTTP;
-        switch( $_SERVER[ 'METHOD' ] ?? 'UNKNOWN' ) {
+        switch( strtoupper( $_SERVER[ 'REQUEST_METHOD' ] ?? 'UNKNOWN' ) ) {
             case 'GET':
                 $this->_requestMethod = \Mxs\Enum\RequestMethod::GET;
                 break;

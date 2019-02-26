@@ -15,7 +15,7 @@ class File extends \Mxs\Abstracts\Route {
                 continue;
             }
             $rules = include( $routeFile );
-            $matched = $this->getItemFromRules( $rules, $matches[ 3 ] );
+            $matched = $this->getItemFromRules( $rules, $request->getRequestMethod(), $matches[ 3 ] );
         } while( false );
         if( isset( $matched ) && $matched->valid() ) {
             return $matched;
@@ -24,7 +24,7 @@ class File extends \Mxs\Abstracts\Route {
             return \Mxs\Base\RouteRule::UnknownRule();
         }
         $rules = include( $defRouteFile );
-        return $this->getItemFromRules( $rules ?: [], $methodPath );
+        return $this->getItemFromRules( $rules ?: [], $request->getRequestMethod(), $methodPath );
     }
 }
 

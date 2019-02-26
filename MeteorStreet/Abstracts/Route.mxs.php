@@ -12,6 +12,8 @@ abstract class Route {
         $rule = $this->findRule( $request );
         switch( $rule->getRuleType() ) {
             case RouteRuleType::STATUS:
+                $response = GetMxs()->getResponse()->setCode( $rule->getStatus() );
+                break;
             case RouteRuleType::METHOD:
                 $controller = $rule->loadController();
                 $method = $rule->getMethodName();
@@ -32,9 +34,52 @@ abstract class Route {
     protected function init() {
     }
 
-    protected function getItemFromRules( array $rules, string $item ) : RouteRule {
+    protected function parseMethodLimit( $method ) : int {
+        if( ( $method === '' ) || ( $method === 'all' ) ) {
+            return 0b111111;
+        }
+        $ret = 0;
+        $methods = explode( ',', $method );
+        foreach( $methods as $limiter ) {
+            switch( strtolower( trim( $limiter ) ) ) {
+                case 'get':
+                    $ret |= \Mxs\Enum\RequestMethod::GET;
+                    break;
+                case 'post':
+                    $ret |= \Mxs\Enum\RequestMethod::POST;
+                    break;
+                case 'shell':
+                    $ret |= \Mxs\Enum\RequestMethod::SHELL;
+                    break;
+                /*
+                case 'put':
+                    $ret |= \Mxs\Enum\RequestMethod::PUT;
+                    break;
+                case 'delete':
+                    $ret |= \Mxs\Enum\RequestMethod::DELETE;
+                    */
+            }
+        }
+        return $ret;
+    }
+
+    protected function parseRuleMask( string $ruleMask, &$method, &$mask ) : bool {
+        $maskParts = explode( ':', $ruleMask );
+        if( count( $maskParts ) != 2 ) {
+            return false;
+        }
+
+        $mask = end( $maskParts );
+        $method = $this->parseMethodLimit( $maskParts[ 0 ] );
+        return $method != \Mxs\Enum\RequestMethod::UNKNOWN;
+    }
+
+    protected function getItemFromRules( array $rules, int $method, string $item ) : RouteRule {
         foreach( $rules as $key => $content ) {
-            if( $key == $item ) {
+            if( !$this->parseRuleMask( $key, $validMethod, $mask ) ) {
+                continue;
+            }
+            if( ( $mask == $item ) && ( $validMethod & $method ) ) {
                 $ruleContent = $content;
                 break;
             }
@@ -48,7 +93,7 @@ abstract class Route {
         if( preg_match( '/^content:(.+)$/', $ruleContent, $matches ) ) {
             return RouteRule::ContentRule( $matches[ 1 ] );
         }
-        if( preg_match( '/^method:([\w\\]+)@(\w+)$/', $ruleContent, $matches ) ) {
+        if( preg_match( '/^method:([\w\\\\]+)@(\w+)$/', $ruleContent, $matches ) ) {
             return RouteRule::MethodRule( $matches[ 1 ], $matches[ 2 ] );
         }
         return RouteRule::UnknownRule();
