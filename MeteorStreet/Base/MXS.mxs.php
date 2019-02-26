@@ -9,7 +9,7 @@ class MXS extends \Mxs\Abstracts\Single {
         try {
             $process = new $processCls();
             if( !is_subclass_of( $process, '\Mxs\Abstracts\Process' ) ) {
-                throw new \Exception( '???' );
+                throw new \Mxs\Error\FrameError( \Mxs\Enum\FrameErrorCode::WRONG_PARENT_PROCESS );
             }
 
             $process->init();
@@ -21,7 +21,10 @@ class MXS extends \Mxs\Abstracts\Single {
             do {
                 $process->step();
             } while( $process->next() );
-        } catch( Exception $e ) {
+        } catch( \Mxs\Error\FrameError $e ) {
+            print_r( $e );
+        } catch( \Exception $e ) {
+        
         }
     }
 

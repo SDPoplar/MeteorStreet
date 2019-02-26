@@ -23,7 +23,7 @@ abstract class Route {
                 GetMxs()->getResponse()->setContent( $responseContent );
                 break;
             case RouteRuleType::UNKNOWN:
-                
+                throw new \Mxs\Error\FrameError( \Mxs\Enum\FrameErrorCode::INVALID_ROUTE );
                 break;
         }
         return GetMxs()->getResponse();
@@ -33,7 +33,6 @@ abstract class Route {
     }
 
     protected function getItemFromRules( array $rules, string $item ) : RouteRule {
-        echo $item;
         foreach( $rules as $key => $content ) {
             if( $key == $item ) {
                 $ruleContent = $content;
@@ -43,7 +42,6 @@ abstract class Route {
         if( ( $ruleContent ?? '' ) == '' ) {
             return RouteRule::UnknownRule();
         }
-        echo $ruleContent;
         if( preg_match( '/^status:(\d+)$/', $ruleContent, $matches ) ) {
             return RouteRule::StatusRule( $matches[ 1 ] );
         }
