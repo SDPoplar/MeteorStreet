@@ -10,16 +10,11 @@ defined( 'DEBUG_MODE' ) || define( 'DEBUG_MODE', false );
 
 define( 'MXS_PATH', dirname( __FILE__ ).DIRECTORY_SEPARATOR );
 
-// autoload
-spl_autoload_register(function( $className ) {
-    if( preg_match( "/^Mxs\\\\(\w+)\\\\(\w+)$/", $className, $matches ) ) {
-        $namespaceName = $matches[ 1 ];
-        $className = $matches[ 2 ];
-        require_once( MXS_PATH.$namespaceName.DIRECTORY_SEPARATOR.$className.'.mxs.php' );
-    } else {
-        require_once( SRC_PATH.$className.'.class.php' );
-    }
-});
+// autoload with composer
+$autoloadFile = APP_ROOT.'/vendor/autoload.php';
+is_readable( $autoloadFile ) || die( 'no autoload.php found, run composer update may works' );
+require( $autoloadFile );
+unset( $autoloadFile );
 
 function GetMxs() : \Mxs\Base\MXS {
     return \Mxs\Base\MXS::GetInstance();
