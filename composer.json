@@ -1,0 +1,13 @@
+{
+    "name": "seadrip/mxs",
+    "description": "a php frame for api only",
+    "type": "project",
+    "authors": [
+        {
+            "name": "SDPoplar",
+            "email": "741027037@qq.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {}
+}
