@@ -1,4 +1,4 @@
 *.swp
 src/*
-
+/error_log/
 /vendor/

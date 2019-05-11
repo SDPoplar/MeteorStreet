@@ -4,6 +4,12 @@ namespace Mxs\Base;
 class MXS extends \Mxs\Abstracts\Single {
     protected $_request = null;
     protected $_response = null;
+    protected $_config = null;
+
+    protected function init() {
+        $cfgFile = new \Mxs\Channel\ArrayFileChannel( SRC_PATH.'config/config.php' );
+        $this->_config = $cfgFile->valid() ? $cfgFile->get() : [];
+    }
 
     public function run( string $processCls = \Mxs\Def\Process::class ) {
         try {
