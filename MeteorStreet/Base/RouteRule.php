@@ -50,10 +50,8 @@ class MethodRouteRule extends RouteRule {
 
     public function __construct( string $controllerName, string $methodName ) {
         $this->_ruleType = RRT::METHOD;
-        $this->_controllerName = $controllerName;
+        $this->_controllerName = \Mxs\Abstracts\Controller::ValidControllerName( $controllerName );
         $this->_methodName = $methodName;
-
-        print_r( $this );
     }
 
     public function createController() : \Mxs\Abstracts\Controller {
@@ -62,6 +60,10 @@ class MethodRouteRule extends RouteRule {
 
     public function valid() : bool {
         return ( $this->_controllerName != '' ) && ( $this->_methodName != '' );
+    }
+
+    public function getMethodName() : string {
+        return $this->_methodName;
     }
 }
 

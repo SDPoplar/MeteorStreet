@@ -15,7 +15,7 @@ abstract class Route {
                 $response = GetMxs()->getResponse()->setCode( $rule->getStatus() );
                 break;
             case RouteRuleType::METHOD:
-                $controller = $rule->loadController();
+                $controller = $rule->createController();
                 $method = $rule->getMethodName();
                 $responseContent = $controller->$method();
                 GetMxs()->getResponse()->setContent( $responseContent );

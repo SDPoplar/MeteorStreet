@@ -4,17 +4,17 @@ version_compare( PHP_VERSION, '7.0', '>=' ) || die( 'PHP v7.0 or higher is neede
 header( 'Content-type:text/html;charset=utf-8' );
 define( 'APP_ROOT', dirname( $_SERVER[ 'DOCUMENT_ROOT' ] ).DIRECTORY_SEPARATOR );
 defined( 'SRC_PATH' ) || define( 'SRC_PATH', APP_ROOT.'src'.DIRECTORY_SEPARATOR );
-is_dir( SRC_PATH ) || mkdir( SRC_PATH, 644, true )
-    || die( 'Invalid src path: '.SRC_PATH );
-defined( 'DEBUG_MODE' ) || define( 'DEBUG_MODE', false );
-
 define( 'MXS_PATH', dirname( __FILE__ ).DIRECTORY_SEPARATOR );
+
+defined( 'DEBUG_MODE' ) || define( 'DEBUG_MODE', false );
 
 // autoload with composer
 $autoloadFile = APP_ROOT.'/vendor/autoload.php';
 is_readable( $autoloadFile ) || die( 'no autoload.php found, run composer update may works' );
 require( $autoloadFile );
 unset( $autoloadFile );
+
+\Mxs\Util\PathUtil::CheckPath( SRC_PATH );
 
 function GetMxs() : \Mxs\Base\MXS {
     return \Mxs\Base\MXS::GetInstance();

@@ -1,7 +1,7 @@
 <?php
 namespace Mxs\Error;
 
-class MxsError extends \Exception {
+abstract class MxsError extends \Exception {
     const LANG_FILE_SUFFIX = '.lang.php';
 
     abstract protected function _getLangPath() : string;

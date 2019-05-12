@@ -28,9 +28,11 @@ class MXS extends \Mxs\Abstracts\Single {
                 $process->step();
             } while( $process->next() );
         } catch( \Mxs\Error\FrameError $e ) {
-            print_r( $e );
+            echo "Frame Error:".PHP_EOL;
+            var_dump( $e );
         } catch( \Exception $e ) {
-        
+            echo "Unknown Error:".PHP_EOL;
+            var_dump( $e );
         }
     }
 
