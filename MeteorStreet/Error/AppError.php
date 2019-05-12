@@ -1,13 +1,13 @@
 <?php
 namespace Mxs\Error;
 
-class FrameError extends MxsError {
+class AppError extends MxsError {
     protected function _getLangPath() : string {
-        return MXS_PATH.'Lang/Error/';
+        return \Mxs\Util\PathUtil::CheckPath( SRC_PATH.'lang/error/' );
     }
 
     protected function _getDefMessage() : string {
-        return 'Mxs Frame Error';
+        return 'App Runtime Error';
     }
 }
 
