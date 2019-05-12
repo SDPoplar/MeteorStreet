@@ -9,7 +9,10 @@ class FrameError extends \Exception {
         $lang = GetMxs()->getRequest()->getLanguage();
         $targetFile = "{$langPath}{$lang}".self::LANG_FILE_SUFFIX;
         $defFile = "{$langPath}en".self::LANG_FILE_SUFFIX;
-        $msg = \Mxs\Util\ArrayFromFile::FindArrayItem( $errCode, $targetFile, $defFile );
+        $langFile = new \Mxs\Channel\ArrayFileChannel( $targetFile, $defFile );
+        $msg = $langFile->valid()
+            ? $langFile->get( \Mxs\Base\ChannelPattern::Keys( $errCode ) )
+            : null;
         parent::__construct( $msg ?: 'Mxs Frame Error', $errCode );
     }
 }

@@ -16,6 +16,10 @@ class ChannelPattern {
         return new ChannelPattern( $rules );
     }
 
+    public static function Keys( $keys ) : ChannelPattern {
+        return new ChannelPattern( [ 'key' => $keys ] );
+    }
+
     public function valid() : bool {
         return ( $this->_page > 0 ) && ( $this->_size >= 0 );
     }
