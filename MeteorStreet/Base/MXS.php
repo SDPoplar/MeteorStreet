@@ -7,7 +7,10 @@ class MXS extends \Mxs\Abstracts\Single {
     protected $_config = null;
 
     protected function init() {
-        $cfgFile = new \Mxs\Channel\ArrayFileChannel( SRC_PATH.'config/config.php' );
+        $cfgFilePath = 'config/config.php';
+        DEBUG_MODE && !file_exists( SRC_PATH.$cfgFilePath )
+            && \Mxs\Util\DevUtil::copyTplFile( $cfgFilePath );
+        $cfgFile = new \Mxs\Channel\ArrayFileChannel( $cfgFilePath );
         $this->_config = $cfgFile->valid() ? $cfgFile->get() : [];
     }
 

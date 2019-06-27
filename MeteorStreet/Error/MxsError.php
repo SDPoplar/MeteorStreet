@@ -13,9 +13,8 @@ abstract class MxsError extends \Exception {
         $targetFile = "{$langPath}{$lang}".self::LANG_FILE_SUFFIX;
         $defFile = "{$langPath}en".self::LANG_FILE_SUFFIX;
         $langFile = new \Mxs\Channel\ArrayFileChannel( $targetFile, $defFile );
-        $msg = $langFile->valid()
-            ? $langFile->get( \Mxs\Base\ChannelPattern::Keys( $errCode ) )
-            : null;
-        parent::__construct( $msg ?: $this->_getDefMessage(), $errCode );
+        parent::__construct( $langFile->valid()
+            ? current( $langFile->get( \Mxs\Base\ChannelPattern::Keys( $errCode ) ) )
+            : $this->_getDefMessage(), $errCode );
     }
 }

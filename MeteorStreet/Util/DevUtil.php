@@ -7,10 +7,14 @@ class DevUtil
 
     public static function copyTplFile( string $needFile ) : bool
     {
+        if( empty( $needFile ) ) {
+            return false;
+        }
         $unixPwd = explode( '/', $needFile );
         $fileName = end( $unixPwd );
-        $tplPath = preg_replace( '/.php$/', '.tpl.php', $needFile );
-        $unixPwd = implode( DIRECTORY_SEPARATOR, array_pop( $unixPwd ) );
+        $tplPath = self::TPL_PATH.preg_replace( '/.php$/', '.tpl.php', $needFile );
+        array_pop( $unixPwd );
+        $unixPwd = implode( DIRECTORY_SEPARATOR, $unixPwd );
         $needPath = SRC_PATH.$unixPwd.DIRECTORY_SEPARATOR;
         return PathUtil::CheckPath( $needPath ) && copy( $tplPath, $needPath.$fileName );
     }
