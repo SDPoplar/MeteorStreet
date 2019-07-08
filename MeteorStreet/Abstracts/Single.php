@@ -1,23 +1,26 @@
 <?php
 namespace Mxs\Abstracts;
 
-abstract class Single {
-    protected static $_lib = [];
-
-    protected final function __construct() {
-        Single::$_lib[ static::class ] = $this;
-    }
-
-    public static function GetInstance() {
-        $key = static::class;
-        if( !( self::$_lib[ $key ] ?? null ) ) {
-            $instance = new $key();
-            $instance->init();
+abstract class Single
+{
+    final public function getInstance() : Single
+    {
+        $clsName = static::class;
+        if( !( self::$_ins[ $clsName ] ?? null ) || !is_subclass_of( self::$_ins[ $clsName ], self::class ) )
+        {
+            ( new $clsName() )->init();
         }
-        return self::$_lib[ $key ];
+        return self::$_ins[ $clsName ];
     }
 
-    protected function init() {
+    protected function init()
+    {}
+
+    final private function __construct()
+    {
+        self::$_ins[ static::class ] = $this;
     }
+
+    private static $_ins = [];
 }
 

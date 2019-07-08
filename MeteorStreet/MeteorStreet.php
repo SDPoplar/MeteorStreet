@@ -14,10 +14,8 @@ is_readable( $autoloadFile ) || die( 'no autoload.php found, run composer update
 require( $autoloadFile );
 unset( $autoloadFile );
 
-\Mxs\Util\PathUtil::CheckPath( SRC_PATH );
-
-function GetMxs() : \Mxs\Base\MXS {
-    return \Mxs\Base\MXS::GetInstance();
+function GetMxs() : \Mxs\Bases\Core {
+    return \Mxs\Bases\Core::GetInstance();
 }
 
 GetMxs()->run();
