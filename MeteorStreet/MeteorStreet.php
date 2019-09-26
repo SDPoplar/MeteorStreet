@@ -1,7 +1,7 @@
 <?php
 version_compare( PHP_VERSION, '7.0', '>=' ) || die( 'PHP v7.0 or higher is needed' );
 
-header( 'Content-type:text/html;charset=utf-8' );
+//  header( 'Content-type:text/html;charset=utf-8' );
 define( 'APP_ROOT', dirname( $_SERVER[ 'DOCUMENT_ROOT' ] ).DIRECTORY_SEPARATOR );
 defined( 'SRC_PATH' ) || define( 'SRC_PATH', APP_ROOT.'src'.DIRECTORY_SEPARATOR );
 define( 'MXS_PATH', dirname( __FILE__ ).DIRECTORY_SEPARATOR );
