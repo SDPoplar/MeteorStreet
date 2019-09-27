@@ -8,6 +8,7 @@ class Core extends \Mxs\Abstracts\Single
     protected function init() {
         $this->_app_debug = defined( 'DEBUG_MODE' ) ? DEBUG_MODE : false;
         $this->_env = Environment::GetInstance();
+        $this->_route_manager = new \Mxs\Bases\Route\Manager( $this->env()->route_path() );
     }
 
     public function valid() : bool {
@@ -28,5 +29,6 @@ class Core extends \Mxs\Abstracts\Single
 
     protected $_app_debug = false;
     protected $_env;
+    protected $_route_manager;
 }
 

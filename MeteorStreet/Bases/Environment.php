@@ -1,6 +1,8 @@
 <?php
 namespace Mxs\Bases;
 
+use \Mxs\Tools\PathFormator as PF;
+
 class Environment extends \Mxs\Abstracts\Single
 {
     final public function root( string $path = '' ) : string {
@@ -12,27 +14,23 @@ class Environment extends \Mxs\Abstracts\Single
     }
 
     final public function config_path( string $path = '' ) : string {
-        return $this->root( 'config'.$this->_frontds( $path ) );
+        return $this->root( 'config'.PF::FrontDirSep( $path ) );
     }
 
     final public function runtime_path( $path = '' ) : string {
-        return $this->root( 'runtime'.$this->_frontds( $path ) );
+        return $this->root( 'runtime'.PF::FrontDirSep( $path ) );
     }
 
     final public function route_path( $path = '' ) : string {
-        return $this->root( 'routes'.$this->_frontds( $path ) );
+        return $this->root( 'routes'.PF::FrontDirSep( $path ) );
     }
 
-    protected function _frontds( $path ) : string {
-        return ( empty( $path ) || $this->_is_ds( $path[ 0 ] ) ? '' : DIRECTORY_SEPARATOR ).$path;
+    public function checkPath( $path ) : bool {
+        return is_dir( $path ) || ( GetMxs()->debug() && mkdir( $path, 0755, true ) );
     }
-
-    protected function _is_ds( $sep ) : bool {
-        return in_array( $sep, [ '\\', '/' ] );
-    }
-
+    
     protected function init() {
-        $this->_root_path = dirname( $_SERVER[ 'DOCUMENT_ROOT' ] ).DIRECTORY_SEPARATOR;
+        $this->_root_path = PF::EndDirSep( dirname( $_SERVER[ 'DOCUMENT_ROOT' ] ) );
     }
 
     protected $_root_path;
