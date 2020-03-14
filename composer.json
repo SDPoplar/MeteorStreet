@@ -14,7 +14,7 @@
         "ext-mbstring": "*"
     },
     "autoload": {
-        "file": [ "MxsGlobal.php" ],
+        "files": [ "MxsGlobal.php" ],
         "psr-4": {
             "Mxs\\": "./"
         }
