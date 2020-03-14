@@ -39,21 +39,37 @@ class Core extends \Mxs\Abstracts\Single
         return $this;
     }
 
-    public function &out( string $fmtClass ) : void {
+    public function &despatch() : Core {
+        $this->getResponse()->setData( $this->_matched_route
+            ->exec( $this->getRequest()->merge( $this->_matched_route->getUrlArgs() ) )
+        );
+        return $this;
+    }
+
+    public function &request( int $inputLimit = -1 ) : Core {
+        $this->getRequest()->init( $this->_matched_route->getHttpMethod(), $inputLimit );
+        return $this;
+    }
+
+    public function response( string $fmtClass ) : void {
         echo $fmtClass::format( $this->getResponse()->getData() );
     }
 
-    public function &getRequest() : Request {
+    protected function &getRequest() : Request {
         return $this->_request;
     }
 
-    public function &getResponse() : Response {
+    protected function &getResponse() : Response {
+        if( $this->_response === null ) {
+            $this->_response = new Response();
+        }   // use $this->_response ??= new Response(); after php7.4 ?
         return $this->_response;
     }
 
     protected $_app_debug = false;
     protected $_env;
     protected $_route_manager;
+    protected $_matched_route;
 
     protected $_request = null;
     protected $_response = null;
