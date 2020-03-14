@@ -7,10 +7,6 @@ is_readable( $autoloadFile ) || die( 'no autoload.php found, run composer update
 require( $autoloadFile );
 unset( $autoloadFile );
 
-function GetMxs() : \Mxs\Bases\Core {
-    return \Mxs\Bases\Core::GetInstance();
-}
-
 GetMxs()->run();
 /*
 error_reporting( E_ALL | E_STRICT );
