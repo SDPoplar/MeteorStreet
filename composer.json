@@ -8,12 +8,7 @@
         }
     ],
     "require": {
-        "php": ">=7.0"
-    },
-    "autoload": {
-        "psr-4": {
-            "Mxs\\": "MeteorStreet/",
-            "App\\": "src/"
-        }
+        "php": ">=7.2"
     }
 }
+
