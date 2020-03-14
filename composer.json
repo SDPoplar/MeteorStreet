@@ -1,6 +1,7 @@
 {
     "name": "seadrip/mxs",
     "descrption": "a php frame for api only",
+    "license": "Apache-2.0",
     "authors": [
         {
             "name": "SDPoplar",
@@ -8,7 +9,9 @@
         }
     ],
     "require": {
-        "php": ">=7.2"
+        "php": ">=7.2",
+        "ext-json": "*",
+        "ext-mbstring": "*"
     }
 }
 
