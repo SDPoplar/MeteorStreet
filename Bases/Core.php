@@ -56,6 +56,9 @@ class Core extends \Mxs\Abstracts\Single
     }
 
     protected function &getRequest() : Request {
+        if( $this->_request === null ) {
+            $this->_request = new Request();
+        }   //  use $this->_request ??= new Request(); after php7.4 ?
         return $this->_request;
     }
 
