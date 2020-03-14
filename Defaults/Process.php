@@ -1,5 +1,5 @@
 <?php
-namespace Mxs\Def;
+namespace Mxs\Defaults;
 
 class Process extends \Mxs\Abstracts\Process
 {

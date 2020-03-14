@@ -1,4 +1,6 @@
 *.swp
-src/*
+dev_test/
 /error_log/
+composer.lock
 /vendor/
+

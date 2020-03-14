@@ -19,11 +19,11 @@ class Core extends \Mxs\Abstracts\Single
         return $this->_env;
     }
 
-    final public function run( string $process = \Mxs\Def\Process::class ) : void {
+    final public function run( string $process = \Mxs\Defaults\Process::class ) : void {
         $this->valid() or die( $this->getLastErrorMessage() );
         try {
             $process::run( $this );
-        } catch( $e ) {
+        } catch( \Exception $e ) {
             var_dump( $e );
         }
     }
