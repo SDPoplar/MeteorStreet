@@ -1,8 +1,8 @@
 <?php
-namespace Mxs\Bases;
+namespace Mxs\Abstracts;
 
 abstract class Process
 {
-    public abstract function run( \Mxs\Base\Core $mxs ) : void;
+    abstract public static function run( \Mxs\Bases\Core $mxs ) : void;
 }
 
