@@ -19,16 +19,43 @@ class Core extends \Mxs\Abstracts\Single
         return $this->_env;
     }
 
-    final public function run() {
+    final public function run( string $process = \Mxs\Def\Process::class ) : void {
         $this->valid() or die( $this->getLastErrorMessage() );
+        try {
+            $process::run( $this );
+        } catch( $e ) {
+            var_dump( $e );
+        }
     }
 
     final public function debug() : bool {
         return $this->_app_debug;
     }
 
+    public function &route() : Core {
+        //  checkRoute - return list( $controller, $method, $url_args )
+        //  getRequest - merge $url_args
+        //  dispatch route - save return data into response
+        return $this;
+    }
+
+    public function &out( string $fmtClass ) : void {
+        echo $fmtClass::format( $this->getResponse()->getData() );
+    }
+
+    public function &getRequest() : Request {
+        return $this->_request;
+    }
+
+    public function &getResponse() : Response {
+        return $this->_response;
+    }
+
     protected $_app_debug = false;
     protected $_env;
     protected $_route_manager;
+
+    protected $_request = null;
+    protected $_response = null;
 }
 

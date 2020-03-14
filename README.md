@@ -13,7 +13,7 @@ The idea of MeteorStreet's name is from 'Hunter X Hunter', so I put an 'x' betwe
 7.2 or higher
 
 ## PHP ext
--json
--mbstring
--mysqlnd
+* json
+* mbstring
+* mysqlnd
 
