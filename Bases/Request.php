@@ -10,7 +10,13 @@ class Request
         return $this;
     }
 
+    public function init( int $httpMethod, $inputLimit ) {
+        $this->_inputs = array_merge( $this->_inputs, $_GET, $_POST );
+        $this->_uploads = array_merge( $this->_uploads, $_FILES ?? [] );
+    }
+
     protected $_include_input = RII::GET | RII::POST;
     protected $_inputs = [];
+    protected $_uploads = [];
 }
 
