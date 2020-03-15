@@ -3,7 +3,7 @@ namespace Mxs\Traits;
 
 trait KeyValueMapTrait
 {
-    public function &merge( array ...$kvmap ) : int {
+    public function merge( array ...$kvmap ) : int {
         foreach( $kvmap as $item ) {
             $this->_items = array_merge( $this->_items, $kvmap );
         }
