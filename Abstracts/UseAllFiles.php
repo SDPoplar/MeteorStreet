@@ -7,7 +7,7 @@ abstract class UseAllFiles
 
     public function __construct( $basePath ) {
         $this->_base_path = \Mxs\Tools\PathFormator::EndDirSep( $basePath );
-        ( GetMxs()->env()->checkPath( $basePath ) && $this->createDefaultFiles()
+        ( GetMxs()->getEnvironment()->checkPath( $basePath ) && $this->createDefaultFiles()
             && $this->loadFiles() ) || die( 'Cannot load files in '.$basePath );
     }
 

@@ -25,8 +25,8 @@ class Environment extends \Mxs\Abstracts\Single
         return $this->root( 'routes'.PF::FrontDirSep( $path ) );
     }
 
-    public function checkPath( $path ) : bool {
-        return is_dir( $path ) || ( GetMxs()->debug() && mkdir( $path, 0755, true ) );
+    public function checkPath( string $path, bool $createIfNotExists = false ) : bool {
+        return is_dir( $path ) || ( $createIfNotExists && mkdir( $path, 0755, true ) );
     }
     
     protected function init() {
