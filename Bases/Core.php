@@ -39,9 +39,7 @@ class Core extends \Mxs\Abstracts\Single
 
     public function &route( string $routeClass = \Mxs\Bases\Route\File::class ) : Core {
         $this->_matched_route = ( new $routeClass( $this ) )->match( $this->getRequest() );
-        //  checkRoute - return list( $controller, $method, $url_args )
-        //  getRequest - merge $url_args
-        //  dispatch route - save return data into response
+        $this->_matched_route or \Mxs\Exceptions\MxsException::Error( 1 );
         return $this;
     }
 

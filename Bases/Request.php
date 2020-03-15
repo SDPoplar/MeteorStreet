@@ -37,7 +37,7 @@ class Request
             protected $_http_method = 0;
             protected $_request_url = '';
             protected $_use_https = false;
-        }();
+        };
     }
 
     protected function isNummeric( $itemName ) : bool {
