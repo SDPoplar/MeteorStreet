@@ -12,5 +12,30 @@ class HttpMethod extends \Mxs\Abstracts\Enum
     const OPTIONS       = 64;   //  0x001000000
     const TRACE         = 128;  //  0x010000000
     const MOVE          = 256;  //  0x100000000
+
+    public static function FromString( string $method ) : int {
+        switch( strtoupper( $method ) ) {
+            case 'GET':
+                return self::GET;
+            case 'POST':
+                return self::POST;
+            case 'HEAD':
+                return self::HEAD;
+            case 'PATCH':
+                return self::PATCH;
+            case 'PUT':
+                return self::PUT;
+            case 'DELETE':
+                return self::DELETE;
+            case 'OPTIONS':
+                return self::OPTIONS;
+            case 'TRACE':
+                return self::TRACE;
+            case 'MOVE':
+                return self::MOVE;
+            default:
+                return 0;
+        }
+    }
 }
 

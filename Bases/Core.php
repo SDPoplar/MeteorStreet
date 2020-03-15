@@ -38,7 +38,7 @@ class Core extends \Mxs\Abstracts\Single
     }
 
     public function &route( string $routeClass = \Mxs\Bases\Route\File::class ) : Core {
-        $this->_matched_route = ( new $routeClass( $this ) )->match();
+        $this->_matched_route = ( new $routeClass( $this ) )->match( $this->getRequest() );
         //  checkRoute - return list( $controller, $method, $url_args )
         //  getRequest - merge $url_args
         //  dispatch route - save return data into response
@@ -47,7 +47,7 @@ class Core extends \Mxs\Abstracts\Single
 
     public function &despatch() : Core {
         $this->getResponse()->setData( $this->_matched_route
-            ->exec( $this->getRequest()->merge( $this->_matched_route->getUrlArgs() ) )
+            ->execMethod( $this->getRequest()->merge( $this->_matched_route->getUrlArgs() ) )
         );
         return $this;
     }
