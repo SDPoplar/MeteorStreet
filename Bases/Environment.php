@@ -13,15 +13,15 @@ class Environment extends \Mxs\Abstracts\Single
         return $this->_root_path.$path;
     }
 
-    final public function config_path( string $path = '' ) : string {
+    final public function getConfigPath( string $path = '' ) : string {
         return $this->root( 'config'.PF::FrontDirSep( $path ) );
     }
 
-    final public function runtime_path( $path = '' ) : string {
+    final public function getRuntimePath( $path = '' ) : string {
         return $this->root( 'runtime'.PF::FrontDirSep( $path ) );
     }
 
-    final public function route_path( $path = '' ) : string {
+    final public function getRoutePath( $path = '' ) : string {
         return $this->root( 'routes'.PF::FrontDirSep( $path ) );
     }
 
