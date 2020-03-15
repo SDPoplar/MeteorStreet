@@ -17,8 +17,8 @@ abstract class UseAllFiles
 
     protected function loadFiles() : bool {
         foreach( scandir( $this->_base_path ) as $fi ) {
-            if( ( strtolower( substr( $fi, -4 ) ) == '.php' )
-                && !$this->parseFile( $this->_base_path.$fi ) ) {
+            if( ( strtolower( substr( $fi, -4 ) ) != '.php' )
+                || !$this->parseFile( $this->_base_path.$fi ) ) {
                 return false;
             }
         }

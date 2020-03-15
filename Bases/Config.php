@@ -14,7 +14,7 @@ class Config extends \Mxs\Abstracts\UseAllFiles {
 
     protected function parseFile( string $fileName ) : bool {
         $fileContent = include( $fileName );
-        if( !is_array( $fileName ) ) {
+        if( !is_array( $fileContent ) ) {
             return false;
         }
 
