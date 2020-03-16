@@ -1,8 +1,14 @@
 <?php
 namespace Mxs\Bases\Route\Rules;
 
-class Dispatch extends Base
+class Dispatch extends \Mxs\Abstracts\RouteRule
 {
+    public function execRule( \Mxs\Bases\Request $request, \Mxs\Bases\Response &$response ) {
+        $execResult = ( new $this->_use_controller() )
+            ->$this->_use_method( $request );
+        $response->setData( $execResult );
+    }
+
     public function &allow( int $allowed ) : Dispatch {
         $this->_allowed_method = $allowed;
         return $this;

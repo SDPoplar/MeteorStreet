@@ -44,8 +44,9 @@ class Core extends \Mxs\Abstracts\Single
     }
 
     public function &dispatch() : Core {
-        $this->getResponse()->setData( $this->_matched_route
-            ->execMethod( $this->getRequest()->merge( $this->_matched_route->getUrlArgs() ) )
+        $this->_matched_route->execRule(
+            $this->getRequest()->merge( $this->_matched_route->getUrlArgs() ),
+            $this->getResponse()
         );
         return $this;
     }
