@@ -18,14 +18,14 @@ class Request
         return $this->_inputs->getItem( $itemName, $defValue );
     }
 
-    public function init( int $httpMethod, $inputLimit ) {
+    public function init( $inputLimit ) {
         $this->_inputs->merge( $_GET, $_POST );
         $this->_uploads = array_merge( $this->_uploads, $_FILES ?? [] );
         $this->_request_from = new class {
             public function __construct() {
-                $this->_shell_request = ( ( $argc ?? 0 ) > 0 );
+                $this->_shell_request = ( ( $_SERVER[ 'argc' ] ?? 0 ) > 0 );
                 if( $this->_shell_request ) {
-                    $this->_request_url = implode( '/', $argv );
+                    $this->_request_url = implode( '/', $_SERVER[ 'argv' ] );
                 } else {
                     $this->_request_url = $_SERVER[ 'QUERY_STRING' ];
                     $this->_use_https = !!( $_SERVER[ 'HTTPS' ] ?? false );

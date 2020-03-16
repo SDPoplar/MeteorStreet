@@ -43,7 +43,7 @@ class Core extends \Mxs\Abstracts\Single
         return $this;
     }
 
-    public function &despatch() : Core {
+    public function &dispatch() : Core {
         $this->getResponse()->setData( $this->_matched_route
             ->execMethod( $this->getRequest()->merge( $this->_matched_route->getUrlArgs() ) )
         );
@@ -51,7 +51,7 @@ class Core extends \Mxs\Abstracts\Single
     }
 
     public function &request( int $inputLimit = -1 ) : Core {
-        $this->getRequest()->init( $this->_matched_route->getHttpMethod(), $inputLimit );
+        $this->getRequest()->init( $inputLimit );
         return $this;
     }
 

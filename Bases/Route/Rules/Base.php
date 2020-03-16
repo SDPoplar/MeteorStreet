@@ -8,6 +8,10 @@ class Base
         $this->_use_regex = preg_match( '/{\w+}/', $match );
     }
 
+    public function matches( \Mxs\Bases\Request $request ) : bool {
+        return true;
+    }
+
     protected $_matched_url;
     protected $_use_regex;
 }

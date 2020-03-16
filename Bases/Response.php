@@ -22,6 +22,10 @@ class Response {
         return $this->_data;
     }
 
+    public function setData( $data ) {
+        $this->_data = $data;
+    }
+
     protected $_http_status = HS::COMMON;
     protected $_data = [];
     protected $_trace = [];
