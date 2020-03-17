@@ -5,8 +5,12 @@ use \Mxs\Enums\RequestIncludeInput as RII;
 
 class Request
 {
-    public function __construct() {
-        $this->_inputs = new class { use \Mxs\Traits\KeyValueMapTrait; };
+    public static function Create( string $requestClass = Request::class ) : Request {
+        return new $requestClass();
+    }
+
+    public function cast( string $childClass ) : Request {
+        return ( static::class != $childClass ) ? ( new $childClass( $this ) ) : $this;
     }
 
     public function &merge( array ...$items ) : Request {
@@ -18,26 +22,45 @@ class Request
         return $this->_inputs->getItem( $itemName, $defValue );
     }
 
-    public function init( $inputLimit ) {
-        $this->_inputs->merge( $_GET, $_POST );
-        $this->_uploads = array_merge( $this->_uploads, $_FILES ?? [] );
-        $this->_request_from = new class {
-            public function __construct() {
-                $this->_shell_request = ( ( $_SERVER[ 'argc' ] ?? 0 ) > 0 );
-                if( $this->_shell_request ) {
-                    $this->_request_url = implode( '/', $_SERVER[ 'argv' ] );
-                } else {
-                    $this->_request_url = $_SERVER[ 'QUERY_STRING' ];
-                    $this->_use_https = !!( $_SERVER[ 'HTTPS' ] ?? false );
-                    $this->_http_method = \Mxs\Enums\HttpMethod::FromString( $_SERVER[ 'REQUEST_METHOD' ] );
-                }
-            }
+    public function getUrl() : string {
+        return $this->_request_from->_request_url;
+    }
 
-            protected $_shell_request = false;
-            protected $_http_method = 0;
-            protected $_request_url = '';
-            protected $_use_https = false;
-        };
+    protected function __construct( Request $origin = null ) {
+        if( $origin ) {
+            $this->_inputs = $origin->_inputs;
+            $this->_uploads = $origin->_uploads;
+            $this->_request_from = $origin->_request_from;
+        } else {
+            $this->_inputs = new class { use \Mxs\Traits\KeyValueMapTrait; };
+            $this->_inputs->merge( $_GET, $_POST );
+            $this->_uploads = array_merge( $this->_uploads, $_FILES ?? [] );
+            $this->_request_from = new class {
+                public function __construct() {
+                    $this->_shell_request = ( ( $_SERVER[ 'argc' ] ?? 0 ) > 0 );
+                    if( $this->_shell_request ) {
+                        $this->_request_url = implode( '/', $_SERVER[ 'argv' ] );
+                    } else {
+                        $this->_request_url = $_SERVER[ 'QUERY_STRING' ];
+                        $this->_use_https = !!( $_SERVER[ 'HTTPS' ] ?? false );
+                        $this->_http_method = \Mxs\Enums\HttpMethod::FromString( $_SERVER[ 'REQUEST_METHOD' ] );
+                    }
+                }
+
+                protected $_shell_request = false;
+                protected $_http_method = 0;
+                public $_request_url = '';
+                protected $_use_https = false;
+            };
+            $this->init();
+        }
+    }
+
+    protected function init() : void {
+    }
+
+    protected function valid() : bool {
+        return true;
     }
 
     protected function isNummeric( $itemName ) : bool {
@@ -61,7 +84,6 @@ class Request
         return preg_match( $regex, $this->input( $itemName ) );
     }
 
-    protected $_include_input = RII::GET | RII::POST;
     protected $_inputs;
     protected $_uploads = [];
     protected $_request_from;

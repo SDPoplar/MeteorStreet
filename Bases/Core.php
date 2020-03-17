@@ -44,15 +44,12 @@ class Core extends \Mxs\Abstracts\Single
     }
 
     public function &dispatch() : Core {
-        $this->_matched_route->execRule(
-            $this->getRequest()->merge( $this->_matched_route->getUrlArgs() ),
-            $this->getResponse()
-        );
+        $this->_matched_route->execute( $this->getRequest()->merge(), $this->getResponse() );
         return $this;
     }
 
-    public function &request( int $inputLimit = -1 ) : Core {
-        $this->getRequest()->init( $inputLimit );
+    public function &request( string $requestClass = Request::class ) : Core {
+        $this->_request = $this->getRequest()->cast( $requestClass );
         return $this;
     }
 
@@ -62,14 +59,14 @@ class Core extends \Mxs\Abstracts\Single
 
     protected function &getRequest() : Request {
         if( $this->_request === null ) {
-            $this->_request = new Request();
+            $this->_request = Request::Create();
         }   //  use $this->_request ??= new Request(); after php7.4 ?
         return $this->_request;
     }
 
     protected function &getResponse() : Response {
         if( $this->_response === null ) {
-            $this->_response = new Response();
+            $this->_response = Response::Create();
         }   // use $this->_response ??= new Response(); after php7.4 ?
         return $this->_response;
     }

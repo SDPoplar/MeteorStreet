@@ -3,7 +3,7 @@ namespace Mxs\Bases\Route;
 
 class File extends \Mxs\Abstracts\Route
 {
-    public function match( \Mxs\Bases\Request $request ) : ?MatchedRule {
+    public function match( \Mxs\Bases\Request $request ) : ?\Mxs\Abstracts\RouteRule {
         $mgr = new class ( GetMxs()->getEnvironment()->getRoutePath() )
             extends \Mxs\Abstracts\UseAllFiles {
             use \Mxs\Traits\MakeRouteRuleTrait;

@@ -4,6 +4,14 @@ namespace Mxs\Bases;
 use \Mxs\Enums\HttpStatus as HS;
 
 class Response {
+    public static function Create( string $responseClass = Response::class ) : Response {
+        return new $responseClass();
+    }
+
+    public function cast( string $childClass ) : Response {
+        return ( static::class != $childClass ) ? ( new $childClass() ) : $this;
+    }
+
     public function redirect( $url, $delay = 0 ) {
         $this->_http_status = HS::REDIRECT;
         $this->_redir_url = $url;
@@ -24,6 +32,17 @@ class Response {
 
     public function setData( $data ) {
         $this->_data = $data;
+    }
+
+    protected function __construct( Response $origin = null ) {
+        if( $origin ) {
+            $this->_http_status = $origin->_http_status;
+            $this->_data = $origin->_data;
+            $this->_trace = $origin->_trace;
+            $this->_redir_url = $origin->_redir_url;
+            $this->_redir_delay = $origin->_redir_delay;
+        } else {
+        }
     }
 
     protected $_http_status = HS::COMMON;

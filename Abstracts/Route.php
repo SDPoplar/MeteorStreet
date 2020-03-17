@@ -1,12 +1,11 @@
 <?php
 namespace Mxs\Abstracts;
-use \Mxs\Bases\Route\MatchedRule;
 
 class Route {
-    public function match( \Mxs\Bases\Request $request ) : ?MatchedRule {
+    public function match( \Mxs\Bases\Request $request ) : ?RouteRule {
         foreach( $this->_rules as $rule ) {
-            if( $rule->matches( $request, $urlArgs ) ) {
-                return new MatchedRule( $rule, $urlArgs );
+            if( $rule->matched( $request ) ) {
+                return $rule;
             }
         }
         return null;

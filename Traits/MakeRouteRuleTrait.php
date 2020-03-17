@@ -16,7 +16,7 @@ trait MakeRouteRuleTrait
     }
 
     public function &shell( string $match ) : Dispatch {
-        return $this->dispatch( ARM::SHELL );
+        return $this->dispatch( ARM::SHELL, $match );
     }
 
     public function &get( string $match ) : Dispatch {
