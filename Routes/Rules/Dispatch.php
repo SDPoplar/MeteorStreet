@@ -1,5 +1,5 @@
 <?php
-namespace Mxs\Bases\Route\Rules;
+namespace Mxs\Routes\Rules;
 
 class Dispatch extends \Mxs\Abstracts\RouteRule
 {

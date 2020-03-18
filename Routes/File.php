@@ -1,5 +1,5 @@
 <?php
-namespace Mxs\Bases\Route;
+namespace Mxs\Routes;
 
 class File extends \Mxs\Abstracts\Route
 {

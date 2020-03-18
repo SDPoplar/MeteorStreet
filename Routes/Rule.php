@@ -1,5 +1,5 @@
 <?php
-namespace Mxs\Bases\Route;
+namespace Mxs\Routes;
 
 use \Mxs\Enums\HttpMethod as EHttpMethod;
 

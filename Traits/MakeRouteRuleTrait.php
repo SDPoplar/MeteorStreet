@@ -1,6 +1,6 @@
 <?php
 namespace Mxs\Traits;
-use \Mxs\Bases\Route\Rules\{Redirect, Dispatch};
+use \Mxs\Routes\Rules\{Redirect, Dispatch};
 use \Mxs\Enums\AllowRequestMethod as ARM;
 
 trait MakeRouteRuleTrait

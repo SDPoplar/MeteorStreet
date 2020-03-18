@@ -37,7 +37,7 @@ class Core extends \Mxs\Abstracts\Single
         return $this->_config->isDebug();
     }
 
-    public function &route( string $routeClass = \Mxs\Bases\Route\File::class ) : Core {
+    public function &route( string $routeClass = \Mxs\Routes\File::class ) : Core {
         $this->_matched_route = ( new $routeClass( $this ) )->match( $this->getRequest() );
         $this->_matched_route or \Mxs\Exceptions\MxsException::Error( 1 );
         return $this;
