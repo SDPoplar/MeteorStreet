@@ -1,8 +1,23 @@
 <?php
 namespace Mxs\Routes\Rules;
+use \Mxs\Enums\AllowRequestMethod as ARM;
 
 class Dispatch extends \Mxs\Abstracts\RouteRule
 {
+    public function matched( \Mxs\Bases\Request $request ) : bool {
+        if( $request->isFromShell()
+            && !ARM::IsMethodAllowed( $this->_allowed_method, ARM::SHELL )
+        ) {
+            return false;
+        }
+        if( !$request->isFromShell()
+            && !ARM::IsMethodAllowed( $this->_allowed_method, $request->getHttpMethod() )
+        ) {
+            return false;
+        }
+        return parent::matched( $request );
+    }
+
     public function execute( \Mxs\Bases\Request $request, \Mxs\Bases\Response &$response ) {
         $controllerIns = $this->createController();
         $methodName = $this->_use_method;

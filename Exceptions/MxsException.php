@@ -3,7 +3,8 @@ namespace Mxs\Exceptions;
 
 class MxsException extends \Exception {
     public static function Error( int $code ) : bool {
-        throw new static::class( $code );
+        $typeName = static::class;
+        throw new $typeName( $code );
         return true;
     }
 

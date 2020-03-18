@@ -22,8 +22,16 @@ class Request
         return $this->_inputs->getItem( $itemName, $defValue );
     }
 
+    public function isFromShell() : bool {
+        return $this->_request_from->_shell_request;
+    }
+
     public function getUrl() : string {
         return $this->_request_from->_request_url;
+    }
+
+    public function getHttpMethod() : int {
+        return $this->_request_from->_http_method;
     }
 
     protected function __construct( Request $origin = null ) {
@@ -39,18 +47,34 @@ class Request
                 public function __construct() {
                     $this->_shell_request = ( ( $_SERVER[ 'argc' ] ?? 0 ) > 0 );
                     if( $this->_shell_request ) {
-                        $this->_request_url = implode( '/', $_SERVER[ 'argv' ] );
+                        $this->loadShellArgs();
                     } else {
-                        $this->_request_url = $_SERVER[ 'QUERY_STRING' ];
-                        $this->_use_https = !!( $_SERVER[ 'HTTPS' ] ?? false );
-                        $this->_http_method = \Mxs\Enums\HttpMethod::FromString( $_SERVER[ 'REQUEST_METHOD' ] );
+                        $this->loadHttpArgs();
+                    }
+                    if( empty( $this->_request_url )
+                        || ( strpos( '/', $this->_request_url ) !== 0 )
+                    ) {
+                        $this->_request_url = '/'.$this->_request_url;
                     }
                 }
 
-                protected $_shell_request = false;
-                protected $_http_method = 0;
+                private function loadShellArgs() {
+                    $args = $_SERVER[ 'argv' ];
+                    array_shift( $args );
+                    $this->_request_url = implode( '/', $args );
+                }
+
+                private function loadHttpArgs() {
+                    $this->_request_url = $_SERVER[ 'REQUEST_URI' ];
+                    $this->_use_https = !!( $_SERVER[ 'HTTPS' ] ?? false );
+                    $this->_http_method = \Mxs\Enums\HttpMethod::FromString(
+                        $_SERVER[ 'REQUEST_METHOD' ] );
+                }
+
+                public $_shell_request = false;
+                public $_http_method = 0;
                 public $_request_url = '';
-                protected $_use_https = false;
+                public $_use_https = false;
             };
             $this->init();
         }
