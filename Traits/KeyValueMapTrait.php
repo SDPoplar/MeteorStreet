@@ -12,7 +12,13 @@ trait KeyValueMapTrait
     }
 
     protected function getItem( string $keyName, $defValue = null ) {
-        return $_items[ $keyName ] ?? $defValue;
+        $keys = explode( $keyName );
+        $tree = $this->_items;
+        foreach( $keys as $key ) {
+            $tree = ( is_array( $tree ) && array_key_exists( $key, $tree ) )
+                ? $tree[ $key ] : null;
+        }
+        return $tree ?? $defValue;
     }
 
     protected $_items = [];
