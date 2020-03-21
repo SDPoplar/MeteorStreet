@@ -34,6 +34,10 @@ class Request
         return $this->_request_from->_http_method;
     }
 
+    public function getUserLang() : string {
+        return 'en';
+    }
+
     protected function __construct( Request $origin = null ) {
         if( $origin ) {
             $this->_inputs = $origin->_inputs;

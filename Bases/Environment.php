@@ -13,6 +13,10 @@ class Environment extends \Mxs\Abstracts\Single
         return $this->_root_path.$path;
     }
 
+    final public function getLangPath() : string {
+        return $this->root( 'lang' );
+    }
+
     final public function getConfigPath( string $path = '' ) : string {
         return $this->root( 'config'.PF::FrontDirSep( $path ) );
     }
@@ -28,11 +32,17 @@ class Environment extends \Mxs\Abstracts\Single
     public function checkPath( string $path, bool $createIfNotExists = false ) : bool {
         return is_dir( $path ) || ( $createIfNotExists && mkdir( $path, 0755, true ) );
     }
+
+    public function getMxsResourcePath() : string {
+        return PF::EndDirSep( $this->_mxs_root.'Resources' );
+    }
     
     protected function init() {
         $this->_root_path = PF::EndDirSep( dirname( $_SERVER[ 'DOCUMENT_ROOT' ] ) );
+        $this->_mxs_root = PF::EndDirSep( dirname( __DIR__ ) );
     }
 
     protected $_root_path;
+    protected $_mxs_root;
 }
 

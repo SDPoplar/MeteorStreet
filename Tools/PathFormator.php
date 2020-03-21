@@ -13,5 +13,13 @@ class PathFormator {
     public static function IsDirSep( string $sep ) : bool {
         return in_array( $sep, [ '\\', '/' ] );
     }
+
+    public static function Concat( string ...$parts ) : string {
+        $path = '';
+        foreach( $parts as $item ) {
+            $path = self::EndDirSep( $path ).$item;
+        }
+        return $path;
+    }
 }
 

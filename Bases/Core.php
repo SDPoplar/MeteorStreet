@@ -29,7 +29,7 @@ class Core extends \Mxs\Abstracts\Single
         try {
             $process::run( $this );
         } catch( \Exception $e ) {
-            var_dump( $e );
+            print_r( [ 'code' => $e->getCode(), 'message' => $e->getMessage() ] );
         }
     }
 
@@ -38,18 +38,18 @@ class Core extends \Mxs\Abstracts\Single
     }
 
     public function &route( string $routeClass = \Mxs\Routes\File::class ) : Core {
-        $this->_matched_route = ( new $routeClass( $this ) )->match( $this->getRequest() );
+        $this->_matched_route = ( new $routeClass( $this ) )->match( $this->_getRequest() );
         $this->_matched_route or \Mxs\Exceptions\MxsException::Error( 1 );
         return $this;
     }
 
     public function &dispatch() : Core {
-        $this->_matched_route->execute( $this->getRequest()->merge(), $this->getResponse() );
+        $this->_matched_route->execute( $this->_getRequest()->merge(), $this->getResponse() );
         return $this;
     }
 
     public function &request( string $requestClass = Request::class ) : Core {
-        $this->_request = $this->getRequest()->cast( $requestClass );
+        $this->_request = $this->_getRequest()->cast( $requestClass );
         return $this;
     }
 
@@ -57,14 +57,18 @@ class Core extends \Mxs\Abstracts\Single
         echo $fmtClass::format( $this->getResponse()->getData() );
     }
 
-    protected function &getRequest() : Request {
+    public function getRequest() : Request {
+        return $this->_getRequest();
+    }
+
+    protected function &_getRequest() : Request {
         if( $this->_request === null ) {
             $this->_request = Request::Create();
         }   //  use $this->_request ??= new Request(); after php7.4 ?
         return $this->_request;
     }
 
-    protected function &getResponse() : Response {
+    protected function &_getResponse() : Response {
         if( $this->_response === null ) {
             $this->_response = Response::Create();
         }   // use $this->_response ??= new Response(); after php7.4 ?
