@@ -1,5 +1,6 @@
 <?php
 namespace Mxs\Bases;
+use \Mxs\Exceptions\{Frame as FrameErr, Runtime as RuntimeErr};
 
 class Core extends \Mxs\Abstracts\Single
 {
@@ -39,7 +40,7 @@ class Core extends \Mxs\Abstracts\Single
 
     public function &route( string $routeClass = \Mxs\Routes\File::class ) : Core {
         $this->_matched_route = ( new $routeClass( $this ) )->match( $this->_getRequest() );
-        $this->_matched_route or \Mxs\Exceptions\MxsException::Error( 1 );
+        $this->_matched_route or ThrowError( RuntimeErr::NO_ROUTE_MATCHED );
         return $this;
     }
 
