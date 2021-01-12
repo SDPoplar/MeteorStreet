@@ -1,79 +1,101 @@
 <?php
 namespace Mxs\Bases;
+
 use \Mxs\Exceptions\{Frame as FrameErr, Runtime as RuntimeErr};
 
 class Core extends \Mxs\Abstracts\Single
 {
-    use \Mxs\Traits\InitableTrait, \Mxs\Traits\LastErrorTrait;
+    use \Mxs\Traits\LastErrorTrait;
 
-    protected function init() {
+    protected function init()
+    {
         $this->_env = Environment::GetInstance();
-        $this->_config = new Config( $this->_env->getConfigPath() );
+        $this->_config = new Config($this->_env->getConfigPath());
     }
 
-    public function valid() : bool {
+    public function valid() : bool
+    {
         return true
             && ( $this->_config !== null )
             && true;
     }
 
-    public function getEnvironment() : Environment {
+    public function getEnvironment() : Environment
+    {
         return $this->_env;
     }
 
-    public function getConfig() : Config {
+    public function getConfig() : Config
+    {
         return $this->_config;
     }
 
-    final public function run( string $process = \Mxs\Defaults\Process::class ) : void {
+    final public function run( string $process = \Mxs\Defaults\Process::class ) : void
+    {
         $this->valid() or die( $this->getLastErrorMessage() );
         try {
-            $process::run( $this );
+            $steps = $this->parseStepsFromGivenProcess( $process );
         } catch( \Exception $e ) {
             print_r( [ 'code' => $e->getCode(), 'message' => $e->getMessage() ] );
         }
     }
 
-    final public function debug() : bool {
+    final public function debug() : bool
+    {
         return $this->_config->isDebug();
     }
 
-    public function &route( string $routeClass = \Mxs\Routes\File::class ) : Core {
+    public function &route( string $routeClass = \Mxs\Routes\File::class ) : Core
+    {
         $this->_matched_route = ( new $routeClass( $this ) )->match( $this->_getRequest() );
         $this->_matched_route or ThrowError( RuntimeErr::NO_ROUTE_MATCHED );
         return $this;
     }
 
-    public function &dispatch() : Core {
+    public function &dispatch() : Core
+    {
         $this->_matched_route->execute( $this->_getRequest()->merge(), $this->getResponse() );
         return $this;
     }
 
-    public function &request( string $requestClass = Request::class ) : Core {
+    public function &request( string $requestClass = Request::class ) : Core
+    {
         $this->_request = $this->_getRequest()->cast( $requestClass );
         return $this;
     }
 
-    public function response( string $fmtClass ) : void {
+    public function response( string $fmtClass ) : void
+    {
         echo $fmtClass::format( $this->getResponse()->getData() );
     }
 
-    public function getRequest() : Request {
+    public function getRequest() : Request
+    {
         return $this->_getRequest();
     }
 
-    protected function &_getRequest() : Request {
+    protected function &_getRequest() : Request
+    {
         if( $this->_request === null ) {
             $this->_request = Request::Create();
         }   //  use $this->_request ??= new Request(); after php7.4 ?
         return $this->_request;
     }
 
-    protected function &_getResponse() : Response {
+    protected function &_getResponse() : Response
+    {
         if( $this->_response === null ) {
             $this->_response = Response::Create();
         }   // use $this->_response ??= new Response(); after php7.4 ?
         return $this->_response;
+    }
+
+    private function parseStepsFromGivenProcess( string $processClass ) : array
+    {
+        $p = new $processClass();
+        $p->plan();
+        $p->valid() or die( 'Invalid process given' );
+        return $p->getSteps();
     }
 
     protected $_config = null;

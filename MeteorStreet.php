@@ -1,5 +1,5 @@
 <?php
-version_compare( PHP_VERSION, '7.0', '>=' ) || die( 'PHP v7.0 or higher is needed' );
+version_compare( PHP_VERSION, '8.0', '>=' ) || die( 'PHP v8.0 or higher is needed' );
 
 // autoload with composer
 $autoloadFile = '../vendor/autoload.php';

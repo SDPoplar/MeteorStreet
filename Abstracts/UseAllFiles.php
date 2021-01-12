@@ -7,8 +7,8 @@ abstract class UseAllFiles
 
     public function __construct( $basePath ) {
         $this->_base_path = \Mxs\Tools\PathFormator::EndDirSep( $basePath );
-        ( GetMxs()->getEnvironment()->checkPath( $basePath ) && $this->createDefaultFiles()
-            && $this->loadFiles() ) || die( 'Cannot load files in '.$basePath );
+        $this->createDefaultFiles() && $this->loadFiles()
+            or die( 'Cannot load files in '.$basePath );
     }
 
     protected function createDefaultFiles() : bool {
@@ -16,7 +16,7 @@ abstract class UseAllFiles
     }
 
     protected function loadFiles() : bool {
-        foreach( scandir( $this->_base_path ) as $fi ) {
+        foreach( scandir( $this->_base_path ) ?: [] as $fi ) {
             if( ( strtolower( substr( $fi, -4 ) ) == '.php' )
                 && !$this->parseFile( $this->_base_path.$fi ) ) {
                 return false;

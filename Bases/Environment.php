@@ -36,6 +36,14 @@ class Environment extends \Mxs\Abstracts\Single
     public function getMxsResourcePath() : string {
         return PF::EndDirSep( $this->_mxs_root.'Resources' );
     }
+
+    public function valid() : bool
+    {
+        return true
+            && !empty( $this->_mxs_root )
+            && !empty( $this->_root_path )
+            && true;
+    }
     
     protected function init() {
         $this->_root_path = PF::EndDirSep( dirname( $_SERVER[ 'DOCUMENT_ROOT' ] ) );
