@@ -10,7 +10,7 @@ mxs is short for Meteor X Street
 The idea of MeteorStreet's name is from 'Hunter X Hunter', so I put an 'x' between 'ms' to make it different from Microsoft
 
 ## PHP version
-7.2 or higher
+8.0 or higher
 
 ## PHP ext
 * json
