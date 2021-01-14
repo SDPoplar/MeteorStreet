@@ -34,6 +34,7 @@ class Core extends \Mxs\Abstracts\Single
     {
         $this->valid() or die( $this->getLastErrorMessage() );
         try {
+            $originRequest = \Mxs\Requests\Tool::getOriginRequest();
             $steps = $this->parseStepsFromGivenProcess( $process );
         } catch( \Exception $e ) {
             print_r( [ 'code' => $e->getCode(), 'message' => $e->getMessage() ] );

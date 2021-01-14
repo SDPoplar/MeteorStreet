@@ -1,11 +1,11 @@
 <?php
-namespace Mxs\Bases\Requests;
+namespace Mxs\Requests;
 
 use \Mxs\Enums\RequestIncludeInput as RII;
 
 class OriginRequest
 {
-    use \Mxs\Traits\CastToChild;
+    use \SeaDrip\Traits\CastToChild;
 
     public function __construct() {
         $this->_inputs = new class { use \Mxs\Traits\KeyValueMapTrait; };
