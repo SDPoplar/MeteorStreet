@@ -6,7 +6,7 @@ abstract class UseAllFiles
     abstract protected function parseFile( string $fileName ) : bool;
 
     public function __construct( $basePath ) {
-        $this->_base_path = \Mxs\Tools\PathFormator::EndDirSep( $basePath );
+        $this->_base_path = \SeaDrip\Tools\PathFormator::EndDirSep( $basePath );
         $this->createDefaultFiles() && $this->loadFiles()
             or die( 'Cannot load files in '.$basePath );
     }

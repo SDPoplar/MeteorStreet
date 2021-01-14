@@ -1,7 +1,7 @@
 <?php
 namespace Mxs\Bases;
 
-use \Mxs\Tools\PathFormator as PF;
+use \SeaDrip\Tools\PathFormator as PF;
 
 class Environment extends \Mxs\Abstracts\Single
 {
