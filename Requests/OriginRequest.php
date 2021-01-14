@@ -1,5 +1,5 @@
 <?php
-namespace Mxs\Bases;
+namespace Mxs\Bases\Requests;
 
 use \Mxs\Enums\RequestIncludeInput as RII;
 
@@ -7,7 +7,7 @@ class OriginRequest
 {
     use \Mxs\Traits\CastToChild;
 
-    protected function __construct() {
+    public function __construct() {
         $this->_inputs = new class { use \Mxs\Traits\KeyValueMapTrait; };
         $this->_inputs->merge( $_GET, $_POST );
         $this->_uploads = array_merge( $this->_uploads, $_FILES ?? [] );

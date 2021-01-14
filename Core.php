@@ -1,5 +1,5 @@
 <?php
-namespace Mxs\Bases;
+namespace Mxs;
 
 use \Mxs\Exceptions\{Frame as FrameErr, Runtime as RuntimeErr};
 
@@ -9,8 +9,8 @@ class Core extends \Mxs\Abstracts\Single
 
     protected function init()
     {
-        $this->_env = Environment::GetInstance();
-        $this->_config = new Config($this->_env->getConfigPath());
+        $this->_env = \Mxs\Bases\Environment::Get();
+        $this->_config = new \Mxs\Bases\Config($this->_env->getConfigPath());
     }
 
     public function valid() : bool
@@ -34,8 +34,6 @@ class Core extends \Mxs\Abstracts\Single
     {
         $this->valid() or die( $this->getLastErrorMessage() );
         try {
-            $originRequest = new OriginRequest();
-            var_dump( $originRequest ); exit;
             $steps = $this->parseStepsFromGivenProcess( $process );
         } catch( \Exception $e ) {
             print_r( [ 'code' => $e->getCode(), 'message' => $e->getMessage() ] );
@@ -45,30 +43,6 @@ class Core extends \Mxs\Abstracts\Single
     final public function debug() : bool
     {
         return $this->_config->isDebug();
-    }
-
-    public function &route( string $routeClass = \Mxs\Routes\File::class ) : Core
-    {
-        $this->_matched_route = ( new $routeClass( $this ) )->match( $this->_getRequest() );
-        $this->_matched_route or ThrowError( RuntimeErr::NO_ROUTE_MATCHED );
-        return $this;
-    }
-
-    public function &dispatch() : Core
-    {
-        $this->_matched_route->execute( $this->_getRequest()->merge(), $this->getResponse() );
-        return $this;
-    }
-
-    public function &request( string $requestClass = Request::class ) : Core
-    {
-        $this->_request = $this->_getRequest()->cast( $requestClass );
-        return $this;
-    }
-
-    public function response( string $fmtClass ) : void
-    {
-        echo $fmtClass::format( $this->getResponse()->getData() );
     }
 
     public function getRequest() : Request

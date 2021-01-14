@@ -5,7 +5,7 @@ abstract class Single
 {
     use \Mxs\Traits\InitableTrait;
 
-    final public static function getInstance() : static
+    final public static function Get() : static
     {
         $clsName = static::class;
         if( !( self::$_ins[ $clsName ] ?? null ) || !is_subclass_of( self::$_ins[ $clsName ], self::class ) ) {
