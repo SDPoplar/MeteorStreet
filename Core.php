@@ -33,12 +33,16 @@ class Core extends \Mxs\Abstracts\Single
     final public function run( string $process = \Mxs\Defaults\Process::class ) : void
     {
         $this->valid() or die( $this->getLastErrorMessage() );
+        //  $lastRet = \Mxs\Requests\Tool::getOriginRequest();
+        $steps = $this->parseStepsFromGivenProcess( $process );
         try {
-            $originRequest = \Mxs\Requests\Tool::getOriginRequest();
-            $steps = $this->parseStepsFromGivenProcess( $process );
+            while (!empty( $steps )) {
+                $lastRet = ( array_shift( $steps ) )->run( $lastRet ?? null );
+            }
         } catch( \Exception $e ) {
-            print_r( [ 'code' => $e->getCode(), 'message' => $e->getMessage() ] );
+            $lastRet = json_encode( [ 'code' => $e->getCode(), 'message' => $e->getMessage() ] );
         }
+        echo $lastRet;
     }
 
     final public function debug() : bool
