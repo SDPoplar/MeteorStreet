@@ -3,7 +3,7 @@ namespace Mxs\Traits;
 
 trait InitableTrait
 {
-    abstract public function valid() : bool;
+    // abstract public function valid() : bool;
 
     protected function init()
     {}

@@ -1,37 +1,51 @@
 <?php
 namespace Mxs;
 
-use \Mxs\Exceptions\{Frame as FrameErr, Runtime as RuntimeErr};
+// use \Mxs\Exceptions\{Frame as FrameErr, Runtime as RuntimeErr};
+use \Mxs\Exceptions\DevelopExceptions\{
+    AppRootNotDefined as ErrAppRootNotDefined,
+    CoreAlreadyCreated as ErrCoreAlreadyCreated,
+    GettingInvalidComponent as ErrGettingInvalidComponent,
+};
 
-class Core extends \Mxs\Abstracts\Single
+class Core
 {
-    use \Mxs\Traits\LastErrorTrait;
-
-    protected function init()
+    private function __construct()
     {
-        $this->_env = \Mxs\Bases\Environment::Get();
-        $this->_config = new \Mxs\Bases\Config($this->_env->getConfigPath());
+        defined('APP_ROOT') or ErrAppRootNotDefined::throm();
+        Core::$ins && ErrCoreAlreadyCreated::throm(@'Do not create \Mxs\Core twice');
+        $this->_env = new \Mxs\Bases\Environment(APP_ROOT, __DIR__);
+        $this->_config = new \Mxs\Bases\Config($this->environment->getConfigPath());
     }
 
-    public function valid() : bool
+    final public static function &get() : Core
     {
-        return true
-            && ( $this->_config !== null )
-            && true;
+        if (Core::$ins === null) {
+            Core::$ins = new Core();
+        }
+        return Core::$ins;
     }
 
-    public function getEnvironment() : Environment
+    public function __get(string $arg)
+    {
+        $method = 'get'.ucfirst($arg);
+        method_exists($this, $method) or ErrGettingInvalidComponent::throm($arg);
+        return $this->$method();
+    }
+
+    final protected function getEnvironment() : \Mxs\Bases\Environment
     {
         return $this->_env;
     }
 
-    public function getConfig() : Config
+    final protected function getConfig() : \Mxs\Bases\Config
     {
         return $this->_config;
     }
 
-    final public function run( string $process = \Mxs\Defaults\Process::class ) : void
+    final public function run(string $process = \Mxs\Bases\Process\Http::class) : void
     {
+        /*
         $this->valid() or die( $this->getLastErrorMessage() );
         //  $lastRet = \Mxs\Requests\Tool::getOriginRequest();
         $steps = $this->parseStepsFromGivenProcess( $process );
@@ -43,32 +57,8 @@ class Core extends \Mxs\Abstracts\Single
             $lastRet = json_encode( [ 'code' => $e->getCode(), 'message' => $e->getMessage() ] );
         }
         echo $lastRet;
-    }
-
-    final public function debug() : bool
-    {
-        return $this->_config->isDebug();
-    }
-
-    public function getRequest() : Request
-    {
-        return $this->_getRequest();
-    }
-
-    protected function &_getRequest() : Request
-    {
-        if( $this->_request === null ) {
-            $this->_request = Request::Create();
-        }   //  use $this->_request ??= new Request(); after php7.4 ?
-        return $this->_request;
-    }
-
-    protected function &_getResponse() : Response
-    {
-        if( $this->_response === null ) {
-            $this->_response = Response::Create();
-        }   // use $this->_response ??= new Response(); after php7.4 ?
-        return $this->_response;
+        */
+        (new $process())->run();
     }
 
     private function parseStepsFromGivenProcess( string $processClass ) : array
@@ -79,12 +69,9 @@ class Core extends \Mxs\Abstracts\Single
         return $p->getSteps();
     }
 
-    protected $_config = null;
-    protected $_app_debug = false;
-    protected $_env;
-    protected $_matched_route;
+    protected $_config;
+    protected \Mxs\Bases\Environment $_env;
 
-    protected $_request = null;
-    protected $_response = null;
+    private static ?\Mxs\Core $ins = null;
 }
 

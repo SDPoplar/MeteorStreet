@@ -5,13 +5,11 @@ use \Mxs\Tools\PathFormator as PF;
 class Language extends \Mxs\Abstracts\Single
 {
     public static function content( string $group, $key ) : string {
-        return ( Language::getInstance()->getGroup( $group ) )[ $key ] ?? '';
+        return ( Language::get()->getGroup( $group ) )[ $key ] ?? '';
     }
 
     protected function init() {
-        $mxs = GetMxs();
-        $env = $mxs->getEnvironment();
-        $lang = $mxs->getRequest()->getUserLang();
+        $lang = \Mxs\Core::get()->environment->getUserLang();
         $this->_mxs_lang_path = PF::EndDirSep( PF::Concat( $env->getMxsResourcePath(), 'lang', $lang ) );
         $this->_app_lang_path = PF::EndDirSep( PF::Concat( $env->getLangPath(), $lang ) );
     }

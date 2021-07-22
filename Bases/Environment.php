@@ -1,56 +1,56 @@
 <?php
 namespace Mxs\Bases;
 
-use \SeaDrip\Tools\PathFormator as PF;
-
-class Environment extends \Mxs\Abstracts\Single
+class Environment
 {
-    final public function root( string $path = '' ) : string {
+    public function __construct(string $app_root, string $mxs_root)
+    {
+        $this->app_root = $app_root;
+        $this->mxs_root = $mxs_root;
+    }
+
+    // =========================== About Path ===========================================
+
+    final public function root(string $path = '') : string
+    {
         /*
         empty( $path ) || $this->_is_ds( substr( $path, -1 ) )
             || ( $path = $path.DIRECTORY_SEPARATOR );
          */
-        return $this->_root_path.$path;
+        return $this->app_root.$path;
     }
 
-    final public function getLangPath() : string {
-        return $this->root( 'lang' );
+    final public function getLangPath() : string
+    {
+        return $this->root('/lang');
     }
 
-    final public function getConfigPath( string $path = '' ) : string {
-        return $this->root( 'config'.PF::FrontDirSep( $path ) );
+    final public function getConfigPath(string $path = '') : string
+    {
+        return $this->root('/config'.$path);
     }
 
-    final public function getRuntimePath( $path = '' ) : string {
-        return $this->root( 'runtime'.PF::FrontDirSep( $path ) );
+    final public function getRuntimePath(string $path = '') : string
+    {
+        return $this->root('/runtime'.$path);
     }
 
-    final public function getRoutePath( $path = '' ) : string {
-        return $this->root( 'routes'.PF::FrontDirSep( $path ) );
+    final public function getRoutePath(string $path = '') : string
+    {
+        return $this->root('/routes'.$path);
     }
 
-    public function checkPath( string $path, bool $createIfNotExists = false ) : bool {
+    public function checkPath(string $path, bool $createIfNotExists = false) : bool
+    {
         return is_dir( $path ) || ( $createIfNotExists && mkdir( $path, 0755, true ) );
     }
 
-    public function getMxsResourcePath() : string {
-        return PF::EndDirSep( $this->_mxs_root.'Resources' );
-    }
-
-    public function valid() : bool
+    public function getMxsResourcePath() : string
     {
-        return true
-            && !empty( $this->_mxs_root )
-            && !empty( $this->_root_path )
-            && true;
-    }
-    
-    protected function init() {
-        $this->_root_path = PF::EndDirSep( dirname( $_SERVER[ 'DOCUMENT_ROOT' ] ) );
-        $this->_mxs_root = PF::EndDirSep( dirname( __DIR__ ) );
+        return $this->_mxs_root.'/Resources';
     }
 
-    protected $_root_path;
-    protected $_mxs_root;
+    protected $app_root;
+    protected $mxs_root;
 }
 
