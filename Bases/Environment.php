@@ -20,24 +20,29 @@ class Environment
         return $this->app_root.$path;
     }
 
-    final public function getLangPath() : string
+    final public function langPath() : string
     {
         return $this->root('/lang');
     }
 
-    final public function getConfigPath(string $path = '') : string
+    final public function configPath(string $path = '') : string
     {
         return $this->root('/config'.$path);
     }
 
-    final public function getRuntimePath(string $path = '') : string
+    final public function runtimePath(string $path = '') : string
     {
         return $this->root('/runtime'.$path);
     }
 
-    final public function getRoutePath(string $path = '') : string
+    final public function routePath(string $path = '') : string
     {
         return $this->root('/routes'.$path);
+    }
+
+    final public function compilePath(string $path = '') : string
+    {
+        return $this->runtimePath('/compile'.$path);
     }
 
     public function checkPath(string $path, bool $createIfNotExists = false) : bool

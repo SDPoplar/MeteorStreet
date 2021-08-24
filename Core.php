@@ -15,7 +15,7 @@ class Core
         defined('APP_ROOT') or ErrAppRootNotDefined::throm();
         Core::$ins && ErrCoreAlreadyCreated::throm(@'Do not create \Mxs\Core twice');
         $this->_env = new \Mxs\Bases\Environment(APP_ROOT, __DIR__);
-        $this->_config = new \Mxs\Bases\Config($this->environment->getConfigPath());
+        $this->_config = new \Mxs\Bases\Config($this->environment->configPath());
     }
 
     final public static function &get() : Core

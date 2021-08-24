@@ -14,8 +14,10 @@ class Http extends Base
     public function run() : void
     {
         $request = new \Mxs\Bases\Request();
-        $routeMgr = new \Mxs\Route\Manager($mxs->getEnvironment()->routePath(), $mxs->getEnvironment()->compilePath('route'));
-        $plan = $routeMgr->findPlan($request->getMethod(), $request->getUrl());
+        $env =& \Mxs\Core::get()->environment;
+        $routeMgr = new \Mxs\Routes\Manager($env->routePath(), $env->compilePath('/route'));
+        $plan = $routeMgr->findRoute($request->getMethod(), $request->getUrl());
+        var_dump($plan);
     }
 }
 
