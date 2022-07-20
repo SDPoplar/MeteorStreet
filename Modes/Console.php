@@ -1,5 +1,5 @@
 <?php
-namespace Mxs\Bases\Process;
+namespace Mxs\Processes;
 
 class Console extends Base
 {

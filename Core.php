@@ -1,77 +1,56 @@
 <?php
 namespace Mxs;
 
-// use \Mxs\Exceptions\{Frame as FrameErr, Runtime as RuntimeErr};
-use \Mxs\Exceptions\DevelopExceptions\{
-    AppRootNotDefined as ErrAppRootNotDefined,
-    CoreAlreadyCreated as ErrCoreAlreadyCreated,
-    GettingInvalidComponent as ErrGettingInvalidComponent,
+use Mxs\Components\{
+    FileStructure,
+    Config,
+    Log,
 };
 
 class Core
 {
+    final public static function &get(): self
+    {
+        if (self::$ins === null) {
+            self::$ins = new self();
+        }
+        return self::$ins;
+    }
+
     private function __construct()
     {
-        defined('APP_ROOT') or ErrAppRootNotDefined::throm();
-        Core::$ins && ErrCoreAlreadyCreated::throm(@'Do not create \Mxs\Core twice');
-        $this->_env = new \Mxs\Bases\Environment(APP_ROOT, __DIR__);
-        $this->_config = new \Mxs\Bases\Config($this->environment->configPath());
+        $this->file_structure = new FileStructure(
+            empty($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['PWD'] : dirname($_SERVER['DOCUMENT_ROOT'])
+        );
+
+        $path = $this->file_structure->getConfigDir();
+        $path->exists() or $path->create();
+        $this->config = new Config(''.$path);
+
+        $path = $this->file_structure->getLogDir();
+        $path->exists() or $path->create();
+        $this->log = new Log(''.$path);
+        $this->log->info('hello');
+        exit();
     }
 
-    final public static function &get() : Core
+    final protected function &getEnvironment() : \Mxs\Bases\Environment
     {
-        if (Core::$ins === null) {
-            Core::$ins = new Core();
-        }
-        return Core::$ins;
+        return $this->env;
     }
 
-    public function __get(string $arg)
+    final protected function &getConfig() : \Mxs\Components\Config
     {
-        $method = 'get'.ucfirst($arg);
-        method_exists($this, $method) or ErrGettingInvalidComponent::throm($arg);
-        return $this->$method();
+        return $this->config;
     }
 
-    final protected function getEnvironment() : \Mxs\Bases\Environment
+    final public function run(string $process = \Mxs\Modes\Http::class) : void
     {
-        return $this->_env;
-    }
-
-    final protected function getConfig() : \Mxs\Bases\Config
-    {
-        return $this->_config;
-    }
-
-    final public function run(string $process = \Mxs\Bases\Process\Http::class) : void
-    {
-        /*
-        $this->valid() or die( $this->getLastErrorMessage() );
-        //  $lastRet = \Mxs\Requests\Tool::getOriginRequest();
-        $steps = $this->parseStepsFromGivenProcess( $process );
-        try {
-            while (!empty( $steps )) {
-                $lastRet = ( array_shift( $steps ) )->run( $lastRet ?? null );
-            }
-        } catch( \Exception $e ) {
-            $lastRet = json_encode( [ 'code' => $e->getCode(), 'message' => $e->getMessage() ] );
-        }
-        echo $lastRet;
-        */
         (new $process())->run();
     }
 
-    private function parseStepsFromGivenProcess( string $processClass ) : array
-    {
-        $p = new $processClass();
-        $p->plan();
-        $p->valid() or die( 'Invalid process given' );
-        return $p->getSteps();
-    }
-
-    protected $_config;
-    protected \Mxs\Bases\Environment $_env;
-
-    private static ?\Mxs\Core $ins = null;
+    public readonly FileStructure $file_structure;
+    private readonly Config $config;
+    private static ?self $ins = null;
 }
 
