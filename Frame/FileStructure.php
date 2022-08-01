@@ -32,10 +32,7 @@ class FileStructure extends \SeaDrip\Abstracts\Singleton
 
     public function getFilePath(string $path): string
     {
-        if (!str_starts_with('/', $path)) {
-            $path = ('/'.$path);
-        }
-        return $this->doucment_root.$path;
+        return $this->document_root.DIRECTORY_SEPARATOR.trim($path, DIRECTORY_SEPARATOR);
     }
 
     public readonly string $document_root;

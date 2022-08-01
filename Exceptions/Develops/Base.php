@@ -3,19 +3,14 @@ namespace Mxs\Exceptions\Develops;
 
 abstract class Base extends \LogicException
 {
-    abstract protected function getDescribe(): string;
-    abstract protected function getProposal(): string;
+    use \Mxs\Exceptions\OccurTrait;
 
-    public static function Occur(): bool
-    {
-        throw new static();
-        return true;
-    }
+    abstract protected function makeProposal(): string;
 
-    public function __construct()
+    public function __construct(string $message)
     {
-        $this->proposal = $this->getProposal();
-        parent::__construct($this->getDescribe());
+        $this->proposal = $this->makeProposal();
+        parent::__construct($message);
     }
 
     public readonly string $proposal;

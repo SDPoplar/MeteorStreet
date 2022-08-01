@@ -16,7 +16,6 @@
         "psr/log": "^3.0"
     },
     "autoload": {
-        "files": [ "MxsGlobal.php" ],
         "psr-4": {
             "SeaDrip\\": "../seadrip-php-common/src/",
             "Mxs\\": "./"
