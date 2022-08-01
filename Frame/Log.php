@@ -1,17 +1,17 @@
 <?php
-namespace Mxs\Components;
+namespace Mxs\Frame;
 
 use Stringable;
 
 use \SeaDrip\Tools\Path;
 
-class Log implements \Psr\Log\LoggerInterface
+class Log extends \SeaDrip\Abstracts\Signleton implements \Psr\Log\LoggerInterface
 {
     use \Psr\Log\LoggerTrait;
 
-    public function __construct(string $log_path)
+    protected function __construct()
     {
-        $this->log_path = $log_path;
+        $this->log_path = FileStructure::Get()->getLogPath();
     }
 
     public function log($level, string|Stringable $message, array $context = []): void

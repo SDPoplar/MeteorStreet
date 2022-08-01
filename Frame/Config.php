@@ -1,13 +1,13 @@
 <?php
-namespace Mxs\Components;
+namespace Mxs\Frame;
 
 use \SeaDrip\Tools\Path;
 
 use \Mxs\Exceptions\Runtimes\CannotReadFile as ErrCannotReadFile;
 
-class Config
+class Config extends \SeaDrip\Abstracts\Singleton
 {
-    public function __construct(string $config_path)
+    protected function __construct()
     {
         $main_config = new Path($config_path, 'app.php');
         $main_config->isReadable() or (new ErrCannotReadFile($main_config))->occur();

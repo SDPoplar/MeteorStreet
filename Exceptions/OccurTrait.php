@@ -3,9 +3,8 @@ namespace Mxs\Exceptions;
 
 trait OccurTrait
 {
-    public function occur(): bool
+    public function occur(): never
     {
         throw $this;
-        return true;
     }
 }

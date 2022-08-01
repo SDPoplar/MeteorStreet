@@ -1,13 +1,14 @@
 <?php
-namespace Mxs\Components;
+namespace Mxs\Frame;
 
 use \SeaDrip\Tools\Path;
 
-class FileStructure
+class FileStructure extends \SeaDrip\Abstracts\Singleton
 {
-    public function __construct(string $doucment_root)
+    protected function __construct()
     {
-        $this->document_root = $doucment_root;
+        $this->document_root = empty($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['PWD'] : dirname($_SERVER['DOCUMENT_ROOT']);
+        empty($this->document_root) and (new \Mxs\Exceptions\Runtimes\LoadDocumentRootFailed())->occur();
     }
 
     public function getConfigDir(): Path
