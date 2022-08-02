@@ -1,12 +1,6 @@
 <?php
 namespace Mxs;
 
-use Mxs\Frame\{
-    FileStructure,
-    Config,
-    Log,
-};
-
 class Core extends \SeaDrip\Abstracts\Singleton
 {
     protected function __construct()
@@ -29,7 +23,7 @@ class Core extends \SeaDrip\Abstracts\Singleton
             return true;
         };
         set_exception_handler($handler);
-        set_error_handler($handler);
+        //set_error_handler($handler);
     }
 }
 

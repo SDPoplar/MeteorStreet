@@ -16,11 +16,12 @@ class Item
     {
         $this->route_param_names = $settings['route_param_names'] ?? [];
         $this->route_id = $settings['route_id'] ?? '';
-        var_dump($settings);
         empty($this->route_id) and (new CompiledRouteBrokenException())->occur();
         array_key_exists('controller', $settings) or InvalidRouteException::noControllerSetted($this->route_id)->occur();
         $this->controller = $settings['controller'];
         array_key_exists('method', $settings) or InvalidRouteException::noMethodSetted($this->route_id)->occur();
+        $this->method = $settings['method'];
+        $this->use_request = $settings['use_request'] ?? \Mxs\Frame\Requests\Http::class;
     }
 
     public function &withRouteParams(array $params): self
@@ -32,19 +33,24 @@ class Item
         return $this;
     }
 
-    public function dispatch()
+    public function dispatch(\Mxs\Frame\Requests\BaseInterface $request)
     {
         $cc = $this->controller;
         $ci = new $cc();
         is_subclass_of($ci, \Mxs\Frame\Controller::class) or (new InvalidControllerException())->occur();
         method_exists($ci, $this->method) or InvalidRouteException::noMethodInController($this->route_id)->occur();
         $method_name = $this->method;
-        $core_call = \Closure::fromCallable($ci->$method_name);
-        var_dump($core_call());
+        $request_type = $this->use_request;
+        $core_call = \Closure::fromCallable(function(\Mxs\Frame\Requests\BaseInterface $request) use ($ci, $method_name, $request_type) {
+            return $ci->$method_name($request->cast($request_type));
+        });
+        var_dump($core_call($request));
     }
 
-    public readonly string $route_id;
-    public readonly string $controller;
+    protected readonly string $route_id;
+    protected readonly string $controller;
+    protected readonly string $method;
+    protected readonly string $use_request;
     protected array $route_params = [];
     protected readonly array $route_param_names;
 }

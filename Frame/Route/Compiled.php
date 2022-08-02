@@ -25,10 +25,8 @@ class Compiled
             $from = $this->all_path['*'];
         } else {
             $from = $this->all_path;
-            while(!empty($parts)) {
-                var_dump($parts);
-                $part = array_shift($part);
-                var_dump($part);
+            while (!empty($parts)) {
+                $part = array_shift($parts);
                 if (array_key_exists($part, $from)) {
                     $from = $from[$part];
                     continue;
