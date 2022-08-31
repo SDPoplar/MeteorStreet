@@ -11,17 +11,23 @@ class FileStructure extends \SeaDrip\Abstracts\Singleton
         empty($this->document_root) and (new \Mxs\Exceptions\Runtimes\LoadDocumentRootFailed())->occur();
     }
 
-    public function getConfigDir(): Path
+    public function getConfigPath(): Path
     {
-        return $this->getDir('config');
+        return $this->getAppPath('config');
     }
 
-    public function getLogDir(): Path
+    public function getLogPath(): Path
     {
-        return $this->getDir('storage/log');
+        return $this->getAppPath('storage/log', true);
     }
 
-    public function getDir(string $path, bool $create_ifnot_exists = false): Path
+    public function getCompiledPath(string $path = ''): Path
+    {
+        $ret = $this->getAppPath('storage/compiled');
+        return empty($path) ? $ret : $ret->merge($path);
+    }
+
+    public function getAppPath(string $path, bool $create_ifnot_exists = false): Path
     {
         $pi = new Path($this->document_root, $path);
         if ($create_ifnot_exists && !$pi->exists()) {

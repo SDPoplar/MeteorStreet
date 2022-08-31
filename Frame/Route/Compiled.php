@@ -1,24 +1,11 @@
 <?php
 namespace Mxs\Frame\Route;
 
+use \SeaDrip\Enums\HttpMethods;
+
 class Compiled
 {
-    public static function get(): self
-    {
-        return self::load('get');
-    }
-
-    public static function post(): self
-    {
-        return self::load('post');
-    }
-
-    public static function options(): self
-    {
-        return self::load('options');
-    }
-
-    public function search(string $url): ?Item
+    public function search(string $url): Item
     {
         $parts = array_filter(explode('/', trim($url)));
         if (empty($parts)) {
@@ -40,20 +27,29 @@ class Compiled
                 $from = null;
             }    
         }
-        return $from ? (new Item($from))->withRouteParams($params ?? []) : null;
+        $from or (new \Mxs\Exceptions\Runtimes\RouteNotFound($this->method->value, $url))->occur();
+        return (new Item($from))->withRouteParams($params ?? []);
     }
 
-    protected static function load(string $method): self
+    public static function load(string|HttpMethods $method): self
     {
-        return new self(\Mxs\Frame\FileStructure::get()->getFilePath("storage/compiled/route/{$method}.php"), $method);
+        if (is_string($method)) {
+            $emethod = HttpMethods::tryFrom(strtoupper($method));
+            $emethod or (new \Mxs\Exceptions\Runtimes\UnkownHttpMethod($method))->occur();
+        } else {
+            $emethod = $method;
+        }
+        $all = \Mxs\Frame\FileStructure::get()->getCompiledPath(
+            'storage/compiled/route',
+            strtolower($method->value).'.php',
+        );
+        return new self($all, $emethod);
     }
 
-    protected function __construct(string $file_path, string $method)
+    protected function __construct(string $file_path, public readonly HttpMethods $method)
     {
         $this->all_path = is_readable($file_path) ? (include($file_path) ?: []) : [];
-        $this->method = $method;
     }
 
     protected readonly array $all_path;
-    public readonly string $method;
 }
