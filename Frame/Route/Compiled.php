@@ -35,10 +35,7 @@ class Compiled
     {
         $emethod = is_string($method) ? HttpMethods::tryFrom(strtoupper($method)) : $method;
         $emethod or (new \Mxs\Exceptions\Runtimes\UnkownHttpMethod($method))->occur();
-        $all = \Mxs\Frame\FileStructure::get()->getCompiledPath(
-            'storage/compiled/route',
-            strtolower($method->value).'.php',
-        );
+        $all = \Mxs\Frame\FileStructure::get()->getCompiledPath('routes'.strtolower($emethod->value).'.php');
         return new self($all, $emethod);
     }
 
