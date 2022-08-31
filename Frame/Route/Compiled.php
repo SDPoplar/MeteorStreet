@@ -25,7 +25,7 @@ class Compiled
                     continue;
                 }
                 $from = null;
-            }    
+            }
         }
         $from or (new \Mxs\Exceptions\Runtimes\RouteNotFound($this->method->value, $url))->occur();
         return (new Item($from))->withRouteParams($params ?? []);
@@ -33,12 +33,8 @@ class Compiled
 
     public static function load(string|HttpMethods $method): self
     {
-        if (is_string($method)) {
-            $emethod = HttpMethods::tryFrom(strtoupper($method));
-            $emethod or (new \Mxs\Exceptions\Runtimes\UnkownHttpMethod($method))->occur();
-        } else {
-            $emethod = $method;
-        }
+        $emethod = is_string($method) ? HttpMethods::tryFrom(strtoupper($method)) : $method;
+        $emethod or (new \Mxs\Exceptions\Runtimes\UnkownHttpMethod($method))->occur();
         $all = \Mxs\Frame\FileStructure::get()->getCompiledPath(
             'storage/compiled/route',
             strtolower($method->value).'.php',
