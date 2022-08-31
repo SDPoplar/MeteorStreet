@@ -28,7 +28,7 @@ class Compiled
             }
         }
         $from or (new \Mxs\Exceptions\Runtimes\RouteNotFound($this->method->value, $url))->occur();
-        return (new Item($from))->withRouteParams($params ?? []);
+        return (new Item(...$from))->withRouteParams($params ?? []);
     }
 
     public static function load(string|HttpMethods $method): self

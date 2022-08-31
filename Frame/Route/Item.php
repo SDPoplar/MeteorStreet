@@ -6,22 +6,28 @@ use \Mxs\Exceptions\Develops\{
     InvalidController as InvalidControllerException
 };
 
+/*
 use \Mxs\Exceptions\Runtimes\{
     CompiledRouteBroken as CompiledRouteBrokenException
 };
+*/
 
 class Item
 {
-    public function __construct(array $settings)
-    {
-        $this->route_param_names = $settings['route_param_names'] ?? [];
-        $this->route_id = $settings['route_id'] ?? '';
+    public function __construct(
+        protected readonly string $route_id,
+        protected readonly string $controller,
+        protected readonly string $method,
+        protected readonly string $use_request = \Mxs\Frame\Requests\Http::class,
+        protected readonly array $route_param_names = [],
+    ) {
+        /*
         empty($this->route_id) and (new CompiledRouteBrokenException())->occur();
         array_key_exists('controller', $settings) or InvalidRouteException::noControllerSetted($this->route_id)->occur();
         $this->controller = $settings['controller'];
         array_key_exists('method', $settings) or InvalidRouteException::noMethodSetted($this->route_id)->occur();
         $this->method = $settings['method'];
-        $this->use_request = $settings['use_request'] ?? \Mxs\Frame\Requests\Http::class;
+        */
     }
 
     public function &withRouteParams(array $params): self
@@ -47,10 +53,5 @@ class Item
         var_dump($core_call($request));
     }
 
-    protected readonly string $route_id;
-    protected readonly string $controller;
-    protected readonly string $method;
-    protected readonly string $use_request;
     protected array $route_params = [];
-    protected readonly array $route_param_names;
 }
