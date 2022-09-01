@@ -12,7 +12,11 @@ use \Mxs\Exceptions\Runtimes\{
 };
 */
 
-use \Mxs\Frame\Requests\BaseInterface as IBaseRequest;
+use \Mxs\Http\{
+    Request,
+    Response,
+    Status as HttpStatus
+};
 
 class Item
 {
@@ -20,7 +24,7 @@ class Item
         protected readonly string $route_id,
         protected readonly string $controller,
         protected readonly string $method,
-        protected readonly string $use_request = \Mxs\Frame\Requests\Http::class,
+        protected readonly string $use_request = \Mxs\Http\Request::class,
         protected readonly array $route_param_names = [],
         protected readonly array $middlewares = [],
     ) {
@@ -42,7 +46,7 @@ class Item
         return $this;
     }
 
-    public function dispatch(IBaseRequest $request): \Mxs\Frame\Responses\Http
+    public function dispatch(Request $request): Response
     {
         $cc = $this->controller;
         $ci = new $cc();
@@ -51,12 +55,12 @@ class Item
         method_exists($ci, $method_name) or InvalidRouteException::noMethodInController($this->route_id)->occur();
         $real_worker = $ci->$method_name(...);
         $request_type = $this->use_request;
-        $core_call = \Closure::fromCallable(function(IBaseRequest $request) use ($real_worker, $request_type) {
+        $core_call = \Closure::fromCallable(function(Request $request) use ($real_worker, $request_type) {
             $ret = $real_worker($request->cast($request_type));
-            if (is_subclass_of($ret, \Mxs\Frame\Responses\Http::class)) {
+            if (is_a($ret, \Mxs\Http\Response::class)) {
                 return $ret;
             }
-            return new \Mxs\Frame\Responses\Http(empty($ret) ? 204 : 200, $ret);
+            return new Response(empty($ret) ? HttpStatus::NoContent : HttpStatus::OK, $ret);
         });
         $worker_with_middlewares = $this->packMiddlewares($core_call);
         return $worker_with_middlewares($request);
@@ -68,7 +72,7 @@ class Item
         $next = $worker;
         while($m = array_shift($all_middleware))
         {
-            $next = function(IBaseRequest $request) use ($m, $next): \Mxs\Frame\Responses\Http {
+            $next = function(Request $request) use ($m, $next): Response {
                 return (new $m())->handle($request, $next);
             };
         }

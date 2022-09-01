@@ -1,7 +1,7 @@
 <?php
-namespace Mxs\Frame\Requests;
+namespace Mxs\Http;
 
-class Http implements BaseInterface
+class Request
 {
     public function __construct(?self $copy = null)
     {

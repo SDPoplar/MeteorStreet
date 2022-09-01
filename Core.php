@@ -16,10 +16,7 @@ class Core extends \SeaDrip\Abstracts\Singleton
     private function takeOverExceptions(string $formatter_class): void
     {
         $handler = function(\Error|\Exception $e) use ($formatter_class) {
-            if (method_exists($e, 'rendor')) {
-                die($e->rendor());
-            }
-            var_dump(gettype($e), $e);
+            $formatter_class::error($e);
             return true;
         };
         set_exception_handler($handler);
