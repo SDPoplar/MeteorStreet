@@ -12,6 +12,8 @@ use \Mxs\Exceptions\Runtimes\{
 };
 */
 
+use \Mxs\Frame\Requests\BaseInterface as IBaseRequest;
+
 class Item
 {
     public function __construct(
@@ -20,6 +22,7 @@ class Item
         protected readonly string $method,
         protected readonly string $use_request = \Mxs\Frame\Requests\Http::class,
         protected readonly array $route_param_names = [],
+        protected readonly array $middlewares = [],
     ) {
         /*
         empty($this->route_id) and (new CompiledRouteBrokenException())->occur();
@@ -39,22 +42,37 @@ class Item
         return $this;
     }
 
-    public function dispatch(\Mxs\Frame\Requests\BaseInterface $request): \Mxs\Frame\Responses\Http
+    public function dispatch(IBaseRequest $request): \Mxs\Frame\Responses\Http
     {
         $cc = $this->controller;
         $ci = new $cc();
         is_subclass_of($ci, \Mxs\Frame\Controller::class) or (new InvalidControllerException())->occur();
-        method_exists($ci, $this->method) or InvalidRouteException::noMethodInController($this->route_id)->occur();
         $method_name = $this->method;
+        method_exists($ci, $method_name) or InvalidRouteException::noMethodInController($this->route_id)->occur();
+        $real_worker = $ci->$method_name(...);
         $request_type = $this->use_request;
-        $core_call = \Closure::fromCallable(function(\Mxs\Frame\Requests\BaseInterface $request) use ($ci, $method_name, $request_type) {
-            $ret = $ci->$method_name($request->cast($request_type));
+        $core_call = \Closure::fromCallable(function(IBaseRequest $request) use ($real_worker, $request_type) {
+            $ret = $real_worker($request->cast($request_type));
             if (is_subclass_of($ret, \Mxs\Frame\Responses\Http::class)) {
                 return $ret;
             }
             return new \Mxs\Frame\Responses\Http(empty($ret) ? 204 : 200, $ret);
         });
-        return $core_call($request);
+        $worker_with_middlewares = $this->packMiddlewares($core_call);
+        return $worker_with_middlewares($request);
+    }
+
+    protected function packMiddlewares(\Closure $worker): \Closure
+    {
+        $all_middleware = array_reverse($this->middlewares);
+        $next = $worker;
+        while($m = array_shift($all_middleware))
+        {
+            $next = function(IBaseRequest $request) use ($m, $next): \Mxs\Frame\Responses\Http {
+                return (new $m())->handle($request, $next);
+            };
+        }
+        return $next;
     }
 
     protected array $route_params = [];
