@@ -5,7 +5,7 @@ class Response
 {
     public function __construct(int|Status $status,\Stringable|string|array $content)
     {
-        $this->status = Status::from($status);
+        $this->status = is_int($status) ? Status::from($status) : $status;
         $this->content = is_array($content) ? $content : ''.$content;
     }
 

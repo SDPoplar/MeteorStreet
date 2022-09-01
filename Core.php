@@ -20,7 +20,10 @@ class Core extends \SeaDrip\Abstracts\Singleton
             return true;
         };
         set_exception_handler($handler);
-        //set_error_handler($handler);
+        set_error_handler(function($e) use ($formatter_class) {
+            var_dump($e);
+            return true;
+        });
     }
 }
 
