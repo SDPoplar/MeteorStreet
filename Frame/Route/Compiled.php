@@ -9,6 +9,7 @@ class Compiled
     {
         $params = [];
         $from = self::pickItem($this->all_path, array_filter(explode('/', trim($url))), $params);
+        $from = $from ?: $this->def_item;
         $from or (new \Mxs\Exceptions\Runtimes\RouteNotFound($this->method->value, $url))->occur();
         return (new Item(...$from))->withRouteParams($params ?? []);
     }
@@ -23,7 +24,13 @@ class Compiled
 
     protected function __construct(string $file_path, public readonly HttpMethods $method)
     {
-        $this->all_path = is_readable($file_path) ? (include($file_path) ?: []) : [];
+        if (!is_readable($file_path)) {
+            return;
+        }
+        list(
+            'default' => $this->def_item,
+            'routes' => $this->all_path,
+        ) = (include($file_path) ?: ['default' => null, 'routes' => []]);
     }
 
     protected static function pickItem(array $all, array $parts, array &$route_params): ?array
@@ -43,5 +50,6 @@ class Compiled
         return null;
     }
 
-    protected readonly array $all_path;
+    protected array $all_path = [];
+    protected ?array $def_item = null;
 }
