@@ -134,14 +134,28 @@ enum Status: int
             //  2xx
             self::NonAuthoritativeInformation => 'Non-Authoritative Information',
             self::NoContent => 'No Content',
+            self::ResetContent => 'Reset Content',
+            self::PartialContent => 'Partial Content',
 
             //  3xx
             self::MovedPermanently => 'Moved Permanently',
+            self::SeeOther => 'See Other',
+            self::NotModified => 'Not Modified',
+            self::UseProxy => 'Use Proxy',
+            self::TemporaryRedirect => 'Temporary Redirect',
 
             //  4xx
             self::BadRequest => 'Bad Request',
             self::NotFound => 'Not Found',
             self::MethodNotAllowed => 'Method Not Allowed',
+            self::NotAcceptable => 'Not Acceptable',
+            self::ProxyAuthenticationRequired => 'Proxy Authentication Required',
+            self::RequestTimeout => 'Request Timeout',
+            self::LengthRequired => 'Length Required',
+            self::PreconditionFailed => 'Precondition Failed',
+            self::RequestEntityTooLarge => 'Request Entity Too Large',
+            self::RequestURITooLong => 'Request URI Too Long',
+            self::RequestedRangeNotSatisfiable => 'Requested Range Not Satisfiable',
 
             //  5xx
             self::InternalServerError => 'Internal Server Error',
@@ -150,6 +164,7 @@ enum Status: int
             self::ServiceUnavailable => 'Service Unavailable',
             self::GatewayTimeout => 'Gateway Timeout',
             self::HttpVersionNotSupported => 'HTTP Version Not Supported',
+            
             default => null,
         };
         return $ret ?: $this->name;

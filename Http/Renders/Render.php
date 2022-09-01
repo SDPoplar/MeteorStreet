@@ -1,6 +1,8 @@
 <?php
 namespace Mxs\Http\Renders;
 
+use \Mxs\Http\Status as HttpStatus;
+
 abstract class Render
 {
     abstract protected static function formatNormalContent(array $content): string;
@@ -21,12 +23,12 @@ abstract class Render
 
     public static function error(\Error|\Exception $e): never
     {
-        self::setStatus(\Mxs\Http\Status::tryFrom($e->getCode()) ?: \Mxs\Http\Status::InternalServerError);
+        self::setStatus(HttpStatus::tryFrom($e->getCode()) ?: HttpStatus::InternalServerError);
         //TODO: save error to log
         die($e->getMessage());
     }
 
-    protected static function setStatus(\Mxs\Http\Status $status): void
+    protected static function setStatus(HttpStatus $status): void
     {
         header('HTTP/1.1 '.$status->value.' '.$status->translate());
     }
