@@ -52,7 +52,7 @@ class Item
             if (is_subclass_of($ret, \Mxs\Frame\Responses\Http::class)) {
                 return $ret;
             }
-            return new \Mxs\Frame\Responses\Http($ret, empty($ret) ? 204 : 200);
+            return new \Mxs\Frame\Responses\Http(empty($ret) ? 204 : 200, $ret);
         });
         return $core_call($request);
     }
