@@ -39,7 +39,7 @@ class Item
         return $this;
     }
 
-    public function dispatch(\Mxs\Frame\Requests\BaseInterface $request)
+    public function dispatch(\Mxs\Frame\Requests\BaseInterface $request): \Mxs\Frame\Responses\Http
     {
         $cc = $this->controller;
         $ci = new $cc();
@@ -48,9 +48,13 @@ class Item
         $method_name = $this->method;
         $request_type = $this->use_request;
         $core_call = \Closure::fromCallable(function(\Mxs\Frame\Requests\BaseInterface $request) use ($ci, $method_name, $request_type) {
-            return $ci->$method_name($request->cast($request_type));
+            $ret = $ci->$method_name($request->cast($request_type));
+            if (is_subclass_of($ret, \Mxs\Frame\Responses\Http::class)) {
+                return $ret;
+            }
+            return new \Mxs\Frame\Responses\Http($ret, empty($ret) ? 204 : 200);
         });
-        var_dump($core_call($request));
+        return $core_call($request);
     }
 
     protected array $route_params = [];
