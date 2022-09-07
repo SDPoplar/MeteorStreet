@@ -11,9 +11,9 @@ class FileStructure extends \SeaDrip\Abstracts\Singleton
         empty($this->document_root) and (new \Mxs\Exceptions\Runtimes\LoadDocumentRootFailed())->occur();
     }
 
-    public function getConfigPath(): Path
+    public function getConfigPath(string $file_name): Path
     {
-        return $this->getAppPath('config');
+        return $this->getAppPath('configs/'.$file_name);
     }
 
     public function getLogPath(): Path
