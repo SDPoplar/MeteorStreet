@@ -1,5 +1,5 @@
 <?php
-namespace Mxs\Frame\Route;
+namespace Mxs\Http\Routes;
 
 use \SeaDrip\Enums\HttpMethods;
 
@@ -14,15 +14,7 @@ class Compiled
         return (new Item(...$from))->withRouteParams($params ?? []);
     }
 
-    public static function load(string|HttpMethods $method): self
-    {
-        $emethod = is_string($method) ? HttpMethods::tryFrom(strtoupper($method)) : $method;
-        $emethod or (new \Mxs\Exceptions\Runtimes\UnkownHttpMethod($method))->occur();
-        $all = \Mxs\Frame\FileStructure::get()->getCompiledPath('routes/'.strtolower($emethod->value).'.php');
-        return new self($all, $emethod);
-    }
-
-    protected function __construct(string $file_path, public readonly HttpMethods $method)
+    public function __construct(string $file_path, public readonly HttpMethods $method)
     {
         if (!is_readable($file_path)) {
             return;

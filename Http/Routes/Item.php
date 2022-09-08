@@ -1,5 +1,5 @@
 <?php
-namespace Mxs\Frame\Route;
+namespace Mxs\Http\Routes;
 
 use \Mxs\Exceptions\Develops\{
     InvalidRoute as InvalidRouteException,

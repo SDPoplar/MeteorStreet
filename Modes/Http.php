@@ -6,7 +6,8 @@ class Http extends Base
     public function process(): void
     {
         $request = new \Mxs\Http\Request();
-        $route = \Mxs\Frame\Route\Compiled::load($request->method)->search($request->url);
+        $route = (new \Mxs\Http\Routes\Manager(\Mxs\Core::Get()->app_root))
+            ->getCompiled($request->method)->search($request->url);
         $response = $route->dispatch($request);
         $this->renderResponse($response);
     }
