@@ -25,7 +25,10 @@ class Core extends \SeaDrip\Abstracts\Singleton
 
     public function &httpRoutes(): \Mxs\Http\Routes\Manager
     {
-        return $this->route_manager ??= new \Mxs\Http\Routes\Manager($this->app_root);
+        if ($this->route_manager === null) {
+            $this->route_manager = new \Mxs\Http\Routes\Manager($this->app_root);
+        }
+        return $this->route_manager;
     }
 
     private function takeOverExceptions(string $formatter_class): void
@@ -35,10 +38,11 @@ class Core extends \SeaDrip\Abstracts\Singleton
             return true;
         };
         set_exception_handler($handler);
+        /*
         set_error_handler(function($e) use ($formatter_class) {
             var_dump($e);
             return true;
-        });
+        });*/
     }
 
     public readonly Path $frame_root;

@@ -9,7 +9,7 @@ class Manager extends \Mxs\Frame\CompileManager
     {
         parent::__construct(
             origin_path: $document_root->merge('configs'),
-            compiled_path: $document_root->merge('compiled/configs'),
+            compiled_path: $document_root->merge('storage/compiled/configs'),
         );
         $this->compiled_path->exists() or $this->compiled_path->create();
         $loaded_app_config = $this->getCompiled('app');
