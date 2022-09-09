@@ -24,14 +24,29 @@ class Register
         return $this->def_routes[$method];
     }
 
-    public function &get(string $url)
+    public function &get(string $url): RegisterItem
     {
         return $this->group('get', $url);
     }
 
-    public function &post(string $url)
+    public function &post(string $url): RegisterItem
     {
         return $this->group('post', $url);
+    }
+
+    public function &put(string $url): RegisterItem
+    {
+        return $this->group('put', $url);
+    }
+
+    public function &delete(string $url): RegisterItem
+    {
+        return $this->group('delete', $url);
+    }
+
+    public function &patch(string $url): RegisterItem
+    {
+        return $this->group('patch', $url);
     }
 
     protected function &group(string $group, string $url): RegisterItem

@@ -26,11 +26,13 @@ class Compile extends ShellCommand
     protected function compileConfig()
     {
         \Mxs\Core::Get()->config->compile();
+        echo 'Done', PHP_EOL;
     }
 
     protected function compileRoute()
     {
         \Mxs\Core::Get()->httpRoutes()->compile();
+        echo 'Done', PHP_EOL;
     }
 }
 
