@@ -5,7 +5,7 @@ class Console extends Base
 {
     public function __construct(
         string $root_input_type = \Mxs\Inputs\Console::class,
-        string $route_manager_type = \Mxs\Commands\Router::class,
+        string $route_manager_type = \Mxs\Console\Router::class,
     ) {
         parent::__construct($root_input_type, $route_manager_type);
     }

@@ -5,8 +5,7 @@ class Console implements RootInputInterface
 {
     public function __construct()
     {
-        var_dump($_SERVER); exit;
-        $this->command = '';
+        $this->command = $_SERVER['argv'][1] ?? 'help';
     }
 
     public function input(string $column, $def_val = null)
