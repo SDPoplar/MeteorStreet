@@ -3,6 +3,13 @@ namespace Mxs\Modes;
 
 class Http extends Base
 {
+    public function __construct(
+        string $root_input_type,
+        string $route_manager_type = \Mxs\Http\Routes\Manager::class,
+    ) {
+        parent::__construct($root_input_type, $route_manager_type);
+    }
+
     public function process(): void
     {
         $request = new \Mxs\Http\Request();

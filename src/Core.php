@@ -20,11 +20,14 @@ class Core extends \SeaDrip\Abstracts\Singleton
     {
         $this->takeoverExceptions();
         //  $ami = app mode instance
-        is_a($app_mode, \Mxs\Modes\Base::class) or throw new \Mxs\Exceptions\Develops\InvalidAppMode($app_mode::class);
+        is_subclass_of($app_mode, \Mxs\Modes\Base::class) or throw new \Mxs\Exceptions\Develops\InvalidAppMode(
+            is_string($app_mode) ? $app_mode : $app_mode::class
+        );
         $ami = (fn(): \Mxs\Modes\Base => is_string($app_mode) ? new $app_mode() : $app_mode)();
         $root_input = $ami->initRootInput();
         $route_item = $ami->despatch($root_input);
-        $ami->process();
+        //  $ami->process();
+        $route_item->execute($root_input);
     }
 
     public function &httpRoutes(): \Mxs\Http\Routes\Manager
