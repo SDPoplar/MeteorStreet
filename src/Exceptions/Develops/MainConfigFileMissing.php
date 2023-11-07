@@ -1,7 +1,7 @@
 <?php
-namespace Mxs\Exceptions\DevelopExceptions;
+namespace Mxs\Exceptions\Develops;
 
-class MainConfigFileMissing extends DevelopBase
+class MainConfigFileMissing extends MxsDevelop
 {
     protected static function buildMessage(string $msg) : string
     {

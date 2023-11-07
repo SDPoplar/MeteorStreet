@@ -12,10 +12,11 @@ use \Mxs\Exceptions\Runtimes\{
 };
 */
 
+use \SeaDrip\Http\Status as HttpStatus;
+
 use \Mxs\Http\{
     Request,
     Response,
-    Status as HttpStatus
 };
 
 class Item
@@ -60,7 +61,7 @@ class Item
             if (is_a($ret, \Mxs\Http\Response::class)) {
                 return $ret;
             }
-            return new Response(empty($ret) ? HttpStatus::NoContent : HttpStatus::OK, $ret);
+            return new Response((empty($ret) ? HttpStatus::NoContent : HttpStatus::OK)->message(), $ret);
         });
         $worker_with_middlewares = $this->packMiddlewares($core_call);
         return $worker_with_middlewares($request);

@@ -16,11 +16,15 @@ class Core extends \SeaDrip\Abstracts\Singleton
         $this->config = new Configs\Manager($this->app_root);
     }
 
-    final public function run(string $process = \Mxs\Modes\Http::class) : void
+    final public function run(string|\Mxs\Modes\Base $app_mode = \Mxs\Modes\Http::class) : void
     {
-        $process_instance = new $process();
-        $this->takeOverExceptions($process_instance::RESPONSE_FORMATTER);
-        $process_instance->process();
+        $this->takeoverExceptions();
+        //  $ami = app mode instance
+        is_a($app_mode, \Mxs\Modes\Base::class) or throw new \Mxs\Exceptions\Develops\InvalidAppMode($app_mode::class);
+        $ami = (fn(): \Mxs\Modes\Base => is_string($app_mode) ? new $app_mode() : $app_mode)();
+        $root_input = $ami->initRootInput();
+        $route_item = $ami->despatch($root_input);
+        $ami->process();
     }
 
     public function &httpRoutes(): \Mxs\Http\Routes\Manager
@@ -31,18 +35,15 @@ class Core extends \SeaDrip\Abstracts\Singleton
         return $this->route_manager;
     }
 
-    private function takeOverExceptions(string $formatter_class): void
+    private function takeoverExceptions(): void
     {
-        $handler = function(\Error|\Exception $e) use ($formatter_class) {
-            $formatter_class::error($e);
+        $handler = function($e) {
+            var_dump($e);
+            //  $formatter_class::error($e);
             return true;
         };
         set_exception_handler($handler);
-        /*
-        set_error_handler(function($e) use ($formatter_class) {
-            var_dump($e);
-            return true;
-        });*/
+        set_error_handler($handler);
     }
 
     public readonly Path $frame_root;

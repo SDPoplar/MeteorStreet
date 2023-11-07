@@ -1,7 +1,7 @@
 <?php
 namespace Mxs\Exceptions\Develops;
 
-class InvalidController extends Base
+class InvalidController extends MxsDevelop
 {
     public function __construct()
     {
