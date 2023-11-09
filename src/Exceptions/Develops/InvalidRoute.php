@@ -1,7 +1,7 @@
 <?php
 namespace Mxs\Exceptions\Develops;
 
-class InvalidRoute extends Base
+class InvalidRoute extends MxsDevelop
 {
     public static function noControllerSetted(string $route_id): self
     {
@@ -22,12 +22,10 @@ class InvalidRoute extends Base
     {
         $this->route_id = $route_id;
         $this->problem = $problem;
-        parent::__construct("{$this->problem} in route {$this->route_id}");
-    }
-
-    protected function makeProposal(): string
-    {
-        return "Please find your registor of {$this->route_id} and then set an controller with ->dispatch(controller::class, method_name) method";
+        parent::__construct(
+            "{$this->problem} in route {$this->route_id}",
+            "Please find your registor of {$this->route_id} and then set an controller with ->dispatch(controller::class, method_name) method"
+        );
     }
 
     public readonly string $problem;

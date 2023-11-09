@@ -5,11 +5,9 @@ class InvalidController extends MxsDevelop
 {
     public function __construct()
     {
-        parent::__construct('Invalid controller');
-    }
-    
-    protected function makeProposal(): string
-    {
-        return 'A controller should extends \Mxs\Frame\Controller';
+        parent::__construct(
+            'Invalid controller',
+            'A controller should extends \Mxs\Frame\Controller'
+        );
     }
 }

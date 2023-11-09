@@ -4,7 +4,10 @@ namespace Mxs\Exceptions\Runtimes;
 enum InnerCode:int implements ExceptionCodeInterface
 {
     case LoadDocumentRootFailed = 900;
-    case RouteNotFound = 901;
+    case CannotCreatePath = 901;
+    case CannotReadFile = 902;
+    case RouteNotFound = 903;
+    case UnknownHttpMethod = 904;
 
     public function exceptionCode(): int
     {
