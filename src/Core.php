@@ -25,7 +25,7 @@ class Core extends \SeaDrip\Abstracts\Singleton
         );
         $ami = (fn(): \Mxs\Modes\Base => is_string($app_mode) ? new $app_mode() : $app_mode)();
         $root_input = $ami->initRootInput();
-        $route_item = $ami->despatch($root_input);
+        $route_item = $ami->dispatch($root_input);
         //  $ami->process();
         $route_item->execute($root_input);
     }

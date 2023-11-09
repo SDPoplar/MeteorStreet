@@ -13,9 +13,9 @@ abstract class Base
         return new ($this->root_input_type)();
     }
 
-    public function despatch(\Mxs\Inputs\RootInputInterface $in): \Mxs\Route\Item
+    public function dispatch(\Mxs\Inputs\RootInputInterface $in): \Mxs\Route\Item
     {
-        return ($this->route_manager ??= new $this->route_manager_type)->despatch($in);
+        return ($this->route_manager ??= new $this->route_manager_type)->dispatch($in);
     }
 
     abstract public function process(): void;

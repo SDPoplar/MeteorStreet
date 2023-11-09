@@ -7,7 +7,7 @@ use \Mxs\Route\Item;
 
 class Router implements \Mxs\Route\Router
 {
-    public function despatch(RootInputInterface $root_input): Item
+    public function dispatch(RootInputInterface $root_input): Item
     {
         $in = (fn($given): ConsoleInput => $given)($root_input);
         $item_type = self::getCommandList()[$in->command] ?? null;   
