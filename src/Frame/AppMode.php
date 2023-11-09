@@ -1,7 +1,7 @@
 <?php
-namespace Mxs\Modes;
+namespace Mxs\Frame;
 
-abstract class Base
+abstract class AppMode
 {
     public function __construct(
         public readonly string $root_input_type,
@@ -13,12 +13,12 @@ abstract class Base
         return new ($this->root_input_type)();
     }
 
-    public function dispatch(\Mxs\Inputs\RootInputInterface $in): \Mxs\Route\Item
+    public function route(\Mxs\Inputs\RootInputInterface $in): \Mxs\Route\Item
     {
         return ($this->route_manager ??= new $this->route_manager_type)->dispatch($in);
     }
 
     abstract public function process(): void;
 
-    protected \Mxs\Route\Router $route_manager;
+    protected \Mxs\Route\Dispatcher $route_manager;
 }

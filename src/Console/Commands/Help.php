@@ -21,11 +21,10 @@ registed commands:
 usagestr;
 
         echo $usage, PHP_EOL;
-        /*
-        foreach (\Mxs\Modes\Console::getCommandList() as $line) {
-            list('flag' => $flag, 'describe' => $describe) = $line;
-            echo $flag . "\t" . $describe, PHP_EOL;
-        }*/
+        foreach (\Mxs\Console\Dispatcher::getCommandList() as $line) {
+            list('key' => $flag, 'describe' => $describe) = $line;
+            printf("    %-20s%s\n", $flag, $describe);
+        }
     }
 }
 

@@ -1,7 +1,7 @@
 <?php
 namespace Mxs\Route;
 
-interface Router
+interface Dispatcher
 {
     /**
      * @throws \Mxs\Exceptions\Develops\CommandNotFound|\Mxs\Exceptions\Runtimes\RouteNotFound

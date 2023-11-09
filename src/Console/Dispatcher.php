@@ -5,12 +5,12 @@ use \Mxs\Inputs\Console as ConsoleInput;
 use \Mxs\Inputs\RootInputInterface;
 use \Mxs\Route\Item;
 
-class Router implements \Mxs\Route\Router
+class Dispatcher implements \Mxs\Route\Dispatcher
 {
     public function dispatch(RootInputInterface $root_input): Item
     {
         $in = (fn($given): ConsoleInput => $given)($root_input);
-        $item_type = self::getCommandList()[$in->command] ?? null;   
+        $item_type = self::getCommandList()[$in->command]['type'] ?? null;
         empty($item_type) and throw new \Mxs\Exceptions\Develops\CommandNotFound($in->command);
         return new $item_type($in);
     }

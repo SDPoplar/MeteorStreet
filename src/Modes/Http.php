@@ -1,7 +1,7 @@
 <?php
 namespace Mxs\Modes;
 
-class Http extends Base
+class Http extends \Mxs\Frame\AppMode
 {
     public function __construct(
         string $root_input_type,

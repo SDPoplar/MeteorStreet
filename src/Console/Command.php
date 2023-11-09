@@ -10,10 +10,12 @@ abstract class Command extends \Mxs\Route\Item
 
     protected function error(string $content)
     {
-        $this->consoleOutput($content);
+        $this->consoleOutput("\033[31mERROR\033[0m {$content}");
     }
 
     private function consoleOutput(string $content)
-    {}
+    {
+        echo $content, PHP_EOL;
+    }
 }
 

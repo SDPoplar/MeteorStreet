@@ -1,11 +1,11 @@
 <?php
 namespace Mxs\Modes;
 
-class Console extends Base
+class Console extends \Mxs\Frame\AppMode
 {
     public function __construct(
         string $root_input_type = \Mxs\Inputs\Console::class,
-        string $route_manager_type = \Mxs\Console\Router::class,
+        string $route_manager_type = \Mxs\Console\Dispatcher::class,
     ) {
         parent::__construct($root_input_type, $route_manager_type);
     }
