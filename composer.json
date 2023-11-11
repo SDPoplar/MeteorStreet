@@ -18,6 +18,9 @@
         "seadrip/common": "dev-master"
     },
     "autoload": {
+        "files": [
+            "helpers.php"
+        ],
         "psr-4": {
             "Mxs\\": "src/"
         }
