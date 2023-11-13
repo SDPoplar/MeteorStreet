@@ -5,11 +5,9 @@ use \SeaDrip\Tools\Path;
 
 class Environment
 {
-    public function __construct(Path $app_root, Path $mxs_root)
+    public function __construct(Path $app_root)
     {
-        $this->app_root = $app_root;
-        $this->mxs_root = $mxs_root;
-        (\Dotenv\Dotenv::createImmutable(''.$this->app_root))->safeLoad();
+        (\Dotenv\Dotenv::createImmutable(''.$app_root))->safeLoad();
     }
 
     //  ========================== env vals   ===========================================
@@ -32,54 +30,5 @@ class Environment
     {
         return ''.$this->get($column, $def_val);
     }
-
-    // =========================== About Path ===========================================
-
-    final public function root(string $path = '') : string
-    {
-        /*
-        empty( $path ) || $this->_is_ds( substr( $path, -1 ) )
-            || ( $path = $path.DIRECTORY_SEPARATOR );
-         */
-        return $this->app_root.$path;
-    }
-
-    final public function langPath() : string
-    {
-        return $this->root('/lang');
-    }
-
-    final public function configPath(string $path = '') : string
-    {
-        return $this->root('/config'.$path);
-    }
-
-    final public function runtimePath(string $path = '') : string
-    {
-        return $this->root('/runtime'.$path);
-    }
-
-    final public function routePath(string $path = '') : string
-    {
-        return $this->root('/routes'.$path);
-    }
-
-    final public function compilePath(string $path = '') : string
-    {
-        return $this->runtimePath('/compile'.$path);
-    }
-
-    public function checkPath(string $path, bool $createIfNotExists = false) : bool
-    {
-        return is_dir( $path ) || ( $createIfNotExists && mkdir( $path, 0755, true ) );
-    }
-
-    public function getMxsResourcePath() : string
-    {
-        return $this->mxs_root.'/Resources';
-    }
-
-    protected $app_root;
-    protected $mxs_root;
 }
 

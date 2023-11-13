@@ -1,26 +1,21 @@
 <?php
 namespace Mxs\Frame;
 
-use Stringable;
-
 use \SeaDrip\Tools\Path;
 
-class Log extends \SeaDrip\Abstracts\Signleton implements \Psr\Log\LoggerInterface
+class Log implements \Psr\Log\LoggerInterface
 {
     use \Psr\Log\LoggerTrait;
 
-    protected function __construct()
-    {
-        $this->log_path = FileStructure::Get()->getLogPath();
-    }
+    protected function __construct(
+        public readonly Path $log_path
+    ) {}
 
-    public function log($level, string|Stringable $message, array $context = []): void
+    public function log($level, string|\Stringable $message, array $context = []): void
     {
         file_put_contents(
-            new Path($this->log_path, date('Y-m-d').'.log'),
+            $this->log_path->merge(date('Y-m-d').'.log'),
             '['.date('Y-m-d H:i:s')."][{$level}] {$message}, context: ".json_encode($context)
         );
     }
-
-    protected readonly string $log_path;
 }

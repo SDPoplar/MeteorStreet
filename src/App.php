@@ -26,8 +26,9 @@ class App
         $dr->isReadable() or throw new LoadDocumentRootFailedException();
         $this->app_root = $dr;
         $this->frame_root = new Path(dirname(__FILE__));
-        $this->env = new \Mxs\Frame\Environment($this->app_root, $this->frame_root);
+        $this->env = new \Mxs\Frame\Environment($dr);
         $this->debug = $this->env->getBool('APP_DEBUG');
+        $this->storage = new \Mxs\Frame\StorageManager($dr->merge('storage'));
 
         is_subclass_of($app_mode, \Mxs\Frame\AppMode::class) or throw new ErrInvalidAppMode(
             is_string($app_mode) ? $app_mode : $app_mode::class
@@ -76,6 +77,7 @@ class App
     public readonly Path $frame_root;
     public readonly Path $app_root;
     public readonly \Mxs\Frame\Environment $env;
+    public readonly \Mxs\Frame\StorageManager $storage;
 
     protected readonly \Mxs\Frame\AppMode $mode;
 
