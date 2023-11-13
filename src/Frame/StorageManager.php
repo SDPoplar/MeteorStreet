@@ -11,17 +11,22 @@ class StorageManager
         $storage_root->create();
     }
 
-    public function logPath(bool $create_ifnot_exists = false): Path
+    public function logPath(string|Path $group = '', bool $create_ifnot_exists = false): Path
     {
-        return $this->getPath('log', $create_ifnot_exists);
+        return $this->getPath(new Path('log', $group), $create_ifnot_exists);
     }
 
-    public function cachePath(bool $create_ifnot_exists = false): Path
+    public function routeCachePath(string|Path $group = '', bool $create_ifnot_exists = false): Path
     {
-        return $this->getPath('cache', $create_ifnot_exists);
+        return $this->cachePath(new Path('route', $group), $create_ifnot_exists);
     }
 
-    protected function getPath(string $path, bool $create_ifnot_exists = false): Path
+    public function cachePath(string|Path $group = '', bool $create_ifnot_exists = false): Path
+    {
+        return $this->getPath(new Path('cache', $group), $create_ifnot_exists);
+    }
+
+    protected function getPath(string|Path $path, bool $create_ifnot_exists = false): Path
     {
         $ret = $this->storage_root->merge($path);
         if ($create_ifnot_exists) {
