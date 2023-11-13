@@ -1,28 +1,29 @@
 <?php
-namespace Mxs\Commands;
+namespace Mxs\Console\Commands;
 
-class Compile extends ShellCommand
+class Compile extends \Mxs\Console\Command
 {
-    public static function getCommandFlag() : string
+    public static function getCommandFlag(): string
     {
         return 'compile';
     }
 
-    public static function getCommandDescribe() : string
+    public static function getCommandDescribe(): string
     {
         return 'compile something(like route and config), to make app run faster';
     }
 
-    public function execute(array $shell_inputs) : void
+    public function execute()
     {
         $method = match(array_shift($shell_inputs)) {
-            'route' => $this->compileRoute(...),
-            'config' => $this->compileConfig(...),
-            null => $this->invalidParams(...),
+            //'route' => $this->compileRoute(...),
+            //'config' => $this->compileConfig(...),
+            //null => $this->invalidParams(...),
         };
         $method();
     }
 
+    /*
     protected function compileConfig()
     {
         \Mxs\Core::Get()->config->compile();
@@ -34,5 +35,6 @@ class Compile extends ShellCommand
         \Mxs\Core::Get()->httpRoutes()->compile();
         echo 'Done', PHP_EOL;
     }
+    */
 }
 

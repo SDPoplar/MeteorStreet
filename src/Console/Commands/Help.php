@@ -3,17 +3,17 @@ namespace Mxs\Console\Commands;
 
 class Help extends \Mxs\Console\Command
 {
-    public static function getCommandFlag() : string
+    public static function getCommandFlag(): string
     {
         return 'help';
     }
 
-    public static function getCommandDescribe() : string
+    public static function getCommandDescribe(): string
     {
         return 'show this usage';
     }
 
-    public function execute()
+    public function execute(\Mxs\Inputs\RootInputInterface $input)
     {
         $usage = <<<usagestr
 usage: php mxs command [params]

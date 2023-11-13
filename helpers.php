@@ -7,3 +7,8 @@ if (function_exists('env')) {
     }
 }
 */
+
+function app(): \Mxs\App
+{
+    return \Mxs\App::get();
+}

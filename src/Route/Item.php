@@ -1,8 +1,7 @@
 <?php
 namespace Mxs\Route;
 
-class Item
+interface Item
 {
-    public function execute()
-    {}
+    public function execute(\Mxs\Inputs\RootInputInterface $input);
 }

@@ -1,8 +1,12 @@
 <?php
 namespace Mxs\Console;
 
-abstract class Command extends \Mxs\Route\Item
+abstract class Command implements \Mxs\Route\Item
 {
+    abstract public static function getCommandFlag(): string;
+
+    abstract public static function getCommandDescribe(): string;
+
     protected function info(string $content)
     {
         $this->consoleOutput($content);

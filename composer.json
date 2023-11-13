@@ -15,7 +15,8 @@
         "ext-mbstring": "*",
         "psr/http-message": "^1.0",
         "psr/log": "^3.0",
-        "seadrip/common": "dev-master"
+        "seadrip/common": "dev-master",
+        "vlucas/phpdotenv": "^5.5"
     },
     "autoload": {
         "files": [

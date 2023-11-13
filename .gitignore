@@ -4,3 +4,4 @@ dev_test/
 composer.lock
 /vendor/
 storage/
+.env
