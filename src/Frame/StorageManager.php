@@ -5,7 +5,7 @@ use \SeaDrip\Tools\Path;
 
 class StorageManager
 {
-    protected function __construct(
+    public function __construct(
         public readonly Path $storage_root
     ) {
         $storage_root->create();
