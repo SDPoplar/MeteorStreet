@@ -7,7 +7,7 @@ class AppNotCreated extends MxsDevelop
     {
         parent::__construct(
             'mxs app not created',
-            'create new '.self::class.' in your entry file(like index.php) first'
+            'create new '.\Mxs\App::class.' in your entry file(like index.php) first'
         );
     }
 }

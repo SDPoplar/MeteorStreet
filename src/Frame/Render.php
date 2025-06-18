@@ -8,7 +8,7 @@ interface ResponseRenderable
 
 abstract class Render
 {
-    public function onException(\Exception $e): bool
+    public function onException(\Throwable $e): bool
     {
         var_dump($e);
         return true;

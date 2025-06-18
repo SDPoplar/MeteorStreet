@@ -1,19 +1,20 @@
 <?php
 namespace Mxs\Modes;
 
-class Http extends \Mxs\Frame\AppMode
+readonly class Http extends \Mxs\Frame\AppMode
 {
     public function __construct(
-        string $root_input_type,
+        string $root_input_type = \Mxs\Inputs\HttpRequest::class,
         string $route_manager_type = \Mxs\Http\Routes\Manager::class,
+        string $render_type = \Mxs\Renders\HttpApi::class,
     ) {
-        parent::__construct($root_input_type, $route_manager_type);
+        parent::__construct($root_input_type, $route_manager_type, $render_type);
     }
 
     public function process(): void
     {
         $request = new \Mxs\Http\Request();
-        $route = (new \Mxs\Http\Routes\Manager(\Mxs\Core::Get()->app_root))
+        $route = (new \Mxs\Http\Routes\Manager(\Mxs\App::get()->app_root))
             ->getCompiled($request->method)->search($request->url);
         $response = $route->dispatch($request);
         $this->renderResponse($response);

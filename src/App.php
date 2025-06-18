@@ -13,7 +13,7 @@ use \Mxs\Exceptions\Runtimes\{
     LoadDocumentRootFailed as LoadDocumentRootFailedException
 };
 
-class App
+final class App
 {
     public function __construct(
         string $document_root,
@@ -22,13 +22,12 @@ class App
         is_null(self::$ins) or throw new ErrAppAlreadyCreated();
         self::$ins = $this;
 
-        $dr = new Path($document_root);
-        $dr->isReadable() or throw new LoadDocumentRootFailedException();
-        $this->app_root = $dr;
+        $this->app_root = new Path($document_root);
+        $this->app_root->isReadable() or throw new LoadDocumentRootFailedException();
         $this->frame_root = new Path(dirname(__FILE__));
-        $this->env = new \Mxs\Frame\Environment($dr);
+        $this->env = new \Mxs\Frame\Environment($this->app_root);
         $this->debug = $this->env->getBool('APP_DEBUG');
-        $this->storage = new \Mxs\Frame\StorageManager($dr->merge('storage'));
+        $this->storage = new \Mxs\Frame\StorageManager($this->app_root->merge('storage'));
 
         is_subclass_of($app_mode, \Mxs\Frame\AppMode::class) or throw new ErrInvalidAppMode(
             is_string($app_mode) ? $app_mode : $app_mode::class
@@ -43,8 +42,8 @@ class App
         return self::$ins;
     }
 
-    final public function run(
-    ): void {
+    final public function run(): void
+    {
         $root_input = $this->mode->initRootInput();
         $route_item = $this->mode->route($root_input);
         if ($this->mode->canRenderResponse()) {
@@ -58,7 +57,7 @@ class App
     private function takeoverExceptions(): void
     {
         $use_mode = $this->mode;
-        set_exception_handler(function($e) use ($use_mode) {
+        set_exception_handler(function(\Throwable $e) use ($use_mode) {
             return $use_mode->render->onException($e);
         });
         set_error_handler(function(
