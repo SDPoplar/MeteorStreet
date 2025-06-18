@@ -1,17 +1,15 @@
 <?php
 namespace Mxs\Inputs;
 
-class Console implements RootInputInterface
+readonly class Console extends RootInput
 {
     public function __construct()
     {
-        $this->command = $_SERVER['argv'][1] ?? 'help';
+        parent::__construct('console', $_SERVER['argv'][1] ?? 'help');
     }
 
     public function input(string $column, $def_val = null)
     {
         return '';
     }
-
-    public readonly string $command;
 }

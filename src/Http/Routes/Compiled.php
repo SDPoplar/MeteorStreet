@@ -1,11 +1,11 @@
 <?php
 namespace Mxs\Http\Routes;
 
-use \SeaDrip\Enums\HttpMethods;
+use \SeaDrip\Http\Method as HttpMethod;
 
 class Compiled
 {
-    public function __construct(string $file_path, public readonly HttpMethods $method)
+    public function __construct(string $file_path, public readonly HttpMethod $method)
     {
         $file_uri = "{$file_path}/" . strtolower($method->name) . '.php';
         if (!is_readable($file_uri)) {

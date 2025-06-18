@@ -5,27 +5,18 @@ abstract readonly class AppMode
 {
     public function __construct(
         public string $root_input_type,
-        public string $route_manager_type,
+        public array $route_files = [],
         string|Render $use_render
     ) {
         $this->render = is_string($use_render) ? new $use_render() : $use_render;
+        $this->router = new \Mxs\Frame\Router($route_files);
     }
 
-    public function initRootInput(): \Mxs\Inputs\RootInputInterface
+    public function initRootInput(): \Mxs\Inputs\RootInput
     {
         return new ($this->root_input_type)();
     }
 
-    public function route(\Mxs\Inputs\RootInputInterface $in): \Mxs\Route\Item
-    {
-        return ($this->route_manager ??= new $this->route_manager_type)->dispatch($in);
-    }
-
-    public function canRenderResponse(): bool
-    {
-        return $this->render instanceof ResponseRenderable;
-    }
-
     public readonly Render $render;
-    protected \Mxs\Route\Dispatcher $route_manager;
+    public readonly \Mxs\Frame\Router $router;
 }

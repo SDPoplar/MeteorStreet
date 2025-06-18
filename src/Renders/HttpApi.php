@@ -1,10 +1,11 @@
 <?php
 namespace Mxs\Renders;
 
-class HttpApi extends \Mxs\Frame\Render implements \Mxs\Frame\ResponseRenderable
+class HttpApi extends \Mxs\Frame\Render
 {
-    function render($response): string
+    public function onSuccess($response): void
     {
-        return json_encode([]);
+        header('Status: 200');
+        echo json_encode(['msg' => 'hello']);
     }
 }

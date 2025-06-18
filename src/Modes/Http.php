@@ -5,12 +5,13 @@ readonly class Http extends \Mxs\Frame\AppMode
 {
     public function __construct(
         string $root_input_type = \Mxs\Inputs\HttpRequest::class,
-        string $route_manager_type = \Mxs\Http\Routes\Manager::class,
+        array $route_files = ['api'],
         string $render_type = \Mxs\Renders\HttpApi::class,
     ) {
-        parent::__construct($root_input_type, $route_manager_type, $render_type);
+        parent::__construct($root_input_type, $route_files, $render_type);
     }
 
+    /*
     public function process(): void
     {
         $request = new \Mxs\Http\Request();
@@ -28,4 +29,5 @@ readonly class Http extends \Mxs\Frame\AppMode
             static::RESPONSE_FORMATTER::render($response);
         }
     }
+    */
 }

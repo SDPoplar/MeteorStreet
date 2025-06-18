@@ -8,7 +8,7 @@ class StorageManager
     public function __construct(
         public readonly Path $storage_root
     ) {
-        $storage_root->create();
+        $storage_root->create() or throw new \Mxs\Exceptions\Runtimes\CreatePathFailed($storage_root);
     }
 
     public function logPath(string|Path $group = '', bool $create_ifnot_exists = false): Path

@@ -10,7 +10,7 @@ use \Mxs\Exceptions\Develops\{
 };
 
 use \Mxs\Exceptions\Runtimes\{
-    LoadDocumentRootFailed as LoadDocumentRootFailedException
+    LoadDocumentRootFailed as LoadDocumentRootFailedException,
 };
 
 final class App
@@ -45,13 +45,9 @@ final class App
     final public function run(): void
     {
         $root_input = $this->mode->initRootInput();
-        $route_item = $this->mode->route($root_input);
-        if ($this->mode->canRenderResponse()) {
-            $response = $route_item->execute($root_input);
-            echo ((fn($ins): \Mxs\Frame\ResponseRenderable => $ins)($this->mode->render))->render($response);
-        } else {
-            $route_item->execute($root_input);
-        }
+        $route_item = $this->mode->router->dispatch($root_input->route_method, $root_input->route);
+        $response = $route_item->execute($root_input);
+        $this->mode->render->onSuccess($response);
     }
 
     private function takeoverExceptions(): void
