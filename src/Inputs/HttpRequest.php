@@ -7,10 +7,16 @@ readonly class HttpRequest extends RootInput
     {
         //var_dump($_SERVER, $_ENV); exit;
         parent::__construct($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);
+        $protocal_parts = explode('/', $_SERVER['SERVER_PROTOCOL']);
+        $this->protocal = $protocal_parts[0];
+        $this->protocal_version = $protocal_parts[1];
     }
 
     function input(string $column, $def_val = null)
     {
         
     }
+
+    public readonly string $protocal;
+    public readonly string $protocal_version;
 }

@@ -5,6 +5,9 @@ abstract class Render
 {
     abstract public function onSuccess($response): void;
 
+    public function __construct($root_input)
+    {}
+
     public function onException(\Throwable $e): bool
     {
         var_dump($e);

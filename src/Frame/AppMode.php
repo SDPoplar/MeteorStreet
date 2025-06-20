@@ -1,22 +1,36 @@
 <?php
 namespace Mxs\Frame;
 
+use \Mxs\Inputs\RootInput;
+
 abstract readonly class AppMode
 {
     public function __construct(
-        public string $root_input_type,
+        protected readonly string $root_input_type,
         public array $route_files = [],
         string|Render $use_render
     ) {
-        $this->render = is_string($use_render) ? new $use_render() : $use_render;
+        if (is_string($use_render)) {
+            $this->render_type = $use_render;
+        } else {
+            $this->render_type = $use_render::class;
+            $this->render = $use_render;
+        }
         $this->router = new \Mxs\Frame\Router($route_files);
     }
 
-    public function initRootInput(): \Mxs\Inputs\RootInput
+    public function getRootInputInstance(): RootInput
     {
-        return new ($this->root_input_type)();
+        return $this->input_instance ??= new ($this->root_input_type)();
     }
 
-    public readonly Render $render;
+    public function getRenderInstance(): Render
+    {
+        return $this->render ??= new ($this->render_type)($this->getRootInputInstance());
+    }
+
+    protected readonly RootInput $input_instance;
+    protected readonly string $render_type;
+    protected readonly Render $render;
     public readonly \Mxs\Frame\Router $router;
 }

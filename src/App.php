@@ -44,17 +44,17 @@ final class App
 
     final public function run(): void
     {
-        $root_input = $this->mode->initRootInput();
+        $root_input = $this->mode->getRootInputInstance();
         $route_item = $this->mode->router->dispatch($root_input->route_method, $root_input->route);
         $response = $route_item->execute($root_input);
-        $this->mode->render->onSuccess($response);
+        $this->mode->getRenderInstance()->onSuccess($response);
     }
 
     private function takeoverExceptions(): void
     {
         $use_mode = $this->mode;
         set_exception_handler(function(\Throwable $e) use ($use_mode) {
-            return $use_mode->render->onException($e);
+            return $use_mode->getRenderInstance()->onException($e);
         });
         set_error_handler(function(
             int $errno,
@@ -63,7 +63,7 @@ final class App
             int $errline,
             array $errcontext
         ) use ($use_mode): bool {
-            return $use_mode->render->onError($errno, $errstr, $errfile, $errline, $errcontext);
+            return $use_mode->getRenderInstance()->onError($errno, $errstr, $errfile, $errline, $errcontext);
         });
     }
 
