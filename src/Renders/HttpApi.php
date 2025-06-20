@@ -1,22 +1,21 @@
 <?php
 namespace Mxs\Renders;
 
-use DateTime;
 use \Mxs\Exceptions\Develops\MxsDevelop as MxsDevException;
 use \Mxs\Exceptions\Runtimes\MxsRuntime as MxsRuntimeException;
+use \SeaDrip\Http\Status as HttpStatus;
 
-class HttpApi extends \Mxs\Frame\Render
+class HttpApi extends Http
 {
-    public function __construct(\Mxs\Inputs\HttpRequest $request)
-    {
-        parent::__construct($request);
-        $this->protocal_line = $request->protocal.'/'.$request->protocal_version;
-        //var_dump($request);
-    }
+    private const JSON_TYPE = 'application/json';
 
     public function onSuccess($response): void
     {
-        $this->renderHttpResponse(json_encode(['msg' => 'hello']), 200);
+        //$content = $response->body;
+        $content = ['msg' => 'hello'];
+        $content = is_array($content) ? json_encode($content) : ''.$content;
+        $status = empty($content) ? HttpStatus::NoContent : HttpStatus::OK;
+        $this->writeHttpResponse($status->value, self::JSON_TYPE, $content);
     }
 
     public function onException(\Throwable $e): bool
@@ -34,10 +33,14 @@ class HttpApi extends \Mxs\Frame\Render
 
     protected function renderRuntimeException(MxsRuntimeException $e): bool
     {
-        $this->renderHttpResponse(json_encode([
-            'code' => $e->getCode(),
-            'message' => $e->getMessage(),
-        ]), $e->http_status->value);
+        $this->writeHttpResponse(
+            $e->http_status->value,
+            json_encode([
+                'code' => $e->getCode(),
+                'message' => $e->getMessage(),
+            ]),
+            self::JSON_TYPE
+        );
         return true;
     }
 
@@ -46,15 +49,4 @@ class HttpApi extends \Mxs\Frame\Render
         var_dump($e);
         return false;
     }
-
-    protected function renderHttpResponse(string $response, int $http_status): void
-    {
-        header("HTTP/1.1 {$http_status}");
-        header('Date: '.(new DateTime())->format(DateTime::RFC1123));
-        header('Content-Type: application/json');
-        header('Content-Length: '.strlen($response));
-        echo $response;
-    }
-
-    protected readonly string $protocal_line;
 }
