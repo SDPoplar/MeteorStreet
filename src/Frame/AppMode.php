@@ -1,13 +1,13 @@
 <?php
 namespace Mxs\Frame;
 
-use \Mxs\Inputs\RootInput;
+use Mxs\Inputs\RootInput;
+use Mxs\Routes\Manager as RouteManager;
 
 abstract readonly class AppMode
 {
     public function __construct(
         protected readonly string $root_input_type,
-        public array $route_files = [],
         string|Render $use_render
     ) {
         if (is_string($use_render)) {
@@ -16,7 +16,7 @@ abstract readonly class AppMode
             $this->render_type = $use_render::class;
             $this->render = $use_render;
         }
-        $this->router = new \Mxs\Frame\Router($route_files);
+        $this->router = new RouteManager();
     }
 
     public function getRootInputInstance(): RootInput
@@ -32,5 +32,5 @@ abstract readonly class AppMode
     protected readonly RootInput $input_instance;
     protected readonly string $render_type;
     protected readonly Render $render;
-    public readonly \Mxs\Frame\Router $router;
+    public readonly RouteManager $router;
 }

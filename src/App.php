@@ -1,15 +1,15 @@
 <?php
 namespace Mxs;
 
-use \SeaDrip\Tools\Path;
+use SeaDrip\Tools\Path;
 
-use \Mxs\Exceptions\Develops\{
+use Mxs\Exceptions\Develops\{
     AppNotCreated as ErrAppNotCreated,
     AppAlreadyCreated as ErrAppAlreadyCreated,
     InvalidAppMode as ErrInvalidAppMode,
 };
 
-use \Mxs\Exceptions\Runtimes\{
+use Mxs\Exceptions\Runtimes\{
     LoadDocumentRootFailed as LoadDocumentRootFailedException,
 };
 
@@ -45,7 +45,10 @@ final class App
     final public function run(): void
     {
         $root_input = $this->mode->getRootInputInstance();
-        $route_item = $this->mode->router->dispatch($root_input->route_method, $root_input->route);
+        if ($this->debug) {
+            $this->mode->router->cache();
+        }
+        $route_item = $this->mode->router->dispatch($root_input);
         $response = $route_item->execute($root_input);
         $this->mode->getRenderInstance()->onSuccess($response);
     }

@@ -1,0 +1,110 @@
+<?php
+namespace Mxs\Routes;
+
+use Mxs\Exceptions\Runtimes\{
+    RouteNotFound as ErrRouteNotFound,
+    CannotReadFile as ErrCannotReadFile,
+};
+
+class Manager
+{
+    protected const string ROUTE_EQUAL_KEY = '/';
+    protected const string ROUTE_PATTERN_KEY = '//';
+    protected const string CACHED_KEY_COLUMN = 'keys';
+    protected const string CACHED_MAP_COLUMN = 'map';
+
+    public function cache(): void
+    {
+        $route_path = \Mxs\App::get()->app_root->merge('app', 'routes');
+        foreach(dir($route_path) as $f) {
+            if (!str_ends_with($f, '.php')) {
+                continue;
+            }
+            echo $f.PHP_EOL;
+            (function() use ($f) {
+                require $f;
+            })();
+        }
+        foreach (Route::enumMethods() as $method) {
+            $keyMap = [];
+            foreach(Route::getRulesByMethod($method) as $index => $rule) {
+                $item = $this->routeKeyExplode($rule->path, $index);
+                $all_keys[] = $item->parts;
+                $keyMap[$index] = serialize($rule->buildAction());
+            }
+            $cache_content = [
+                self::CACHED_KEY_COLUMN => array_merge_recursive(...$all_keys ?? []),
+                self::CACHED_MAP_COLUMN => $keyMap
+            ];
+            \SeaDrip\Tools\ArrayExt::toFile($cache_content, \Mxs\App::get()->storage->routeCachePath("{$method}.php"));
+            unset($all_keys);
+        }
+    }
+
+    public function dispatch(\Mxs\Inputs\RootInput &$in): \Mxs\Routes\Action
+    {
+        $method = $in->route_method;
+        $path = $in->route;
+        $cached = \Mxs\App::get()->storage->routeCachePath("{$method}.php");
+        file_exists($cached) or throw new ErrRouteNotFound($method, $path);
+        is_readable($cached) or throw new ErrCannotReadFile($cached);
+        $cached_content = include($cached);
+        $found = $this->routeMatch($path, $cached_content[self::CACHED_KEY_COLUMN]);
+        is_null($found) and throw new ErrRouteNotFound($method, $path);
+        $act = $cached_content[self::CACHED_MAP_COLUMN][$found->routeKey] ?? null;
+        $act = (fn(string $s): \Mxs\Routes\Action => unserialize($s, ['allowed_classes' => [
+            \Mxs\Routes\Action::class
+        ]]))($act);
+        $in->setRouteParams($found->params);
+        return $act;
+    }
+
+    final protected function routeMatch(string $queryString, array $keys): ?object
+    {
+        $parts = explode('/', $queryString);
+        $routeParams = [];
+        while($item = array_shift($parts)) {
+            $use_pattern = !array_key_exists($item, $keys);
+            if ($use_pattern && !array_key_exists(self::ROUTE_PATTERN_KEY, $keys)) {
+                return null;
+            }
+            if ($use_pattern) {
+                $routeParams[] = $item;
+                $keys = $keys[self::ROUTE_PATTERN_KEY];
+            } else {
+                $keys = $keys[$item];
+            }
+        }
+        $found = is_string($keys[self::ROUTE_EQUAL_KEY] ?? null);
+        return $found ? new readonly class ($keys[self::ROUTE_EQUAL_KEY], $routeParams) {
+            public function __construct(
+                public string $routeKey,
+                public array $params,
+            ) {}
+        } : null;
+    }
+
+    final protected function routeKeyExplode(string $rule, string $use_index): object
+    {
+        $parts = explode('/', trim($rule));
+        if (!empty($parts) && empty(end($parts))) {
+            array_pop($parts);
+        }
+        $ret = [self::ROUTE_EQUAL_KEY => $use_index];
+        while($item = array_pop($parts)) {
+            if (str_starts_with($item, '{') && str_ends_with($item, '}')) {
+                $use_key = self::ROUTE_PATTERN_KEY;
+                $rp[] = trim($item, "{}");
+            } else {
+                $use_key = $item;
+            }
+            $ret = [$use_key => $ret];
+        }
+        return new readonly class ($ret, $rp ?? []) {
+            public function __construct(
+                public array $parts,
+                public array $columns,
+            ) {}
+        };
+    }
+}
