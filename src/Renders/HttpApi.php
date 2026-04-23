@@ -35,11 +35,11 @@ class HttpApi extends Http
     {
         $this->writeHttpResponse(
             $e->http_status->value,
+            self::JSON_TYPE,
             json_encode([
                 'code' => $e->getCode(),
                 'message' => $e->getMessage(),
-            ]),
-            self::JSON_TYPE
+            ])
         );
         return true;
     }

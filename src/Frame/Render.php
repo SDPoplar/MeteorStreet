@@ -18,8 +18,7 @@ abstract class Render
         int $errno,
         string $errstr,
         string $errfile,
-        int $errline,
-        array $errcontext
+        int $errline
     ): bool {
         return false;
     }

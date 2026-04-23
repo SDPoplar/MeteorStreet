@@ -63,10 +63,9 @@ final class App
             int $errno,
             string $errstr,
             string $errfile,
-            int $errline,
-            array $errcontext
+            int $errline
         ) use ($use_mode): bool {
-            return $use_mode->getRenderInstance()->onError($errno, $errstr, $errfile, $errline, $errcontext);
+            return $use_mode->getRenderInstance()->onError($errno, $errstr, $errfile, $errline);
         });
     }
 

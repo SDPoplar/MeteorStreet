@@ -1,7 +1,7 @@
 <?php
 namespace Mxs\Inputs;
 
-readonly class HttpRequest extends RootInput
+class HttpRequest extends RootInput
 {
     public function __construct()
     {

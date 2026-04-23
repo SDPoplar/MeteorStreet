@@ -1,7 +1,7 @@
 <?php
 namespace Mxs\Http\Renders;
 
-use \Mxs\Http\Status as HttpStatus;
+use SeaDrip\Http\Status as HttpStatus;
 
 abstract class Render
 {
@@ -9,14 +9,14 @@ abstract class Render
 
     public static function render(\Mxs\Http\Response $response): never
     {
-        self::setStatus($response->status);
+        self::setStatus($response->getHttpStatus());
         $fmted = is_array($response->content) ? self::formatNormalContent($response->content) : $response->content;
         die($fmted);
     }
 
     public static function redirect(\Mxs\Http\Response $response): never
     {
-        self::setStatus($response->status);
+        self::setStatus($response->getHttpStatus());
         header('Location: '.$response->content);
         exit;
     }
@@ -30,6 +30,6 @@ abstract class Render
 
     protected static function setStatus(HttpStatus $status): void
     {
-        header('HTTP/1.1 '.$status->value.' '.$status->translate());
+        header('HTTP/1.1 '.$status->value.' '.$status->message());
     }
 }

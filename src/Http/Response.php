@@ -16,6 +16,11 @@ final readonly class Response implements \Psr\Http\Message\ResponseInterface
         $this->content = is_array($content) ? $content : ''.$content;
     }
 
+    public function getHttpStatus(): \SeaDrip\Http\Status
+    {
+        return $this->header_status->status;
+    }
+
     //  #[\Override]
     public function getStatusCode(): int
     {

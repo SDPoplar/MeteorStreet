@@ -13,17 +13,24 @@ class Manager
     protected const string CACHED_KEY_COLUMN = 'keys';
     protected const string CACHED_MAP_COLUMN = 'map';
 
+    public function __construct() {
+        $this->cache_path = \Mxs\App::get()->storage->routeCachePath();
+    }
+
     public function cache(): void
     {
-        $route_path = \Mxs\App::get()->app_root->merge('app', 'routes');
-        foreach(dir($route_path) as $f) {
+        $route_path = \Mxs\App::get()->app_root->merge('route');
+        $route_path->exists() or $route_path->create();
+        $route_path->isReadable() or throw new \Mxs\Exceptions\Runtimes\CannotReadFile($route_path);
+        foreach(scandir($route_path) as $f) {
+            //  var_dump($f);exit;
             if (!str_ends_with($f, '.php')) {
                 continue;
             }
-            echo $f.PHP_EOL;
-            (function() use ($f) {
-                Route::setCurrentFile($f);
-                require $f;
+            (function() use ($f, $route_path) {
+                $full_path = $route_path->merge($f);
+                Route::setCurrentFile($full_path);
+                require $full_path;
             })();
         }
         foreach (Route::enumMethods() as $method) {
@@ -37,7 +44,7 @@ class Manager
                 self::CACHED_KEY_COLUMN => array_merge_recursive(...$all_keys ?? []),
                 self::CACHED_MAP_COLUMN => $keyMap
             ];
-            \SeaDrip\Tools\ArrayExt::toFile($cache_content, \Mxs\App::get()->storage->routeCachePath("{$method}.php"));
+            \SeaDrip\Tools\ArrayExt::toFile($cache_content, $this->cache_path->merge("{$method}.php"));
             unset($all_keys);
         }
     }
@@ -46,7 +53,7 @@ class Manager
     {
         $method = $in->route_method;
         $path = $in->route;
-        $cached = \Mxs\App::get()->storage->routeCachePath("{$method}.php");
+        $cached = $this->cache_path->merge("{$method}.php");
         file_exists($cached) or throw new ErrRouteNotFound($method, $path);
         is_readable($cached) or throw new ErrCannotReadFile($cached);
         $cached_content = include($cached);
@@ -108,4 +115,6 @@ class Manager
             ) {}
         };
     }
+
+    protected readonly \SeaDrip\Tools\Path $cache_path;
 }

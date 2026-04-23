@@ -13,9 +13,9 @@ abstract class Route
     public static function enumMethods(): array
     {
         $ret = [];
-        array_walk(self::allRules(), function (Rule $item) use (&$ret) {
+        foreach(self::allRules() as $item) {
             $ret[$item->method] = true;
-        });
+        }
         return array_keys($ret);
     }
 
