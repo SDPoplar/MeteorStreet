@@ -22,6 +22,7 @@ class Manager
             }
             echo $f.PHP_EOL;
             (function() use ($f) {
+                Route::setCurrentFile($f);
                 require $f;
             })();
         }
