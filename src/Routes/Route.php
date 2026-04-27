@@ -61,7 +61,7 @@ abstract class Route
 
     private static function &rule(string $method, string $path, string $controller_class, string $method_name): Rule
     {
-        $rule_instance = new Rule(strtolower($method), $path, $controller_class, $method_name);
+        $rule_instance = new Rule(self::$current_file, $method, $path, $controller_class, $method_name);
         if (is_null(self::$grouping)) {
             self::$registed[] =& $rule_instance;
         } else {

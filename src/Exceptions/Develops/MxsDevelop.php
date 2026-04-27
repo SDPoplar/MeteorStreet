@@ -8,8 +8,9 @@ abstract class MxsDevelop extends \LogicException
     public function __construct(
         string $message,
         public readonly string $proposal,
-        public readonly \SeaDrip\Http\Status $http_status = \SeaDrip\Http\Status::InternalServerError
+        public readonly \SeaDrip\Http\Status $http_status = \SeaDrip\Http\Status::InternalServerError,
+        ?\Throwable $prev = null
     ) {
-        parent::__construct($message);
+        parent::__construct($message, previous: $prev);
     }
 }

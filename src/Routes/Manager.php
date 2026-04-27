@@ -4,6 +4,8 @@ namespace Mxs\Routes;
 use Mxs\Exceptions\Runtimes\{
     RouteNotFound as ErrRouteNotFound,
     CannotReadFile as ErrCannotReadFile,
+    CreatePathFailed as ErrCreatePathFailed,
+    CacheRouteFailed as ErrCacheRouteFailed,
 };
 
 class Manager
@@ -20,8 +22,9 @@ class Manager
     public function cache(): void
     {
         $route_path = \Mxs\App::get()->app_root->merge('route');
-        $route_path->exists() or $route_path->create();
-        $route_path->isReadable() or throw new \Mxs\Exceptions\Runtimes\CannotReadFile($route_path);
+        $route_path->exists() or $route_path->create() or throw new ErrCreatePathFailed($route_path);
+        $route_path->isReadable() or throw new ErrCannotReadFile($route_path);
+        $this->cache_path->exists() or $this->cache_path->create() or throw new ErrCreatePathFailed($this->cache_path);
         foreach(scandir($route_path) as $f) {
             //  var_dump($f);exit;
             if (!str_ends_with($f, '.php')) {
@@ -44,7 +47,10 @@ class Manager
                 self::CACHED_KEY_COLUMN => array_merge_recursive(...$all_keys ?? []),
                 self::CACHED_MAP_COLUMN => $keyMap
             ];
-            \SeaDrip\Tools\ArrayExt::toFile($cache_content, $this->cache_path->merge("{$method}.php"));
+            //  var_dump($cache_content); exit;
+            $save_to_file = $this->cache_path->merge("{$method}.php");
+            \SeaDrip\Tools\ArrayExt::toFile($cache_content, $save_to_file)
+                or throw new ErrCacheRouteFailed($save_to_file);
             unset($all_keys);
         }
     }
