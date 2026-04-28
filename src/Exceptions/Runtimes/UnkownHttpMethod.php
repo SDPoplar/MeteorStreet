@@ -7,7 +7,7 @@ class UnkownHttpMethod extends MxsRuntime
     {
         parent::__construct(
             \SeaDrip\Http\Status::MethodNotAllowed,
-            InnerCode::UnknownHttpMethod,
+            InnerCode::UnknownHttpMethod->value,
             "Unkown http method [{$method_name}]",
         );
     }

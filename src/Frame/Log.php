@@ -7,7 +7,7 @@ class Log implements \Psr\Log\LoggerInterface
 {
     use \Psr\Log\LoggerTrait;
 
-    protected function __construct(
+    public function __construct(
         public readonly Path $log_path
     ) {}
 

@@ -13,7 +13,7 @@ class HttpRequest extends RootInput
     }
 
     #[\Override]
-    function input(string $column, $def_val = null)
+    function input(string $column, mixed $def_val = null)
     {
         return $_POST[$column] ?? $_GET[$column] ?? $def_val;
     }

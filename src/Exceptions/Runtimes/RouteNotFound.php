@@ -7,7 +7,7 @@ class RouteNotFound extends MxsRuntime
     {
         parent::__construct(
             \SeaDrip\Http\Status::NotFound,
-            InnerCode::RouteNotFound,
+            InnerCode::RouteNotFound->value,
             "route {$method}:{$url} not found"
         );
     }

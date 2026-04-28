@@ -8,9 +8,9 @@ abstract class RootInput
         public readonly string $route,
     ) {}
     
-    abstract public function input(string $column, $def_val = null);
+    abstract public function input(string $column, mixed $def_val = null);
 
-    public function route(string $column, $def_val = null)
+    public function route(string $column, mixed $def_val = null)
     {
         return $this->route_params[$column] ?? $def_val;
     }

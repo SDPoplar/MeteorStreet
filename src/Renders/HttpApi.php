@@ -48,7 +48,9 @@ class HttpApi extends Http
 
     protected function renderDevelopException(MxsDevException $e): bool
     {
-        //  TODO: save log
+        app()->logger->error($e->getMessage(), [
+            'proposal' => $e->proposal
+        ]);
         $err_msg = \Mxs\App::get()->debug
             ? '<h1>'.$e->getMessage().'</h1><p>'.$e->proposal.'</p>'
             : '';

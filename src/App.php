@@ -34,6 +34,8 @@ final class App
         );
         $this->mode = is_string($app_mode) ? new $app_mode() : $app_mode;
         $this->takeoverExceptions();
+
+        $this->logger = new \Mxs\Frame\Log($this->storage->logPath(date('Y'), create_ifnot_exists: true));
     }
 
     public static function get(): self
@@ -75,6 +77,7 @@ final class App
     public readonly Path $app_root;
     public readonly \Mxs\Frame\Environment $env;
     public readonly \Mxs\Frame\StorageManager $storage;
+    public readonly \Mxs\Frame\Log $logger;
 
     protected readonly \Mxs\Frame\AppMode $mode;
 
