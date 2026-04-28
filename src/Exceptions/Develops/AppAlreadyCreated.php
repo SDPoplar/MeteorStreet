@@ -7,7 +7,7 @@ class AppAlreadyCreated extends MxsDevelop
     {
         parent::__construct(
             'mxs app already exists',
-            'app has already created, use '.self::class.'::get() to get it, instead of *new* one'
+            'app has already created, use '.\Mxs\App::class.'::get() to get it, instead of *new* one'
         );
     }
 }

@@ -10,7 +10,7 @@
         }
     ],
     "require": {
-        "php": ">=8.4",
+        "php": ">=8.5",
         "ext-json": "*",
         "ext-mbstring": "*",
         "psr/http-message": "^1.0",

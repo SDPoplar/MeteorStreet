@@ -16,7 +16,7 @@ class Manager
     protected const string CACHED_MAP_COLUMN = 'map';
 
     public function __construct() {
-        $this->cache_path = \Mxs\App::get()->storage->routeCachePath();
+        $this->cache_path = \Mxs\App::get()->storage->routeCachePath(create_ifnot_exists: app()->debug);
     }
 
     public function cache(): void
@@ -26,7 +26,6 @@ class Manager
         $route_path->isReadable() or throw new ErrCannotReadFile($route_path);
         $this->cache_path->exists() or $this->cache_path->create() or throw new ErrCreatePathFailed($this->cache_path);
         foreach(scandir($route_path) as $f) {
-            //  var_dump($f);exit;
             if (!str_ends_with($f, '.php')) {
                 continue;
             }
@@ -41,13 +40,12 @@ class Manager
             foreach(Route::getRulesByMethod($method) as $index => $rule) {
                 $item = $this->routeKeyExplode($rule->path, $index);
                 $all_keys[] = $item->parts;
-                $keyMap[$index] = serialize($rule->buildAction());
+                $keyMap[$index] = ['ins' => serialize($rule->buildAction()), 'route' => $item->columns];
             }
             $cache_content = [
                 self::CACHED_KEY_COLUMN => array_merge_recursive(...$all_keys ?? []),
                 self::CACHED_MAP_COLUMN => $keyMap
             ];
-            //  var_dump($cache_content); exit;
             $save_to_file = $this->cache_path->merge("{$method}.php");
             \SeaDrip\Tools\ArrayExt::toFile($cache_content, $save_to_file)
                 or throw new ErrCacheRouteFailed($save_to_file);
@@ -65,17 +63,20 @@ class Manager
         $cached_content = include($cached);
         $found = $this->routeMatch($path, $cached_content[self::CACHED_KEY_COLUMN]);
         is_null($found) and throw new ErrRouteNotFound($method, $path);
-        $act = $cached_content[self::CACHED_MAP_COLUMN][$found->routeKey] ?? null;
+        $cached_item = $cached_content[self::CACHED_MAP_COLUMN][$found->routeKey] ?? null;
         $act = (fn(string $s): \Mxs\Routes\Action => unserialize($s, ['allowed_classes' => [
             \Mxs\Routes\Action::class
-        ]]))($act);
-        $in->setRouteParams($found->params);
+        ]]))($cached_item['ins']);
+        $in->setRouteParams(array_combine(array_reverse($cached_item['route']), $found->params));
         return $act;
     }
 
     final protected function routeMatch(string $queryString, array $keys): ?object
     {
         $parts = explode('/', $queryString);
+        if (str_starts_with($queryString, '/')) {
+            array_shift($parts);
+        }
         $routeParams = [];
         while($item = array_shift($parts)) {
             $use_pattern = !array_key_exists($item, $keys);

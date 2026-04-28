@@ -9,7 +9,8 @@ class HttpApi extends Http
 {
     private const JSON_TYPE = 'application/json';
 
-    public function onSuccess($response): void
+    #[\Override]
+    public function onSuccess(mixed $response): void
     {
         //$content = $response->body;
         $content = ['msg' => 'hello'];
@@ -18,6 +19,7 @@ class HttpApi extends Http
         $this->writeHttpResponse($status->value, self::JSON_TYPE, $content);
     }
 
+    #[\Override]
     public function onException(\Throwable $e): bool
     {
         if ($e instanceof MxsRuntimeException) {
@@ -46,7 +48,11 @@ class HttpApi extends Http
 
     protected function renderDevelopException(MxsDevException $e): bool
     {
-        var_dump($e);
+        //  TODO: save log
+        $err_msg = \Mxs\App::get()->debug
+            ? '<h1>'.$e->getMessage().'</h1><p>'.$e->proposal.'</p>'
+            : '';
+        $this->writeHttpResponse($e->http_status->value, self::HTML_TYPE, $err_msg);
         return false;
     }
 }

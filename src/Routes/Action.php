@@ -15,6 +15,6 @@ readonly class Action
             : new ($this->cast_input_class)($input);
         $ctrl_ins = new ($this->controller_class)();
         $m = $this->method_name;
-        $ctrl_ins->$m($castedInput);
+        return $ctrl_ins->$m($castedInput);
     }
 }

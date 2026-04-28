@@ -3,7 +3,7 @@ namespace Mxs\Frame;
 
 abstract class Render
 {
-    abstract public function onSuccess($response): void;
+    abstract public function onSuccess(mixed $response): void;
 
     public function __construct($root_input)
     {}

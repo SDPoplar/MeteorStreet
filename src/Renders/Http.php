@@ -3,6 +3,8 @@ namespace Mxs\Renders;
 
 abstract class Http extends \Mxs\Frame\Render
 {
+    protected const HTML_TYPE = 'text/html';
+
     public function __construct(\Mxs\Inputs\HttpRequest $request)
     {
         parent::__construct($request);

@@ -7,14 +7,10 @@ abstract class MxsRuntime extends \RuntimeException
 
     public function __construct(
         public readonly \SeaDrip\Http\Status $http_status,
-        ExceptionCodeInterface $exception_code,
+        int $exception_code,
         string $message = '',
         ?\Throwable $previous = null
     ) {
-        parent::__construct(
-            empty($message) ? $exception_code->exceptionCode() : $message,
-            $exception_code->exceptionCode(),
-            $previous
-        );
+        parent::__construct($message, $exception_code, $previous);
     }
 }

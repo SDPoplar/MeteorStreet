@@ -7,7 +7,7 @@ class CreatePathFailed extends MxsRuntime
     {
         parent::__construct(
             \SeaDrip\Http\Status::InternalServerError,
-            InnerCode::CannotCreatePath,
+            InnerCode::CannotCreatePath->value,
             "cannot create path [$path]"
         );
     }

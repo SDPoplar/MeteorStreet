@@ -7,7 +7,7 @@ class CannotReadFile extends MxsRuntime
     {
         parent::__construct(
             \SeaDrip\Http\Status::InternalServerError,
-            InnerCode::CannotReadFile,
+            InnerCode::CannotReadFile->value,
             "Cannot read file: [$file_path]"
         );
     }

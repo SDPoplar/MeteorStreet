@@ -7,7 +7,8 @@ class LoadDocumentRootFailed extends MxsRuntime
     {
         parent::__construct(
             \SeaDrip\Http\Status::InternalServerError,
-            InnerCode::LoadDocumentRootFailed,
+            InnerCode::LoadDocumentRootFailed->value,
+            'Load document_root failed'
         );
         $this->appendContext($_SERVER);
     }
