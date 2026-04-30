@@ -15,7 +15,7 @@ class Log implements \Psr\Log\LoggerInterface
     {
         $log_content = '['.date('Y-m-d H:i:s')."][{$level}] {$message}";
         if (!empty($context)) {
-            $log_content .= ', context: '.json_encode($context);
+            $log_content .= PHP_EOL.'context: '.json_encode($context);
         }
         file_put_contents($this->log_path->merge(date('Y-m-d').'.log'), $log_content.PHP_EOL.PHP_EOL, FILE_APPEND);
     }

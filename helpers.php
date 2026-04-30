@@ -11,7 +11,7 @@ function config(string $key): mixed
 }
 
 if (!function_exists('env')) {
-    function env(string $name, $def)
+    function env(string $name, mixed $def)
     {
         return app()->env->get($name, $def);
     }

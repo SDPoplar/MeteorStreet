@@ -5,7 +5,7 @@ use Override;
 
 readonly class SqliteConfig extends PdoConfig
 {
-    public function __construct(public string $file, string $password)
+    public function __construct(public string $file, string $password = '')
     {
         parent::__construct('', $password);
     }
@@ -13,6 +13,6 @@ readonly class SqliteConfig extends PdoConfig
     #[Override]
     public function getDsn(): string
     {
-        return "";
+        return "sqlite:{$this->file}";
     }
 }
