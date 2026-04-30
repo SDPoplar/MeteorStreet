@@ -16,13 +16,20 @@ abstract class Http extends \Mxs\Frame\Render
 
     protected function renderDevelopException(MxsDevException $e): bool
     {
-        $trace_lines = array_map(function($line): string {
-            return "{$line['class']}{$line['type']}{$line['function']}({$line['file']} line {$line['line']})";
-        }, $e->getTrace());
-        app()->logger->error(implode(PHP_EOL, array_merge([$e->getMessage(), $e->proposal], $trace_lines)));
+        app()->logger->error(implode(PHP_EOL, array_merge([
+            $e->getMessage(),
+            $e->proposal
+        ], self::packExceptionTrace($e->getTrace()))));
         $err_msg = app()->debug ? self::buildDevExceptionHtml($e) : '';
         $this->writeHttpResponse($e->http_status->value, self::HTML_TYPE, $err_msg);
         return false;
+    }
+
+    protected static function packExceptionTrace(array $trace): array
+    {
+        return array_map(function($line): string {
+            return "{$line['class']}{$line['type']}{$line['function']}({$line['file']} line {$line['line']})";
+        }, $trace);
     }
 
     protected function writeHttpResponse(
