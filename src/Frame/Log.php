@@ -13,9 +13,10 @@ class Log implements \Psr\Log\LoggerInterface
 
     public function log($level, string|\Stringable $message, array $context = []): void
     {
-        file_put_contents(
-            $this->log_path->merge(date('Y-m-d').'.log'),
-            '['.date('Y-m-d H:i:s')."][{$level}] {$message}, context: ".json_encode($context)
-        );
+        $log_content = '['.date('Y-m-d H:i:s')."][{$level}] {$message}";
+        if (!empty($context)) {
+            $log_content .= ', context: '.json_encode($context);
+        }
+        file_put_contents($this->log_path->merge(date('Y-m-d').'.log'), $log_content);
     }
 }

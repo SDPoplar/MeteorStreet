@@ -49,6 +49,11 @@ abstract class Route
         return self::rule(EHttpMethod::POST->value, $path, $controller_class, $method_name);
     }
 
+    public static function &put(string $path, string $controller_class, string $method_name): Rule
+    {
+        return self::rule(EHttpMethod::PUT->value, $path, $controller_class, $method_name);
+    }
+
     public static function &opetions(string $path, string $controller_class, string $method_name): Rule
     {
         return self::rule(EHttpMethod::OPTIONS->value, $path, $controller_class, $method_name);

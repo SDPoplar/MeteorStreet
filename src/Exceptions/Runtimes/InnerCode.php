@@ -9,4 +9,5 @@ enum InnerCode: int
     case RouteNotFound = 903;
     case UnknownHttpMethod = 904;
     case InvalidInput = 905;
+    case ConnectServiceFailed = 906;
 }

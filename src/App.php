@@ -28,6 +28,10 @@ final class App
         $this->env = new \Mxs\Frame\Environment($this->app_root);
         $this->debug = $this->env->getBool('APP_DEBUG');
         $this->storage = new \Mxs\Frame\StorageManager($this->app_root->merge('storage'));
+        $this->config = new \Mxs\Frame\ConfigManager(
+            $this->app_root->merge('config'),
+            $this->storage->configCachePath(create_ifnot_exists: $this->debug)
+        );
 
         is_subclass_of($app_mode, \Mxs\Frame\AppMode::class) or throw new ErrInvalidAppMode(
             is_string($app_mode) ? $app_mode : $app_mode::class
@@ -76,6 +80,7 @@ final class App
     public readonly Path $frame_root;
     public readonly Path $app_root;
     public readonly \Mxs\Frame\Environment $env;
+    public readonly \Mxs\Frame\ConfigManager $config;
     public readonly \Mxs\Frame\StorageManager $storage;
     public readonly \Mxs\Frame\Log $logger;
 

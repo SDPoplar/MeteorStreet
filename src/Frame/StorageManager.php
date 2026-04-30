@@ -21,6 +21,11 @@ class StorageManager
         return $this->cachePath(new Path('route', $group), $create_ifnot_exists);
     }
 
+    public function configCachePath(string|Path $group = '', bool $create_ifnot_exists = false): Path
+    {
+        return $this->cachePath(new Path('config', $group), $create_ifnot_exists);
+    }
+
     public function cachePath(string|Path $group = '', bool $create_ifnot_exists = false): Path
     {
         return $this->getPath(new Path('cache', $group), $create_ifnot_exists);

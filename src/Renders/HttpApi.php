@@ -45,16 +45,4 @@ class HttpApi extends Http
         );
         return true;
     }
-
-    protected function renderDevelopException(MxsDevException $e): bool
-    {
-        app()->logger->error($e->getMessage(), [
-            'proposal' => $e->proposal
-        ]);
-        $err_msg = \Mxs\App::get()->debug
-            ? '<h1>'.$e->getMessage().'</h1><p>'.$e->proposal.'</p>'
-            : '';
-        $this->writeHttpResponse($e->http_status->value, self::HTML_TYPE, $err_msg);
-        return false;
-    }
 }
