@@ -13,7 +13,8 @@ class HttpApi extends Http
     public function onSuccess(mixed $response): void
     {
         //$content = $response->body;
-        $content = ['msg' => 'hello'];
+        //$content = ['msg' => 'hello'];
+        $content = $response;
         $content = is_array($content) ? json_encode($content) : ''.$content;
         $status = empty($content) ? HttpStatus::NoContent : HttpStatus::OK;
         $this->writeHttpResponse($status->value, self::JSON_TYPE, $content);

@@ -21,7 +21,7 @@ class Manager
 
     public function cache(): void
     {
-        $route_path = \Mxs\App::get()->app_root->merge('Route', 'registers');
+        $route_path = \Mxs\App::get()->app_root->merge('route');
         $route_path->exists() or $route_path->create() or throw new ErrCreatePathFailed($route_path);
         $route_path->isReadable() or throw new ErrCannotReadFile($route_path);
         $this->cache_path->exists() or $this->cache_path->create() or throw new ErrCreatePathFailed($this->cache_path);

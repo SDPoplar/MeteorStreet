@@ -3,7 +3,7 @@ namespace Mxs\Services\Pdo;
 
 use Mxs\Exceptions\Develops\InvalidConfig;
 
-class Sqlite extends PdoService
+abstract class Sqlite extends PdoService
 {
     protected const string CONNECT = '';
 
