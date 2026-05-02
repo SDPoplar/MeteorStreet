@@ -31,7 +31,7 @@ class ConfigManager
             $all = $this->loaded_files[$file_name];
         }
         while ($want = array_shift($key_parts)) {
-            if (array_key_exists($want, $all)) {
+            if (is_array($all) and array_key_exists($want, $all)) {
                 $all = $all[$want];
             } else {
                 return $def;

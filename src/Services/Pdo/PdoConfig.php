@@ -1,12 +1,16 @@
 <?php
 namespace Mxs\Services\Pdo;
 
-abstract readonly class PdoConfig
+readonly class PdoConfig
 {
-    abstract public function getDsn(): string;
-
     public function __construct(
+        public string $dsn,
         public string $user,
         public string $password
     ) {}
+
+    public static function sqlite(string $file, string $password = ''): self
+    {
+        return new self("sqlite:{$file}", '', $password);
+    }
 }

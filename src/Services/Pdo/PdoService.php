@@ -1,27 +1,36 @@
 <?php
 namespace Mxs\Services\Pdo;
 
+use Mxs\Exceptions\Develops\InvalidConfig;
+
 abstract class PdoService
 {
+    protected const string CONNECT = '';
+    protected const string DB_TYPE = '';
     abstract protected function selectTable(mixed $table_route): string;
     //  abstract protected static function createPdoInstance();
 
-    public function __construct(PdoConfig $cfg)
+    public function __construct()
     {
-        try {
-            $this->pdo_ins = new \PDO($cfg->getDsn(), $cfg->user, $cfg->password);
-        } catch (\PDOException $e) {
-            throw new \Mxs\Exceptions\Runtimes\ConnectServiceFailed('pdo connnect failed', $e);
+        $this->pdo_key = rtrim(static::DB_TYPE.'.'.static::CONNECT, '.');
+        if (!array_key_exists($this->pdo_key, static::$all_pdo)) {
+            try {
+                $cfg = config('pdo.'.$this->pdo_key);
+                ($cfg instanceof PdoConfig) or throw new InvalidConfig('pdo.'.$this->pdo_key, PdoConfig::class);
+                static::$all_pdo[$this->pdo_key] = new \PDO($cfg->dsn, $cfg->user, $cfg->password);
+            } catch (\PDOException $e) {
+                throw new \Mxs\Exceptions\Runtimes\ConnectServiceFailed('pdo connnect failed', $e);
+            }
         }
     }
 
-    public function getOne(Feature $feature, mixed $table_route = null): ?array
+    protected function getOne(Feature $feature, mixed $table_route = null): ?array
     {
-        $sql = $this->pdo_ins->query('select * from '.static::selectTable($table_route).' where '.self::transFeature($feature));
+        $sql = $this->getPdoIns()->query('select * from '.static::selectTable($table_route).' where '.self::transFeature($feature));
         return $sql->fetchAll(\PDO::FETCH_ASSOC)[0] ?? null;
     }
 
-    public function getList(?Feature $feature = null, int $offset = 0, int $size = 0, string $order = '', mixed $table_route = null): ?array
+    protected function getList(?Feature $feature = null, int $offset = 0, int $size = 0, string $order = '', mixed $table_route = null): ?array
     {
         $sql_parts = ['select * from '.static::selectTable($table_route)];
         if (!is_null($feature)) {
@@ -34,11 +43,22 @@ abstract class PdoService
             $order_parts = explode(' ', $order);
             $sql_parts[] = 'order by '.static::packColumn($order_parts[0]).' '.($order_parts[1] ?? 'asc');
         }
-        $sql = $this->pdo_ins->query(implode(' ', $sql_parts));
+        $sql = $this->getPdoIns()->query(implode(' ', $sql_parts));
         return $sql->fetchAll(\PDO::FETCH_ASSOC) ?: null;
     }
 
-    public function insertOne(array $valueMap, ?string $primary_key = null, mixed $table_route = null): int|string|false
+    protected function count(?Feature $feature = null, mixed $table_route = null): int
+    {
+        $sql_parts = ['select count(*) as count_result from '.static::selectTable($table_route)];
+        if (!is_null($feature)) {
+            $sql_parts[] = 'where '.static::transFeature($feature);
+        }
+        $sql = $this->getPdoIns()->query(implode(' ', $sql_parts));
+        $fetched = $sql->fetchAll(\PDO::FETCH_ASSOC)[0] ?? null;
+        return intval($fetched['count_result'] ?? 0);
+    }
+
+    protected function insertOne(array $valueMap, ?string $primary_key = null, mixed $table_route = null): int|string|false
     {
         //  TODO: what to do if empty($valueMap)
         foreach ($valueMap as $column => $val) {
@@ -46,23 +66,34 @@ abstract class PdoService
             $values[] = static::packValue($val);
         }
         $sql_str = 'insert into ' . static::selectTable($table_route).' ('.implode(', ', $fields ?? []).') values ('.implode(', ', $values ?? []).')';
-        $exec_result = $this->pdo_ins->exec($sql_str);
+        $exec_result = $this->getPdoIns()->exec($sql_str);
         if ($exec_result === false) {
             return false;
         }
         //  get last insert id ?
-        $last_insert_id = $this->pdo_ins->lastInsertId($primary_key);
+        $last_insert_id = $this->getPdoIns()->lastInsertId($primary_key);
         return is_numeric($last_insert_id) ? intval($last_insert_id) : $last_insert_id;
     }
 
-    public function change(Feature $feature, array $newValueMap, mixed $table_route = null): int|false
+    protected function change(Feature $feature, array $newValueMap, mixed $table_route = null): int|false
     {
-        //  TODO: what to do if empty($newValueMap)
+        if (empty($newValueMap)) {
+            return 0;
+        }
         foreach ($newValueMap as $column => $val) {
             $nv[] = static::packColumn($column).' = '.static::packValue($val);
         }
         $sql_str = 'update '.static::selectTable($table_route).' set '.implode(', ', $nv ?? []).' where '.static::transFeature($feature);
-        return $this->pdo_ins->exec($sql_str);
+        return $this->getPdoIns()->exec($sql_str);
+    }
+
+    protected function delete(?Feature $feature, mixed $table_route = null): int|false
+    {
+        $sql_parts = ['delete from '.static::selectTable($table_route)];
+        if (!is_null($feature)) {
+            $sql_parts[] = 'where '.static::transFeature($feature);
+        }
+        return $this->getPdoIns()->exec(implode(' ', $sql_parts));
     }
 
     protected static function transFeature(Feature $f): string
@@ -100,10 +131,11 @@ abstract class PdoService
         };
     }
 
-    /*  TODO: redesign pdo instance rule (pool or singlton)
-    protected static function getPdoIns(): \PDO
-    {}
-    */
+    protected function getPdoIns(): \PDO
+    {
+        return static::$all_pdo[$this->pdo_key];
+    }
 
-    private \PDO $pdo_ins;
+    private static array $all_pdo = [];
+    private readonly string $pdo_key;
 }
