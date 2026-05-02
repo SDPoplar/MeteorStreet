@@ -22,19 +22,39 @@ class Feature
         return new self(FeatureOperator::andGroup, ...$feature);
     }
 
-    public static function eq(string $column, int|float|string|bool $value)
+    public static function eq(string $column, int|float|string|bool $value): self
     {
         return new self(FeatureOperator::equal, $column, $value);
     }
 
-    public static function neq(string $column, int|float|string|bool $value)
+    public static function neq(string $column, int|float|string|bool $value): self
     {
         return new self(FeatureOperator::notEqual, $column, $value);
     }
 
-    public static function in(string $column, array $enumItems)
+    public static function in(string $column, array $enumItems): self
     {
         return new self(FeatureOperator::in, $column, $enumItems);
+    }
+
+    public static function midLike(string $column, string $like_what): self
+    {
+        return self::like($column, "%{$like_what}%");
+    }
+
+    public static function leftLike(string $column, string $like_what): self
+    {
+        return self::like($column, '%'.$like_what);
+    }
+
+    public static function rightlike(string $column, string $like_what): self
+    {
+        return self::like($column, $like_what.'%');
+    }
+
+    protected static function like(string $column, string $like_what): self
+    {
+        return new self(FeatureOperator::like, $like_what);
     }
 
     protected function __construct(

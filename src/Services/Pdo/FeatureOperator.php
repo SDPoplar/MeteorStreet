@@ -13,4 +13,5 @@ enum FeatureOperator
     case greaterThanOrEqual;
     case between;
     case in;
+    case like;
 }

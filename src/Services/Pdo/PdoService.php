@@ -4,6 +4,7 @@ namespace Mxs\Services\Pdo;
 abstract class PdoService
 {
     abstract protected function selectTable(mixed $table_route): string;
+    //  abstract protected static function createPdoInstance();
 
     public function __construct(PdoConfig $cfg)
     {
@@ -80,6 +81,7 @@ abstract class PdoService
                 fn(int|float|string|bool $item): string => self::packValue($item),
                 $f->operands[1]
             )).')',
+            FeatureOperator::like => static::packColumn($f->operands[0]).' like '.static::packValue($f->operands[1]),
             //  TODO: other operators
         }.')';
     }
@@ -97,6 +99,11 @@ abstract class PdoService
             'bool' => $value ? 'true' : 'false'
         };
     }
+
+    /*  TODO: redesign pdo instance rule (pool or singlton)
+    protected static function getPdoIns(): \PDO
+    {}
+    */
 
     private \PDO $pdo_ins;
 }
