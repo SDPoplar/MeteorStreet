@@ -73,7 +73,8 @@ class Manager
 
     final protected function routeMatch(string $queryString, array $keys): ?object
     {
-        $parts = explode('/', $queryString);
+        $clearedQs = explode('?', $queryString);
+        $parts = explode('/', $clearedQs[0]);
         if (str_starts_with($queryString, '/')) {
             array_shift($parts);
         }

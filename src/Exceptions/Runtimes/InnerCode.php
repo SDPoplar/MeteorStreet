@@ -10,4 +10,6 @@ enum InnerCode: int
     case UnknownHttpMethod = 904;
     case InvalidInput = 905;
     case ConnectServiceFailed = 906;
+    case NoWritePermission = 907;
+    case ReceiveFileFailed = 908;
 }

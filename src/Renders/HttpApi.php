@@ -1,7 +1,6 @@
 <?php
 namespace Mxs\Renders;
 
-use \Mxs\Exceptions\Develops\MxsDevelop as MxsDevException;
 use \Mxs\Exceptions\Runtimes\MxsRuntime as MxsRuntimeException;
 use \SeaDrip\Http\Status as HttpStatus;
 
@@ -26,11 +25,6 @@ class HttpApi extends Http
         if ($e instanceof MxsRuntimeException) {
             return $this->renderRuntimeException($e);
         }
-
-        if ($e instanceof MxsDevException) {
-            return $this->renderDevelopException($e);
-        }
-
         return parent::onException($e);
     }
 

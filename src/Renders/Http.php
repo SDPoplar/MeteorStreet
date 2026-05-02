@@ -14,6 +14,16 @@ abstract class Http extends \Mxs\Frame\Render
         //var_dump($request);
     }
 
+    #[\Override]
+    public function onException(\Throwable $e): bool
+    {
+        if ($e instanceof MxsDevException) {
+            return $this->renderDevelopException($e);
+        }
+
+        return parent::onException($e);
+    }
+
     protected function renderDevelopException(MxsDevException $e): bool
     {
         app()->logger->error(implode(PHP_EOL, array_merge([
