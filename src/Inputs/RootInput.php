@@ -21,5 +21,17 @@ abstract class RootInput
         return $this;
     }
 
+    public function &appendMid(string $name, mixed $value): static
+    {
+        $this->from_mid[$name] = $value;
+        return $this;
+    }
+
+    public function mid(string $name, mixed $def = null): mixed
+    {
+        return $from_mid[$name] ?? $def;
+    }
+
     protected array $route_params = [];
+    protected array $from_mid = [];
 }

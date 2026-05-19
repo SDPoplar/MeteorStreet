@@ -7,6 +7,7 @@ use Mxs\Exceptions\Develops\{
     AppNotCreated as ErrAppNotCreated,
     AppAlreadyCreated as ErrAppAlreadyCreated,
     InvalidAppMode as ErrInvalidAppMode,
+    InvalidTimezone as ErrInvalidTimezone,
 };
 
 use Mxs\Exceptions\Runtimes\{
@@ -27,6 +28,9 @@ final class App
         $this->frame_root = new Path(dirname(__FILE__));
         $this->env = new \Mxs\Frame\Environment($this->app_root);
         $this->debug = $this->env->getBool('APP_DEBUG');
+        $tz = $this->env->getString('APP_TIMEZONE', 'UTC');
+        date_default_timezone_set($tz) or throw new ErrInvalidTimezone($tz);
+        $this->timezone = $tz;
         $this->storage = new \Mxs\Frame\StorageManager($this->app_root->merge('storage'));
         $this->config = new \Mxs\Frame\ConfigManager(
             $this->app_root->merge('config'),
@@ -76,6 +80,7 @@ final class App
     }
 
     public readonly bool $debug;
+    public readonly string $timezone;
 
     public readonly Path $frame_root;
     public readonly Path $app_root;

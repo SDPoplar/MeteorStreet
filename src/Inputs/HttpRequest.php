@@ -4,7 +4,7 @@ namespace Mxs\Inputs;
 use SeaDrip\Tools\Path;
 use Mxs\Exceptions\Runtimes\ReceiveFileFailedException;
 
-class HttpRequest extends RootInput
+class HttpRequest extends RootInput //implements \Psr\Http\Message\RequestInterface
 {
     public function __construct()
     {
@@ -20,6 +20,34 @@ class HttpRequest extends RootInput
     {
         return $_POST[$column] ?? $_GET[$column] ?? $def_val;
     }
+
+    public function header(string $column, mixed $def = null): ?string
+    {
+        //  var_dump($_SERVER); exit;
+        return $_SERVER['HTTP_' . strtoupper($column)] ?? $def;
+    }
+
+    //  #[\Override]
+    public function getMethod(): string
+    {
+        return $this->route_method;
+    }
+
+    //  #[\Override]
+    /*
+    public function getUri(): string
+    {
+        return $this->route;
+    }
+    */
+
+    //  #[\Override]
+    /*
+    public function withUri(UriInterface $uri, bool $preserveHost = false)
+    {
+        throw new \Exception('Not implemented');
+    }
+    */
 
     public function file(string $column, Path $save_path, ?callable $make_name = null): SavedFile
     {
@@ -45,6 +73,12 @@ class HttpRequest extends RootInput
         $full_file = $save_path->merge($file_name);
         move_uploaded_file($uploaded['tmp_name'], $full_file) or throw ReceiveFileFailedException::saveFailed($full_file);
         return new SavedFile($file_name, $file_ext, $uploaded['type'], $save_path, $uploaded['size'], $file_hash, $uploaded['name']);
+    }
+
+    //  #[\Override]
+    public function getProtocolVersion(): string
+    {
+        return $this->protocal_version;
     }
 
     public readonly string $protocal;

@@ -12,4 +12,6 @@ enum InnerCode: int
     case ConnectServiceFailed = 906;
     case NoWritePermission = 907;
     case ReceiveFileFailed = 908;
+    case MissingAuthorization = 909;
+    case InvalidAuthorization = 910;
 }
