@@ -14,4 +14,5 @@ enum InnerCode: int
     case ReceiveFileFailed = 908;
     case MissingAuthorization = 909;
     case InvalidAuthorization = 910;
+    case PhpExtendMissing = 911;
 }

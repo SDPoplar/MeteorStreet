@@ -5,9 +5,9 @@ function app(): \Mxs\App
     return \Mxs\App::get();
 }
 
-function config(string $key): mixed
+function config(string $key, mixed $def = null): mixed
 {
-    return app()->config->get($key);
+    return app()->config->get($key, $def);
 }
 
 if (!function_exists('env')) {

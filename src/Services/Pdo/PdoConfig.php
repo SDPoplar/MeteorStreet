@@ -1,7 +1,7 @@
 <?php
 namespace Mxs\Services\Pdo;
 
-readonly class PdoConfig
+final readonly class PdoConfig
 {
     public function __construct(
         public string $dsn,
@@ -36,7 +36,7 @@ readonly class PdoConfig
     public static function postgre(
         string $db,
         string $host = 'localhost',
-        int $port = 3306,
+        int $port = 5432,
         string $user = 'root',
         string $password = '',
     ): self {
