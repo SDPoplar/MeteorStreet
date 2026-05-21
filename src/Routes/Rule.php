@@ -31,6 +31,7 @@ class Rule
             $this->controller_class,
             $this->method_name,
             $in_type_name,
+            array_reverse($this->middlewares),
         );
     }
 }

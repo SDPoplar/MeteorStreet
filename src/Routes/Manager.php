@@ -38,6 +38,7 @@ class Manager
         foreach (Route::enumMethods() as $method) {
             $keyMap = [];
             foreach(Route::getRulesByMethod($method) as $index => $rule) {
+                $rule->checkMiddleware();
                 $item = $this->routeKeyExplode($rule->path, $index);
                 $all_keys[] = $item->parts;
                 $keyMap[$index] = ['ins' => serialize($rule->buildAction()), 'route' => $item->columns];
