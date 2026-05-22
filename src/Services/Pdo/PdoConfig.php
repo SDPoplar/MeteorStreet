@@ -37,7 +37,7 @@ final readonly class PdoConfig
         string $db,
         string $host = 'localhost',
         int $port = 5432,
-        string $user = 'root',
+        string $user = 'postgres',
         string $password = '',
     ): self {
         return new self("pgsql:host={$host};port={$port};dbname={$db}", $user, $password);
