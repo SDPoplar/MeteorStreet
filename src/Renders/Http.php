@@ -24,6 +24,16 @@ abstract class Http extends \Mxs\Frame\Render
         return parent::onException($e);
     }
 
+    protected function redirect(string $target): void
+    {
+        $this->writeHttpResponse(
+            \SeaDrip\Http\Status::MovedPermanently->value,
+            self::HTML_TYPE,
+            "",
+            "Location: {$target}"
+        );
+    }
+
     protected function renderDevelopException(MxsDevException $e): bool
     {
         app()->logger->error(implode(PHP_EOL, array_merge([

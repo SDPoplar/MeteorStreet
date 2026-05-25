@@ -1,8 +1,9 @@
 <?php
 namespace Mxs\Renders;
 
-use \Mxs\Exceptions\Runtimes\MxsRuntime as MxsRuntimeException;
-use \SeaDrip\Http\Status as HttpStatus;
+use SeaDrip\Http\Status as HttpStatus;
+use Mxs\Exceptions\Runtimes\MxsRuntime as MxsRuntimeException;
+use Mxs\Frame\{ExecReturn, ExecReturnType};
 
 class HttpApi extends Http
 {
@@ -11,11 +12,22 @@ class HttpApi extends Http
     #[\Override]
     public function onSuccess(mixed $response): void
     {
-        //$content = $response->body;
-        //$content = ['msg' => 'hello'];
-        $content = $response;
+        if ($response instanceof ExecReturn) {
+            if ($response->type === ExecReturnType::Redir) {
+                $this->redirect($response->data);
+                return;
+            }
+            if ($response->type === ExecReturnType::Created) {
+                $status = HttpStatus::Created;
+            }
+            $content = $response->data;
+        } else {
+            //$content = $response->body;
+            //$content = ['msg' => 'hello'];
+            $content = $response;
+        }
         $content = is_array($content) ? json_encode($content) : ''.$content;
-        $status = empty($content) ? HttpStatus::NoContent : HttpStatus::OK;
+        $status ??= empty($content) ? HttpStatus::NoContent : HttpStatus::OK;
         $this->writeHttpResponse($status->value, self::JSON_TYPE, $content);
     }
 
