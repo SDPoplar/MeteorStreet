@@ -73,7 +73,7 @@ abstract class RootInput
 
     public function mid(string $name, mixed $def = null): mixed
     {
-        return $from_mid[$name] ?? $def;
+        return $this->from_mid[$name] ?? $def;
     }
 
     protected array $route_params = [];
