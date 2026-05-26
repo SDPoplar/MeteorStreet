@@ -3,6 +3,8 @@ namespace Mxs\Routes;
 
 class RuleGroup
 {
+    use MiddlewareTrait;
+    
     public function append(Rule & $rule)
     {
         $this->rules[] =& $rule;
