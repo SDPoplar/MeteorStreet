@@ -30,18 +30,14 @@ abstract class PdoService
         return $sql->fetchAll(\PDO::FETCH_ASSOC)[0] ?? null;
     }
 
-    protected function getList(?Feature $feature = null, int $offset = 0, int $size = 0, string $order = '', mixed $table_route = null): ?array
+    protected function getList(?Feature $feature = null, ?Range $range = null, mixed $table_route = null): ?array
     {
         $sql_parts = ['select * from '.static::selectTable($table_route)];
         if (!is_null($feature)) {
             $sql_parts[] = 'where '.static::transFeature($feature);
         }
-        if ($size > 0) {
-            $sql_parts[] = 'limit '.($offset > 0 ? $offset.',' : '').$size;
-        }
-        if (!empty($order)) {
-            $order_parts = explode(' ', $order);
-            $sql_parts[] = 'order by '.static::packColumn($order_parts[0]).' '.($order_parts[1] ?? 'asc');
+        if (!is_null($range)) {
+            $sql_parts[] = static::transRange($range);
         }
         $sql = $this->getPdoIns()->query(implode(' ', $sql_parts));
         return $sql->fetchAll(\PDO::FETCH_ASSOC) ?: null;
@@ -98,7 +94,6 @@ abstract class PdoService
 
     protected static function transFeature(Feature $f): string
     {
-        ;
         return '('.match($f->op) {
             FeatureOperator::andGroup => implode(' and ', array_map(fn($item): string => static::transFeature($item),  $f->operands)),
             FeatureOperator::orGroup => implode(' or ', array_map(fn($item): string => static::transFeature($item),  $f->operands)),
@@ -117,6 +112,18 @@ abstract class PdoService
         }.')';
     }
 
+    protected static function transRange(Range $r): string
+    {
+        if (!is_null($r->reverse)) {
+            $parts[] = 'order by ' . $r->order_column . ' ' . ($r->reverse ? 'desc' : 'asc');
+        }
+
+        if ($r->size > 0) {
+            $parts[] = 'limit ' . $r->offset . ',' . $r->size;
+        }
+        return implode(' ', $parts ?? []);
+    }
+
     protected static function packColumn(string $column): string
     {
         return $column;
@@ -127,7 +134,8 @@ abstract class PdoService
         return match(gettype($value)) {
             'int', 'integer', 'float', 'double' => $value,
             'string' => '"'.str_replace('"', '\\"', $value).'"',
-            'bool' => $value ? 'true' : 'false'
+            'bool', 'boolean' => $value ? 'true' : 'false',
+            default => die(gettype($value))
         };
     }
 

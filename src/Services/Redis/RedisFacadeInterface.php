@@ -1,9 +1,6 @@
 <?php
 namespace Mxs\Services\Redis;
 
-/**
- * @method string|false RedisFacadeInterface::get(string $key)
- */
 interface RedisFacadeInterface
 {
     public function get(string $key): mixed;
