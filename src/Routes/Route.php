@@ -31,10 +31,7 @@ abstract class Route
 
     public static function &group(callable $regist_func): RuleGroup
     {
-        $group_instance = new RuleGroup();
-        self::$grouping =& $group_instance;
-        $regist_func();
-        self::$grouping = null;
+        $group_instance = new RuleGroup($regist_func);
         self::$groups[] =& $group_instance;
         return $group_instance;
     }
@@ -72,11 +69,10 @@ abstract class Route
     private static function &rule(string $method, string $path, string $controller_class, string $method_name): Rule
     {
         $rule_instance = new Rule(self::$current_file, $method, $path, $controller_class, $method_name);
-        if (is_null(self::$grouping)) {
-            self::$registed[] =& $rule_instance;
-        } else {
-            self::$grouping->append($rule_instance);
+        if (!is_null(self::$grouping)) {
+            $rule_instance->middware(...self::$grouping->getRegistedMiddlewares());
         }
+        self::$registed[] =& $rule_instance;
         return $rule_instance;
     }
 
@@ -85,10 +81,11 @@ abstract class Route
         if (!is_null(self::$grouping)) {
             throw new \Mxs\Exceptions\Develops\RouteGroupNotClosed(self::$current_file);
         }
-        //  TODO: unpack rule groups
         while (!empty(self::$groups)) {
             $group = array_shift(self::$groups);
+            self::$grouping = $group;
             self::$registed = array_merge(self::$registed, $group->compile());
+            self::$grouping = null;
         }
         return self::$registed;
     }

@@ -4,17 +4,19 @@ namespace Mxs\Routes;
 class RuleGroup
 {
     use MiddlewareTrait;
+
+    public function __construct(
+        protected \Closure $regist_func
+    ) {}
     
-    public function append(Rule & $rule)
+    public function getRegistedMiddlewares(): array
     {
-        $this->rules[] =& $rule;
+        return $this->middlewares;
     }
 
-    public function compile(): array
+    public function compile(): void
     {
-        //  TODO: inject group attr to rules
-        return $this->rules;
+        $func = $this->regist_func;
+        $func();
     }
-
-    private array $rules = [];
 }
