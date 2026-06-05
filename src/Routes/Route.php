@@ -84,7 +84,7 @@ abstract class Route
         while (!empty(self::$groups)) {
             $group = array_shift(self::$groups);
             self::$grouping = $group;
-            self::$registed = array_merge(self::$registed, $group->compile());
+            $group->compile();
             self::$grouping = null;
         }
         return self::$registed;

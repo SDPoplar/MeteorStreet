@@ -13,12 +13,12 @@ class HttpRequest extends RootInput //implements \Psr\Http\Message\RequestInterf
         $protocal_parts = explode('/', $_SERVER['SERVER_PROTOCOL']);
         $this->protocal = $protocal_parts[0];
         $this->protocal_version = $protocal_parts[1];
-    }
-
-    #[\Override]
-    public function input(string $column, mixed $def_val = null)
-    {
-        return $_POST[$column] ?? $_GET[$column] ?? $def_val;
+        $content_type = $_SERVER['CONTENT_TYPE'];
+        $this->content_type = empty($content_type) ? '' : $content_type;
+        $this->all_in = match($this->content_type) {
+            'application/json' => json_decode(file_get_contents('php://input') ?: '[]', true) ?: [],
+            default => array_merge($_GET, $_POST),
+        };
     }
 
     public function header(string $column, mixed $def = null): ?string
@@ -83,4 +83,5 @@ class HttpRequest extends RootInput //implements \Psr\Http\Message\RequestInterf
 
     public readonly string $protocal;
     public readonly string $protocal_version;
+    public readonly string $content_type;
 }

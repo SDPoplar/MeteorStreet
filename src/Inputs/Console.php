@@ -1,15 +1,21 @@
 <?php
 namespace Mxs\Inputs;
 
-readonly class Console extends RootInput
+class Console extends RootInput
 {
     public function __construct()
     {
         parent::__construct('console', $_SERVER['argv'][1] ?? 'help');
+        $this->all_in = $_SERVER['argv'] ?? [];
     }
 
-    public function input(string $column, $def_val = null)
+    #[\Override]
+    public function input(string $column, mixed $def_val = null): mixed
     {
-        return '';
+        if (!array_key_exists($column, $this->all_in)) {
+            echo "{$column}:".PHP_EOL;
+            $this->all_in[$column] = trim(fgets(STDIN));
+        }
+        return parent::input($column, $def_val);
     }
 }

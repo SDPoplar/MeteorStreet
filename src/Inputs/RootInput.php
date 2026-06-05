@@ -10,7 +10,10 @@ abstract class RootInput
         public readonly string $route,
     ) {}
     
-    abstract public function input(string $column, mixed $def_val = null);
+    public function input(string $column, mixed $def_val = null): mixed
+    {
+        return $this->all_in[$column] ?? $def_val;
+    }
 
     public function inputEmail(string $column): string
     {
@@ -78,4 +81,5 @@ abstract class RootInput
 
     protected array $route_params = [];
     protected array $from_mid = [];
+    protected array $all_in;
 }

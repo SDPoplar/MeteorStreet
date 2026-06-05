@@ -2,6 +2,7 @@
 namespace Mxs\Renders;
 
 use Mxs\Exceptions\Develops\MxsDevelop as MxsDevException;
+use SeaDrip\Http\Status as HttpStatus;
 
 abstract class Http extends \Mxs\Frame\Render
 {
@@ -17,32 +18,26 @@ abstract class Http extends \Mxs\Frame\Render
     #[\Override]
     public function onException(\Throwable $e): bool
     {
-        if ($e instanceof MxsDevException) {
-            return $this->renderDevelopException($e);
-        }
+        //  save log
+        $log_msg = ($e instanceof MxsDevException) ? $e->getMessage() . PHP_EOL . $e->proposal : $e->getMessage();
+        app()->logger->error(implode(PHP_EOL, [$log_msg, ...$e->getTrace()]));
 
-        return parent::onException($e);
+        //  rendor html
+        $http_status = ($e instanceof MxsDevException) ? $e->http_status->value : HttpStatus::InternalServerError->value;
+        $err_msg = app()->debug ? self::buildExceptionHtml($e) : '';
+        $this->writeHttpResponse($http_status, self::HTML_TYPE, $err_msg);
+        //  return parent::onException($e);
+        return true;
     }
 
     protected function redirect(string $target): void
     {
         $this->writeHttpResponse(
-            \SeaDrip\Http\Status::MovedPermanently->value,
+            HttpStatus::MovedPermanently->value,
             self::HTML_TYPE,
             "",
             "Location: {$target}"
         );
-    }
-
-    protected function renderDevelopException(MxsDevException $e): bool
-    {
-        app()->logger->error(implode(PHP_EOL, array_merge([
-            $e->getMessage(),
-            $e->proposal
-        ], self::packExceptionTrace($e->getTrace()))));
-        $err_msg = app()->debug ? self::buildDevExceptionHtml($e) : '';
-        $this->writeHttpResponse($e->http_status->value, self::HTML_TYPE, $err_msg);
-        return false;
     }
 
     protected static function packExceptionTrace(array $trace): array
@@ -69,20 +64,21 @@ abstract class Http extends \Mxs\Frame\Render
         echo $content;
     }
 
-    private static function buildDevExceptionHtml(MxsDevException $e): string
+    private static function buildExceptionHtml(\Throwable $e): string
     {
         $trace_lines = array_map(function ($line): string {
             return "<li><strong>{$line['class']}{$line['type']}{$line['function']}</strong><br />"
                 ."<small>{$line['file']} line {$line['line']}</small></li>";
         }, $e->getTrace());
         $trace_list = implode(PHP_EOL, $trace_lines);
+        $propsal_line = ($e instanceof MxsDevException) ? "<p>{$e->proposal}</p>" : '';
         $html = <<<HTML
 <!Doctype html>
 <html>
 <head><title>Error!</title></head>
 <body>
   <h1>{$e->getMessage()}</h1>
-  <p>{$e->proposal}</p>
+  {$propsal_line}
   <h3>Trace:</h3>
   <ol>{$trace_list}</ol>
 </body>
