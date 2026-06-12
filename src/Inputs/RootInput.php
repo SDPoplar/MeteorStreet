@@ -9,6 +9,11 @@ abstract class RootInput
         public readonly string $route_method,
         public readonly string $route,
     ) {}
+
+    public function allInputs(): array
+    {
+        return $this->all_in;
+    }
     
     public function input(string $column, mixed $def_val = null): mixed
     {
@@ -50,6 +55,13 @@ abstract class RootInput
             throw new InvalidInput($column, "{$column} couldn't be more than {$minLen} characters");
         }
         return $s;
+    }
+
+    public function getSortedQuery(): string
+    {
+        $all = $this->all_in;
+        ksort($all);
+        return http_build_query($all);
     }
 
     public function inputPassword(string $column = 'password'): string
