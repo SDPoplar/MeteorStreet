@@ -3,6 +3,7 @@ namespace Mxs\Renders;
 
 use Mxs\Exceptions\Develops\MxsDevelop as MxsDevException;
 use SeaDrip\Http\Status as HttpStatus;
+use Override;
 
 abstract class Http extends \Mxs\Frame\Render
 {
@@ -15,19 +16,30 @@ abstract class Http extends \Mxs\Frame\Render
         //var_dump($request);
     }
 
-    #[\Override]
+    #[Override]
     public function onException(\Throwable $e): bool
     {
-        //  save log
-        $log_msg = ($e instanceof MxsDevException) ? $e->getMessage() . PHP_EOL . $e->proposal : $e->getMessage();
-        app()->logger->error(implode(PHP_EOL, [$log_msg, ...$e->getTrace()]));
-
         //  rendor html
         $http_status = ($e instanceof MxsDevException) ? $e->http_status->value : HttpStatus::InternalServerError->value;
         $err_msg = app()->debug ? self::buildExceptionHtml($e) : '';
         $this->writeHttpResponse($http_status, self::HTML_TYPE, $err_msg);
         //  return parent::onException($e);
         return true;
+    }
+
+    #[Override]
+    public function onError(int $errno, string $errstr, string $errfile, int $errline): bool
+    {
+        $msg = app()->debug
+            ? "<h1>[$errno]{$errstr}</h1>" . PHP_EOL . "<p>{$errfile} line {$errline}</p>"
+            : "<h1>Error!</h1>";
+        $this->writeHttpResponse(
+            HttpStatus::InternalServerError->value,
+            self::HTML_TYPE,
+            $msg,
+        );
+        return true;
+        //  return parent::onError($errno, $errstr, $errfile, $errline);
     }
 
     protected function redirect(string $target): void
@@ -38,13 +50,6 @@ abstract class Http extends \Mxs\Frame\Render
             "",
             "Location: {$target}"
         );
-    }
-
-    protected static function packExceptionTrace(array $trace): array
-    {
-        return array_map(function($line): string {
-            return "{$line['class']}{$line['type']}{$line['function']}({$line['file']} line {$line['line']})";
-        }, $trace);
     }
 
     protected function writeHttpResponse(

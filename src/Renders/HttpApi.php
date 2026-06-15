@@ -42,12 +42,6 @@ class HttpApi extends Http
 
     protected function renderRuntimeException(MxsRuntimeException $e): bool
     {
-        if ($e->http_status === \SeaDrip\Http\Status::InternalServerError) {
-            $log_lines = array_merge([
-                '['.$e->getCode().']'.$e->getMessage(),
-            ], self::packExceptionTrace($e->getTrace()));
-            app()->logger->error(implode(PHP_EOL, $log_lines), $e->getContext());
-        }
         $this->writeHttpResponse(
             $e->http_status->value,
             self::JSON_TYPE,

@@ -54,28 +54,26 @@ final class App
 
     final public function run(): void
     {
-        $root_input = $this->mode->getRootInputInstance();
-        if ($this->debug) {
-            $this->mode->router->cache();
-        }
-        $route_item = $this->mode->router->dispatch($root_input);
-        $response = $route_item->execute($root_input);
-        $this->mode->getRenderInstance()->onSuccess($response);
+        $this->mode->run($this->debug);
     }
 
     private function takeoverExceptions(): void
     {
         $use_mode = $this->mode;
         set_exception_handler(function(\Throwable $e) use ($use_mode) {
-            return $use_mode->getRenderInstance()->onException($e);
+            $msg = '';
+            $context = [];
+            if (app()->logger ?? null and $use_mode->log_render->bakeException($e, $msg, $context)) {
+                app()->logger->error($msg, $context);
+            }
+            return $use_mode->getOutputRender()->onException($e);
         });
-        set_error_handler(function(
-            int $errno,
-            string $errstr,
-            string $errfile,
-            int $errline
-        ) use ($use_mode): bool {
-            return $use_mode->getRenderInstance()->onError($errno, $errstr, $errfile, $errline);
+        set_error_handler(function(int $errno, string $errstr, string $errfile, int $errline) use ($use_mode): bool {
+            if (!(app()->logger ?? null)) {
+                return false;
+            }
+            app()->logger->error($this->mode->log_render->bakeError($errno, $errstr, $errfile, $errline));
+            return $use_mode->getOutputRender()->onError($errno, $errstr, $errfile, $errline);
         });
     }
 

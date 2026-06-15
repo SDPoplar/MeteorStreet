@@ -22,11 +22,18 @@ class Rule
     {
         try {
             $method_param = new \ReflectionParameter([$this->controller_class, $this->method_name], 0);
+            $in_type_name = ''.$method_param->getType();
+            class_exists($in_type_name) or throw new ErrInputClassNotExists(
+                $in_type_name,
+                $this->controller_class,
+                $this->method_name
+            );
         } catch(\ReflectionException $e) {
-            throw new ErrInvalidRoute($this->from_file, $this->method, $this->path, $e);
+            $in_type_name = '';
+            //  throw new ErrInvalidRoute($this->from_file, $this->method, $this->path, $e);
+            method_exists($this->controller_class, $this->method_name)
+                or throw new ErrInvalidRoute($this->from_file, $this->method, $this->path, $e);
         }
-        $in_type_name = ''.$method_param->getType();
-        class_exists($in_type_name) or throw new ErrInputClassNotExists($in_type_name, $this->controller_class, $this->method_name);
         return new Action(
             $this->controller_class,
             $this->method_name,

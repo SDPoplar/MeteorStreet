@@ -31,10 +31,16 @@ readonly class Action
         $cast_in_cls = $this->cast_input_class;
         $ctrl_cls = $this->controller_class;
         $method_name = $this->method_name;
-        return function(RootInput $input) use ($cast_in_cls, $ctrl_cls, $method_name) {
-            $castedInput = is_a($input, $cast_in_cls) ? $input
-                : new $cast_in_cls($input);
-            return new $ctrl_cls()->$method_name($castedInput);
-        };
+        if (empty($cast_in_cls)) {
+            return function(RootInput $input) use ($ctrl_cls, $method_name) {
+                return new $ctrl_cls()->$method_name();
+            };
+        } else {
+            return function(RootInput $input) use ($cast_in_cls, $ctrl_cls, $method_name) {
+                $castedInput = is_a($input, $cast_in_cls) ? $input
+                    : new $cast_in_cls($input);
+                return new $ctrl_cls()->$method_name($castedInput);
+            };
+        }
     }
 }
