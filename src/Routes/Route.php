@@ -66,6 +66,11 @@ abstract class Route
         return self::rule(EHttpMethod::DELETE->value, $path, $controller_class, $method_name);
     }
 
+    public static function &command(string $path, string $controller_class, string $method_name): Rule
+    {
+        return self::rule(\Mxs\Modes\Console::METHOD, $path, $controller_class, $method_name);
+    }
+
     private static function &rule(string $method, string $path, string $controller_class, string $method_name): Rule
     {
         $rule_instance = new Rule(self::$current_file, $method, $path, $controller_class, $method_name);

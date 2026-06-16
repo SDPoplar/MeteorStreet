@@ -54,7 +54,16 @@ final class App
 
     final public function run(): void
     {
-        $this->mode->run($this->debug);
+        $router = new \Mxs\Routes\Manager();
+        if ($this->debug) {
+            $router->cache();
+        }
+        $act = $router->dispatch(
+            $this->mode->getRequestMethod(),
+            $this->mode->getRequestPath(),
+            $routeParams
+        );
+        $this->mode->run($this->debug, $act, $routeParams ?? []);
     }
 
     private function takeoverExceptions(): void
@@ -66,14 +75,14 @@ final class App
             if (app()->logger ?? null and $use_mode->log_render->bakeException($e, $msg, $context)) {
                 app()->logger->error($msg, $context);
             }
-            return $use_mode->getOutputRender()->onException($e);
+            return $use_mode->output_render->onException($e);
         });
         set_error_handler(function(int $errno, string $errstr, string $errfile, int $errline) use ($use_mode): bool {
             if (!(app()->logger ?? null)) {
                 return false;
             }
             app()->logger->error($this->mode->log_render->bakeError($errno, $errstr, $errfile, $errline));
-            return $use_mode->getOutputRender()->onError($errno, $errstr, $errfile, $errline);
+            return $use_mode->output_render->onError($errno, $errstr, $errfile, $errline);
         });
     }
 

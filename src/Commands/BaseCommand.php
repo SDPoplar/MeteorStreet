@@ -1,7 +1,7 @@
 <?php
-namespace Mxs\Console;
+namespace Mxs\Commands;
 
-abstract class Command implements \Mxs\Route\Item
+abstract class BaseCommand
 {
     abstract public static function getCommandFlag(): string;
 

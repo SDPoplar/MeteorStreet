@@ -13,33 +13,36 @@ readonly class Http extends \Mxs\Frame\AppMode
         string $root_input_type = \Mxs\Inputs\HttpRequest::class,
         string|Render $output_render = \Mxs\Renders\HttpApi::class,
     ) {
-        parent::__construct($log_render);
         $this->router = new RouteManager();
         $this->input_instance = new ($root_input_type)();
-        $this->output_render = is_string($output_render) ? new ($output_render)($this->input_instance) : $output_render;
+        $output_render = is_string($output_render) ? new ($output_render)($this->input_instance) : $output_render;
+        parent::__construct($log_render, $output_render);
     }
 
     #[Override]
-    public function run(bool $debug): void
+    public function getRequestMethod(): string
     {
-        $root_input = $this->input_instance;
-        if ($debug) {
-            $this->router->cache();
+        return $this->input_instance->route_method;
+    }
+
+    #[Override]
+    public function getRequestPath(): string
+    {
+        return $this->input_instance->route;
+    }
+
+    #[Override]
+    public function run(bool $debug, \Mxs\Routes\Action $action, array $route_params): void
+    {
+        if (!empty($route_params)) {
+            $this->input_instance->setRouteParams($route_params);
         }
-        $route_item = $this->router->dispatch($root_input);
-        $result = $route_item->execute($root_input);
+        $result = $action->execute($this->input_instance);
         if (!is_null($result)) {
-            $this->getOutputRender()->onSuccess($result);
+            $this->output_render->onSuccess($result);
         }
-    }
-
-    #[Override]
-    public function getOutputRender(): Render
-    {
-        return $this->output_render;
     }
 
     protected readonly HttpRequest $input_instance;
     public readonly RouteManager $router;
-    public readonly Render $output_render;
 }

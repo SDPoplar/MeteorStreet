@@ -1,22 +1,26 @@
 <?php
-namespace Mxs\Console\Commands;
+namespace Mxs\Commands;
 
-class Help extends \Mxs\Console\Command
+use Override;
+
+class Help extends BaseCommand
 {
+    #[Override]
     public static function getCommandFlag(): string
     {
         return 'help';
     }
 
+    #[Override]
     public static function getCommandDescribe(): string
     {
         return 'show this usage';
     }
 
-    public function execute(\Mxs\Inputs\RootInputInterface $input)
+    public function execute(\Mxs\Inputs\Console $input)
     {
         $usage = <<<usagestr
-usage: php mxs command [params]
+usage: php mxs [group:]command [params]
 registed commands:
 usagestr;
 

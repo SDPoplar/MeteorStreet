@@ -15,4 +15,5 @@ enum InnerCode: int
     case MissingAuthorization = 909;
     case InvalidAuthorization = 910;
     case PhpExtendMissing = 911;
+    case ConsoleOnly = 912;
 }

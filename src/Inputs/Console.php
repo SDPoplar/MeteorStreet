@@ -5,8 +5,13 @@ class Console extends RootInput
 {
     public function __construct()
     {
-        parent::__construct('console', $_SERVER['argv'][1] ?? 'help');
-        $this->all_in = $_SERVER['argv'] ?? [];
+        $all = $_SERVER['argv'] ?? [];
+        if (strtolower(array_shift($all)) ?? '' !== 'mxs') {
+            throw new \Mxs\Exceptions\Runtimes\ConsoleOnly();
+        }
+        $command = array_shift($all) ?? 'help';
+        parent::__construct('console', $command);
+        $this->all_in = $all;
     }
 
     #[\Override]
