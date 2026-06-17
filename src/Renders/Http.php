@@ -11,9 +11,7 @@ abstract class Http extends \Mxs\Frame\Render
 
     public function __construct(\Mxs\Inputs\HttpRequest $request)
     {
-        parent::__construct($request);
         $this->protocal_line = $request->protocal.'/'.$request->protocal_version;
-        //var_dump($request);
     }
 
     #[Override]
