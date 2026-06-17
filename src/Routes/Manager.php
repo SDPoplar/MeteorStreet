@@ -42,10 +42,16 @@ class Manager
 
     public function dispatch(string $method, string $path, ?array &$routeParams): \Mxs\Routes\Action
     {
-        $cached = $this->cache_path->merge("{$method}.php");
-        file_exists($cached) or throw new ErrRouteNotFound($method, $path);
-        is_readable($cached) or throw new ErrCannotReadFile($cached);
-        $found = $this->getCodecInstance($method)->routeMatch($path, include($cached), $routeParams);
+        $codec = $this->getCodecInstance($method);
+        if (method_exists($codec, 'matchInnerRoute')) {
+            $found = $codec->matchInnerRoute($path, $routeParams);
+        }
+        if (is_null($found ?? null)) {
+            $cached = $this->cache_path->merge("{$method}.php");
+            file_exists($cached) or throw new ErrRouteNotFound($method, $path);
+            is_readable($cached) or throw new ErrCannotReadFile($cached);
+            $found = $codec->routeMatch($path, include($cached), $routeParams);
+        }
         is_null($found) and throw new ErrRouteNotFound($method, $path);
         if (!empty($routeParams)) {
             $in->setRouteParams($routeParams);

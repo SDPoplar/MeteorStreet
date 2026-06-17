@@ -9,8 +9,9 @@ readonly class Action
     public function __construct(
         public string $controller_class,
         public string $method_name,
-        public string $cast_input_class,
+        public string $cast_input_class = '',
         public array $middlewares = [],
+        public string $describe = '',
     ) {}
 
     public function execute(RootInput $input)

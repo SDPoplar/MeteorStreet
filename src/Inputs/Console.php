@@ -6,7 +6,7 @@ class Console extends RootInput
     public function __construct()
     {
         $all = $_SERVER['argv'] ?? [];
-        if (strtolower(array_shift($all)) ?? '' !== 'mxs') {
+        if ((strtolower(array_shift($all)) ?? '') !== 'mxs') {
             throw new \Mxs\Exceptions\Runtimes\ConsoleOnly();
         }
         $command = array_shift($all) ?? 'help';

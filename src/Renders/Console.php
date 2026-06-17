@@ -21,7 +21,7 @@ class Console extends \Mxs\Frame\Render
         if ($e instanceof \Mxs\Exceptions\Develops\MxsDevelop) {
             $msg .= (PHP_EOL . $e->proposal);
         }
-        file_put_contents(STDERR, $msg, FILE_APPEND);
+        fputs(STDERR, $msg);
         return true;
     }
 
@@ -29,7 +29,7 @@ class Console extends \Mxs\Frame\Render
     public function onError(int $errno, string $errstr, string $errfile, int $errline): bool
     {
         $msg = "[{$errno}]{$errstr}" . PHP_EOL . "{$errfile} line {$errline}";
-        file_put_contents(STDERR, $msg, FILE_APPEND);
+        fputs(STDERR, $msg);
         return true;
     }
 }

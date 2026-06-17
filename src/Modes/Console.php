@@ -35,7 +35,9 @@ readonly class Console extends \Mxs\Frame\AppMode
     #[Override]
     public function run(bool $debug, \Mxs\Routes\Action $action, array $route_params): void
     {
-        //  var_dump('???', $this->input->allInputs()); exit;
+        if (!empty($route_params)) {
+            $this->input->setRouteParams($route_params);
+        }
         $action->execute($this->input);
     }
 
