@@ -58,7 +58,7 @@ class Http implements CodecInterface
                 public array $params,
             ) {}
         };
-        $cached_item = $cached_content[self::CACHED_MAP_COLUMN][$found->routeKey] ?? null;
+        $cached_item = $cached[self::CACHED_MAP_COLUMN][$found->routeKey] ?? null;
         $act = (fn(string $s): \Mxs\Routes\Action => unserialize($s, ['allowed_classes' => [
             \Mxs\Routes\Action::class
         ]]))($cached_item['ins']);
