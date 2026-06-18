@@ -1,11 +1,11 @@
 <?php
 namespace Mxs\Modes;
 
-use Mxs\Inputs\RootInput;
-use Mxs\Frame\{
+use Mxs\Gate\{
+    Input,
     Render,
-    LogRender
 };
+use Mxs\Frame\LogRender;
 use Mxs\Exceptions\Develops\{
     InvalidInputClass,
     InvalidRenderClass,
@@ -17,11 +17,11 @@ readonly class Console extends \Mxs\Frame\AppMode
     final public const string METHOD = 'console';
 
     public function __construct(
-        string|RootInput $input = \Mxs\Inputs\Console::class,
+        string|Input $input = \Mxs\Inputs\Console::class,
         string|LogRender $log_render = LogRender::class,
         string|Render $output_render = \Mxs\Renders\Console::class,
     ) {
-        is_subclass_of($input, RootInput::class) or throw new InvalidInputClass(
+        is_subclass_of($input, Input::class) or throw new InvalidInputClass(
             is_string($input) ? $input : $input::class
         );
         $this->input = is_string($input) ? new $input() : $input;
@@ -33,24 +33,9 @@ readonly class Console extends \Mxs\Frame\AppMode
     }
 
     #[Override]
-    public function run(bool $debug, \Mxs\Routes\Action $action, array $route_params): void
+    public function getInputInstance(): Input
     {
-        if (!empty($route_params)) {
-            $this->input->setRouteParams($route_params);
-        }
-        $action->execute($this->input);
-    }
-
-    #[Override]
-    public function getRequestMethod(): string
-    {
-        return self::METHOD;
-    }
-
-    #[Override]
-    public function getRequestPath(): string
-    {
-        return $this->input->route;
+        return $this->input;
     }
 
     protected \Mxs\Inputs\Console $input;

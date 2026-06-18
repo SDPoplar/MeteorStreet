@@ -1,7 +1,11 @@
 <?php
-namespace Mxs\Routes;
+namespace Mxs\Gate;
 
 use SeaDrip\Http\Method as EHttpMethod;
+use Mxs\Routes\{
+    Rule,
+    RuleGroup,
+};
 
 abstract class Route
 {

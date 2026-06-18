@@ -1,6 +1,8 @@
 <?php
 namespace Mxs\Inputs;
 
+use Override;
+
 class Console extends RootInput
 {
     public function __construct()
@@ -14,7 +16,13 @@ class Console extends RootInput
         $this->all_in = $all;
     }
 
-    #[\Override]
+    #[Override]
+    public function getMethod(): string
+    {
+        return \Mxs\Modes\Console::METHOD;
+    }
+
+    #[Override]
     public function input(string $column, mixed $def_val = null): mixed
     {
         if (!array_key_exists($column, $this->all_in)) {

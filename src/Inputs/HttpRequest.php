@@ -9,7 +9,8 @@ class HttpRequest extends RootInput //implements \Psr\Http\Message\RequestInterf
     public function __construct()
     {
         //  var_dump($_SERVER, $_ENV); exit;
-        parent::__construct($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);
+        parent::__construct($_SERVER['REQUEST_URI']);
+        $this->route_method = $_SERVER['REQUEST_METHOD'];
         $protocal_parts = explode('/', $_SERVER['SERVER_PROTOCOL']);
         $this->protocal = $protocal_parts[0];
         $this->protocal_version = $protocal_parts[1];
@@ -27,7 +28,7 @@ class HttpRequest extends RootInput //implements \Psr\Http\Message\RequestInterf
         return $_SERVER['HTTP_' . strtoupper($column)] ?? $def;
     }
 
-    //  #[\Override]
+    #[\Override]
     public function getMethod(): string
     {
         return $this->route_method;
@@ -81,6 +82,7 @@ class HttpRequest extends RootInput //implements \Psr\Http\Message\RequestInterf
         return $this->protocal_version;
     }
 
+    public readonly string $route_method;
     public readonly string $protocal;
     public readonly string $protocal_version;
     public readonly string $content_type;

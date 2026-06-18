@@ -1,7 +1,7 @@
 <?php
 namespace Mxs\Modes;
 
-use Mxs\Frame\Render;
+use Mxs\Gate\Render;
 use Mxs\Routes\Manager as RouteManager;
 use Mxs\Inputs\HttpRequest;
 use Override;
@@ -11,7 +11,7 @@ readonly class Http extends \Mxs\Frame\AppMode
     public function __construct(
         string|Render $log_render = \Mxs\Frame\LogRender::class,
         string $root_input_type = \Mxs\Inputs\HttpRequest::class,
-        string|Render $output_render = \Mxs\Renders\HttpApi::class,
+        string|Render $output_render = \Mxs\Renders\HttpJson::class,
     ) {
         $this->router = new RouteManager();
         $this->input_instance = new ($root_input_type)();
@@ -20,27 +20,9 @@ readonly class Http extends \Mxs\Frame\AppMode
     }
 
     #[Override]
-    public function getRequestMethod(): string
+    public function getInputInstance(): \Mxs\Gate\Input
     {
-        return $this->input_instance->route_method;
-    }
-
-    #[Override]
-    public function getRequestPath(): string
-    {
-        return $this->input_instance->route;
-    }
-
-    #[Override]
-    public function run(bool $debug, \Mxs\Routes\Action $action, array $route_params): void
-    {
-        if (!empty($route_params)) {
-            $this->input_instance->setRouteParams($route_params);
-        }
-        $result = $action->execute($this->input_instance);
-        if (!is_null($result)) {
-            $this->output_render->onSuccess($result);
-        }
+        return $this->input_instance;
     }
 
     protected readonly HttpRequest $input_instance;

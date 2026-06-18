@@ -1,10 +1,9 @@
 <?php
-namespace Mxs\Routes\Codecs;
+namespace Mxs\Routes;
 
-use Mxs\Routes\Action;
 use Override;
 
-class Http implements CodecInterface
+class HttpRouter implements Router
 {
     protected const string ROUTE_EQUAL_KEY = '/';
     protected const string ROUTE_PATTERN_KEY = '//';

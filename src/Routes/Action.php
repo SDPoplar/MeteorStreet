@@ -1,8 +1,10 @@
 <?php
 namespace Mxs\Routes;
 
-use Mxs\Inputs\RootInput;
-use Mxs\Routes\MiddlewareInterface as IMid;
+use Mxs\Gate\{
+    Input as RootInput,
+    Middleware as IMid,
+};
 
 readonly class Action
 {

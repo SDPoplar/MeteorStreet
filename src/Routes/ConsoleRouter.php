@@ -1,10 +1,9 @@
 <?php
-namespace Mxs\Routes\Codecs;
+namespace Mxs\Routes;
 
-use Mxs\Routes\Action;
 use Override;
 
-class Console implements CodecInterface
+class ConsoleRouter implements Router
 {
     #[Override]
     public function buildCacheContent(array $rules): array

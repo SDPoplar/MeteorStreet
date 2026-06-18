@@ -1,6 +1,7 @@
 <?php
 namespace Mxs\Routes;
 
+use Mxs\Gate\Route;
 use Mxs\Exceptions\Runtimes\{
     RouteNotFound as ErrRouteNotFound,
     CannotReadFile as ErrCannotReadFile,
@@ -31,7 +32,7 @@ class Manager
             })();
         }
         foreach (Route::enumMethods() as $method) {
-            $codec = $this->getCodecInstance($method);
+            $codec = self::routerFactory($method);
             $cache_content = $codec->buildCacheContent(Route::getRulesByMethod($method));
             $save_to_file = $this->cache_path->merge("{$method}.php");
             \SeaDrip\Tools\ArrayExt::toFile($cache_content, $save_to_file)
@@ -42,7 +43,7 @@ class Manager
 
     public function dispatch(string $method, string $path, ?array &$routeParams): \Mxs\Routes\Action
     {
-        $codec = $this->getCodecInstance($method);
+        $codec = self::routerFactory($method);
         if (method_exists($codec, 'matchInnerRoute')) {
             $found = $codec->matchInnerRoute($path, $routeParams);
         }
@@ -59,9 +60,12 @@ class Manager
         return $found;
     }
 
-    final protected function getCodecInstance(string $method): Codecs\CodecInterface
+    final protected static function routerFactory(string $method): Router
     {
-        return ($method === \Mxs\Modes\Console::METHOD) ? new Codecs\Console() : new Codecs\Http();
+        return match($method) {
+            \Mxs\Modes\Console::METHOD => new ConsoleRouter(),
+            default => new HttpRouter(),
+        };
     }
 
     protected readonly \SeaDrip\Tools\Path $cache_path;

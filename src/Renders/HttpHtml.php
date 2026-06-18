@@ -1,17 +1,45 @@
 <?php
 namespace Mxs\Renders;
 
-use Mxs\Frame\{ExecReturn, ExecReturnType};
+use SeaDrip\Http\Header;
+use Mxs\Exceptions\Develops\MxsDevelop as MxsDevException;
+use Override;
 
 class HttpHtml extends Http
 {
-    function onSuccess(mixed $response): void
+    #[Override]
+    protected function formatBody(mixed $data): string
     {
-        if ($response instanceof ExecReturn and $response->type === ExecReturnType::Redir) {
-            $this->redirect($response->data);
-            return;
-        }
+        return "{$data}";
+    }
 
-        //  TODO
+    #[Override]
+    protected function formatException(\Throwable $e): string
+    {
+        $trace_lines = array_map(function ($line): string {
+            return "<li><strong>{$line['class']}{$line['type']}{$line['function']}</strong><br />"
+                ."<small>{$line['file']} line {$line['line']}</small></li>";
+        }, $e->getTrace());
+        $trace_list = implode(PHP_EOL, $trace_lines);
+        $propsal_line = ($e instanceof MxsDevException) ? "<p>{$e->proposal}</p>" : '';
+        $html = <<<HTML
+<!Doctype html>
+<html>
+<head><title>Error!</title></head>
+<body>
+  <h1>{$e->getMessage()}</h1>
+  {$propsal_line}
+  <h3>Trace:</h3>
+  <ol>{$trace_list}</ol>
+</body>
+</html>
+HTML;
+        return $html;
+    }
+
+    #[Override]
+    protected static function getContentType(): Header
+    {
+        return Header::ContentType('text/html');
     }
 }

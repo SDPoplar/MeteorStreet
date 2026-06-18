@@ -44,8 +44,6 @@ final class App
         $this->takeoverExceptions();
 
         $this->logger = new \Mxs\Frame\Log($this->storage->logPath(date('Y'), create_ifnot_exists: true));
-
-        $this->router = new \Mxs\Routes\Manager();
     }
 
     public static function get(): self
@@ -56,15 +54,19 @@ final class App
 
     final public function run(): void
     {
+        $router = new \Mxs\Routes\Manager();
         if ($this->debug) {
-            $this->router->cache();
+            $router->cache();
         }
-        $act = $this->router->dispatch(
-            $this->mode->getRequestMethod(),
-            $this->mode->getRequestPath(),
-            $routeParams
-        );
-        $this->mode->run($this->debug, $act, $routeParams ?? []);
+        $input = $this->mode->getInputInstance();
+        $act = $router->dispatch($input->getMethod(), $input->getPath(), $routeParams);
+        if (!empty($routeParams)) {
+            $input->setRouteParams($routeParams);
+        }
+        $exec_result = $act->execute($input);
+        if (!is_null($exec_result)) {
+            $this->mode->output_render->onSuccess($exec_result);
+        }
     }
 
     private function takeoverExceptions(): void
@@ -96,7 +98,6 @@ final class App
     public readonly \Mxs\Frame\ConfigManager $config;
     public readonly \Mxs\Frame\StorageManager $storage;
     public readonly \Mxs\Frame\Log $logger;
-    public readonly \Mxs\Routes\Manager $router;
 
     protected readonly \Mxs\Frame\AppMode $mode;
 

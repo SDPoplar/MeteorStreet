@@ -1,7 +1,7 @@
 <?php
 namespace Mxs\Frame;
 
-final readonly class ExecReturn
+final class ExecReturn
 {
     public static function redir(string $target): self
     {
@@ -21,8 +21,21 @@ final readonly class ExecReturn
         return new self(ExecReturnType::Success, $data);
     }
 
+    public function &header(string|\SeaDrip\Http\Header $header, bool $override = true): self
+    {
+        $this->headers[] = ["{$header}", $override];
+        return $this;
+    }
+
+    public function &cookie(): self
+    {
+        return $this;
+    }
+
     protected function __construct(
-        public ExecReturnType $type,
-        public array|string|null $data,
+        public readonly ExecReturnType $type,
+        public readonly array|string|null $data,
     ) {}
+
+    public private(set) array $headers = [];
 }

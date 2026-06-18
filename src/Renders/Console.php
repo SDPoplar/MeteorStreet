@@ -3,7 +3,7 @@ namespace Mxs\Renders;
 
 use Override;
 
-class Console extends \Mxs\Frame\Render
+class Console implements \Mxs\Gate\Render
 {
     #[Override]
     public function onSuccess(mixed $response): void

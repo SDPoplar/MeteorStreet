@@ -2,19 +2,26 @@
 namespace Mxs\Inputs;
 
 use Mxs\Exceptions\Runtimes\InvalidInput;
+use Override;
 
-abstract class RootInput
+abstract class RootInput implements \Mxs\Gate\Input
 {
     public function __construct(
-        public readonly string $route_method,
-        public readonly string $route,
+        public readonly string $path,
     ) {}
+
+    #[Override]
+    public function getPath(): string
+    {
+        return $this->path;
+    }
 
     public function allInputs(): array
     {
         return $this->all_in;
     }
     
+    #[Override]
     public function input(string $column, mixed $def_val = null): mixed
     {
         return $this->all_in[$column] ?? $def_val;
