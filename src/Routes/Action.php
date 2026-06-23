@@ -13,7 +13,6 @@ readonly class Action
         public string $method_name,
         public string $cast_input_class = '',
         public array $middlewares = [],
-        public string $describe = '',
     ) {}
 
     public function execute(RootInput $input)

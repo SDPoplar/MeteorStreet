@@ -13,7 +13,7 @@ trait MiddlewareTrait
     {
         foreach ($this->middlewares as $cls_name) {
             $ii = class_implements($cls_name);
-            if (($ii === false) or !array_key_exists(\Mxs\Routes\MiddlewareInterface::class, $ii)) {
+            if (($ii === false) or !array_key_exists(\Mxs\Gate\Middleware::class, $ii)) {
                 throw new \Mxs\Exceptions\Develops\InvalidMiddleware($cls_name);
             }
         }

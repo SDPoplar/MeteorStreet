@@ -12,7 +12,7 @@ class Console extends RootInput
             throw new \Mxs\Exceptions\Runtimes\ConsoleOnly();
         }
         $command = array_shift($all) ?? 'help';
-        parent::__construct('console', $command);
+        parent::__construct($command);
         $this->all_in = $all;
     }
 
@@ -23,10 +23,10 @@ class Console extends RootInput
     }
 
     #[Override]
-    public function input(string $column, mixed $def_val = null): mixed
+    public function input(string $column, mixed $def_val = null, string $note = ''): mixed
     {
         if (!array_key_exists($column, $this->all_in)) {
-            echo "{$column}:".PHP_EOL;
+            echo $column . (empty($note) ? '' : "({$note})") . ':' . PHP_EOL;
             $this->all_in[$column] = trim(fgets(STDIN));
         }
         return parent::input($column, $def_val);

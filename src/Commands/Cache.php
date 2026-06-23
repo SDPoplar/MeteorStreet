@@ -1,10 +1,26 @@
 <?php
 namespace Mxs\Commands;
 
-class Cache
+use Mxs\Inputs\Console;
+use Override;
+
+class Cache implements \Mxs\Ability\Command
 {
-    public function route()
+    #[Override]
+    public static function getUsage(): string
     {
-        app()->router->cache();
+        return 'cache:route';
+    }
+
+    #[Override]
+    public static function getDescribe(): string
+    {
+        return 'check route defines, and then build cache';
+    }
+
+    #[Override]
+    public function handle(Console $in)
+    {
+        new \Mxs\Routes\Manager()->cache();
     }
 }

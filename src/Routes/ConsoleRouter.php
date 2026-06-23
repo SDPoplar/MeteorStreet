@@ -9,6 +9,7 @@ class ConsoleRouter implements Router
     public function buildCacheContent(array $rules): array
     {
         //  TODO:
+        //  var_dump($rules); exit;
         return [];
     }
 
@@ -24,16 +25,20 @@ class ConsoleRouter implements Router
 
     public function matchInnerRoute(string $path, ?array &$routeParams): ?Action
     {
-        $inner_cmd = self::buildInnerCmdMap();
         $routeParams = [];
-        return $inner_cmd[$path] ?? null;
+        foreach (self::buildInnerCmdMap() as $cmd) {
+            if ($path === $cmd::getUsage()) {
+                return new Action($cmd, 'handle', \Mxs\Inputs\Console::class);
+            }
+        }
+        return null;
     }
 
     public static function buildInnerCmdMap(): array
     {
         return [
-            'help' => new Action(\Mxs\Commands\Helper::class, 'usage', describe: 'This usage'),
-            'cache:route' => new Action(\Mxs\Commands\Cache::class, 'route', describe: 'Build route cache'),
+            \Mxs\Commands\Help::class,
+            \Mxs\Commands\Cache::class,
         ];
     }
 }

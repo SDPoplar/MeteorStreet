@@ -27,9 +27,9 @@ final class ExecReturn
         return $this;
     }
 
-    public function &cookie(): self
+    public function &cookie(\SeaDrip\Http\Cookie $cookie): self
     {
-        return $this;
+        return $this->header(\SeaDrip\Http\Header::SetCookie($cookie), false);
     }
 
     protected function __construct(

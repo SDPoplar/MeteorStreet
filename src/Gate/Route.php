@@ -70,9 +70,9 @@ abstract class Route
         return self::rule(EHttpMethod::DELETE->value, $path, $controller_class, $method_name);
     }
 
-    public static function &command(string $path, string $controller_class, string $method_name): Rule
+    public static function &command(string $controller_class): Rule
     {
-        return self::rule(\Mxs\Modes\Console::METHOD, $path, $controller_class, $method_name);
+        return self::rule(\Mxs\Modes\Console::METHOD, $controller_class::getUsage(), $controller_class, 'handle');
     }
 
     private static function &rule(string $method, string $path, string $controller_class, string $method_name): Rule

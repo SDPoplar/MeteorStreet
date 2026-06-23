@@ -87,8 +87,24 @@ abstract class Http implements \Mxs\Gate\Render
             header($hl, $override ?? true);
         }
         header('Content-Length: '.strlen($content));
+        foreach ($other_headers as $hl) {
+            if (is_string($hl)) {
+                header($hl);
+            } elseif (self::isMxsHeaderLine($hl)) {
+                header("{$hl[0]}", $hl[1]);
+            }
+        }
 
         echo $content;
+    }
+
+    protected static function isMxsHeaderLine(mixed $item): bool
+    {
+        return true
+            and is_array($item)
+            and (is_string($item[0] ?? null) or ($item[0] ?? null) instanceof \Stringable)
+            and is_bool($item[1] ?? null)
+            and true;
     }
 
     protected readonly string $protocal_line;
