@@ -1,6 +1,7 @@
 <?php
 namespace Mxs\Inputs;
 
+use Mxs\Exceptions\Runtimes\MissingCommandParam;
 use Override;
 
 class Console extends RootInput
@@ -13,7 +14,20 @@ class Console extends RootInput
         }
         $command = array_shift($all) ?? 'help';
         parent::__construct($command);
-        $this->all_in = $all;
+        $this->route_params = $all;
+    }
+
+    #[Override]
+    public function &setRouteParams(array $params): static
+    {
+        $want_num = count($params);
+        $given_num = count($this->route_params);
+        if ($want_num > $given_num) {
+            $missed = array_slice($params, $given_num - 1);
+            throw new MissingCommandParam(... $missed);
+        }
+        $params = array_combine($params, array_slice($this->route_params, 0, $want_num));
+        return parent::setRouteParams($params);
     }
 
     #[Override]

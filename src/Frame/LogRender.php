@@ -26,7 +26,7 @@ class LogRender
     protected static function traceLines(array $trace): array
     {
         return array_map(function($line): string {
-            return "{$line['class']}{$line['type']}{$line['function']}({$line['file']} line {$line['line']})";
+            return ($line['class'] ?? '') . ($line['type'] ?? '') . "{$line['function']}({$line['file']} line {$line['line']})";
         }, $trace);
     }
 }

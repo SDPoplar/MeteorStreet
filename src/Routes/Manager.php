@@ -54,9 +54,6 @@ class Manager
             $found = $codec->routeMatch($path, include($cached), $routeParams);
         }
         is_null($found) and throw new ErrRouteNotFound($method, $path);
-        if (!empty($routeParams)) {
-            $in->setRouteParams($routeParams);
-        }
         return $found;
     }
 

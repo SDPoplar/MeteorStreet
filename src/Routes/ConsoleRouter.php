@@ -8,9 +8,19 @@ class ConsoleRouter implements Router
     #[Override]
     public function buildCacheContent(array $rules): array
     {
-        //  TODO:
-        //  var_dump($rules); exit;
-        return [];
+        $ret = [];
+        foreach ($rules as $r) {
+            $ri = (fn($item): Rule => $item)($r);
+            $path_parts = explode(' ', $ri->path);
+            $cmd = array_shift($path_parts);
+            $ret[$cmd] = [
+                'ins' => serialize($ri->buildAction()),
+                'route' => array_filter(array_map(function (string $item): ?string {
+                    return trim(trim($item, '{}'));
+                }, $path_parts)),
+            ];
+        }
+        return $ret;
     }
 
     #[Override]
@@ -19,7 +29,9 @@ class ConsoleRouter implements Router
         if (!array_key_exists($path, $cached)) {
             return null;
         }
-        $action = unserialize($cached[$path], ['allowed_classes' => [Action::class]]);
+        ['ins' => $actIns, 'route' => $route] = $cached[$path];
+        $action = unserialize($actIns, ['allowed_classes' => [Action::class]]);
+        $routeParams = $route ?? [];
         return $action instanceof Action ? $action : null;
     }
 
