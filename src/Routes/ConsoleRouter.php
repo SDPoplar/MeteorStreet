@@ -16,7 +16,7 @@ class ConsoleRouter implements Router
             $ret[$cmd] = [
                 'ins' => serialize($ri->buildAction()),
                 'route' => array_filter(array_map(function (string $item): ?string {
-                    return trim(trim($item, '{}'));
+                    return explode('(', trim(trim($item, '{}')))[0] ?? '';
                 }, $path_parts)),
             ];
         }
@@ -52,5 +52,13 @@ class ConsoleRouter implements Router
             \Mxs\Commands\Help::class,
             \Mxs\Commands\Cache::class,
         ];
+    }
+
+    public static function pickClasses(array $cached): array
+    {
+        return array_filter(array_map(function($ci): ?string {
+            $act = unserialize($ci['ins'], ['allowed_classes' => [Action::class]]);
+            return $act instanceof Action ? $act->controller_class : null;
+        }, $cached));
     }
 }

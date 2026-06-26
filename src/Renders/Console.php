@@ -11,7 +11,7 @@ class Console implements \Mxs\Gate\Render
         echo match(true) {
             is_string($response) or $response instanceof \Stringable => $response,
             default => print_r($response, true),
-        };
+        }, PHP_EOL;
     }
 
     #[Override]
@@ -21,14 +21,14 @@ class Console implements \Mxs\Gate\Render
         if ($e instanceof \Mxs\Exceptions\Develops\MxsDevelop) {
             $msg .= (PHP_EOL . $e->proposal);
         }
-        fputs(STDERR, $msg);
+        fputs(STDERR, $msg . PHP_EOL);
         return true;
     }
 
     #[Override]
     public function onError(int $errno, string $errstr, string $errfile, int $errline): bool
     {
-        $msg = "[{$errno}]{$errstr}" . PHP_EOL . "{$errfile} line {$errline}";
+        $msg = "[{$errno}]{$errstr}" . PHP_EOL . "{$errfile} line {$errline}" . PHP_EOL;
         fputs(STDERR, $msg);
         return true;
     }

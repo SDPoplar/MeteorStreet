@@ -32,17 +32,15 @@ usagestr;
             self::printLine($cmd);
         }
 
-        /*
         echo '  routed commands:' . PHP_EOL;
-        foreach ( as $cmd) {
+        foreach (new \Mxs\Routes\Manager()->getCachedCommandClasses() as $cmd) {
             self::printLine($cmd);
         }
-        */
     }
 
     private static function printLine(string $cmd)
     {
-        printf("    %-20s%s\n", $cmd::getUsage(), $cmd::getDescribe());
+        printf("    %-20s\t%s\n", $cmd::getUsage(), $cmd::getDescribe());
     }
 }
 

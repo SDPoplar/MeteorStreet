@@ -57,12 +57,27 @@ class Manager
         return $found;
     }
 
+    public function getCachedCommandClasses(): array
+    {
+        $cached = $this->cache_path->merge(static::getConsoleMethod() . '.php');
+        if (!file_exists($cached)) {
+            return [];
+        }
+        is_readable($cached) or throw new ErrCannotReadFile($cached);
+        return ConsoleRouter::pickClasses(include($cached));
+    }
+
     final protected static function routerFactory(string $method): Router
     {
         return match($method) {
-            \Mxs\Modes\Console::METHOD => new ConsoleRouter(),
+            static::getConsoleMethod() => new ConsoleRouter(),
             default => new HttpRouter(),
         };
+    }
+
+    protected static function getConsoleMethod(): string
+    {
+        return \Mxs\Modes\Console::METHOD;
     }
 
     protected readonly \SeaDrip\Tools\Path $cache_path;

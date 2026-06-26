@@ -23,7 +23,7 @@ class Console extends RootInput
         $want_num = count($params);
         $given_num = count($this->route_params);
         if ($want_num > $given_num) {
-            $missed = array_slice($params, $given_num - 1);
+            $missed = array_slice($params, $given_num);
             throw new MissingCommandParam(... $missed);
         }
         $params = array_combine($params, array_slice($this->route_params, 0, $want_num));
