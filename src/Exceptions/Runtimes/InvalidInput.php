@@ -8,7 +8,7 @@ class InvalidInput extends MxsRuntime
         parent::__construct(
             \SeaDrip\Http\Status::BadRequest,
             $err_code,
-            "Invalid input {$column}".(empty($proposal) ? '' : ", {$proposal}")
+            "Invalid input [{$column}]".(empty($proposal) ? '' : ", {$proposal}")
         );
     }
 }

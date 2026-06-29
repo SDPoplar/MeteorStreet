@@ -17,4 +17,5 @@ enum InnerCode: int
     case PhpExtendMissing = 911;
     case ConsoleOnly = 912;
     case MissingCommandParam = 913;
+    case ConsoleCancel = 914;
 }
