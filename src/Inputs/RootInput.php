@@ -1,6 +1,7 @@
 <?php
 namespace Mxs\Inputs;
 
+use Mxs\Exceptions\Develops\UnknownMidColumn;
 use Mxs\Exceptions\Runtimes\InvalidInput;
 use Override;
 
@@ -96,6 +97,24 @@ abstract class RootInput implements \Mxs\Gate\Input
     public function mid(string $name, mixed $def = null): mixed
     {
         return $this->from_mid[$name] ?? $def;
+    }
+
+    public function &insteadMid(string $getter, string $name, callable $trans, ?string $rename = null): static
+    {
+        array_key_exists($name, $this->from_mid) or throw new UnknownMidColumn($name, $getter);
+        $transed = $trans($this->from_mid[$name]);
+        if (empty($rename)) {
+            if (is_array($transed) && !empty(array_filter(array_keys($transed), fn($e) => is_string($e)))) {
+                unset($from_mid[$name]);
+                $this->from_mid = array_merge($this->from_mid, $transed);
+            } else {
+                $this->from_mid[$name] = $transed;
+            }
+        } else {
+            unset($this->from_mid[$name]);
+            $this->from_mid[$rename] = $transed;
+        }
+        return $this;
     }
 
     protected array $route_params = [];
