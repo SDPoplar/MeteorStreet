@@ -24,12 +24,4 @@ class Console implements \Mxs\Gate\Render
         fputs(STDERR, $msg . PHP_EOL);
         return true;
     }
-
-    #[Override]
-    public function onError(int $errno, string $errstr, string $errfile, int $errline): bool
-    {
-        $msg = "[{$errno}]{$errstr}" . PHP_EOL . "{$errfile} line {$errline}" . PHP_EOL;
-        fputs(STDERR, $msg);
-        return true;
-    }
 }

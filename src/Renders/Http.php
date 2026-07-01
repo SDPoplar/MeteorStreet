@@ -52,20 +52,6 @@ abstract class Http implements \Mxs\Gate\Render
         return true;
     }
 
-    #[Override]
-    public function onError(int $errno, string $errstr, string $errfile, int $errline): bool
-    {
-        $msg = app()->debug
-            ? "<h1>[$errno]{$errstr}</h1>" . PHP_EOL . "<p>{$errfile} line {$errline}</p>"
-            : "<h1>Error!</h1>";
-        $this->writeHttpResponse(
-            HttpStatus::InternalServerError->value,
-            self::HTML_TYPE,
-            $msg,
-        );
-        return true;
-    }
-
     protected function redirect(string $target): void
     {
         $this->writeHttpResponse(HttpStatus::MovedPermanently->value, other_headers: ["Location: {$target}"]);

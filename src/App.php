@@ -80,12 +80,12 @@ final class App
             }
             return $use_mode->output_render->onException($e);
         });
-        set_error_handler(function(int $errno, string $errstr, string $errfile, int $errline) use ($use_mode): bool {
+        set_error_handler(function(int $errno, string $errstr, string $errfile, int $errline): bool {
             if (!(app()->logger ?? null)) {
                 return false;
             }
             app()->logger->error($this->mode->log_render->bakeError($errno, $errstr, $errfile, $errline));
-            return $use_mode->output_render->onError($errno, $errstr, $errfile, $errline);
+            return true;
         });
     }
 
