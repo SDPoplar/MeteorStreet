@@ -66,7 +66,7 @@ abstract class Http implements \Mxs\Gate\Render
         header("{$this->protocal_line} {$status_code}");
         header(HttpHeaderLine::Date());
         if (!empty($content_type)) {
-            header("Content-Type: {$content_type}", true);
+            header("{$content_type}", true);
         }
         foreach ($other_headers as $h) {
             [$hl, $override] = $h;
